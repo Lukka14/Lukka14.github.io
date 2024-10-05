@@ -3,6 +3,8 @@ import { MovieList } from "./MovieList";
 import { Search } from "./Search";
 import { fetchMovies } from "../services/movieService";
 import { Movie } from "../models/Movie";
+import Signature from "./Signature";
+import WIP from "./WIP";
 
 const MainPage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -15,6 +17,8 @@ const MainPage: React.FC = () => {
     <>
       <Search onClick={handleSearch} />
       <MovieList movies={movies} />
+      <WIP></WIP>
+      <Signature />
     </>
   );
 };
