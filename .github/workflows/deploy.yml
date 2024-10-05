@@ -16,12 +16,13 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-      
-      - name: Install project dependencies
-        run: npm install
+        with:
+          no-cache: true
 
       - name: Build project
         run: npm run build
