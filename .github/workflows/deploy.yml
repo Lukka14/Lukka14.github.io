@@ -27,6 +27,9 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Create CNAME file
+        run: echo 'movieplus.live' > ./dist/CNAME
+
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v3
         with:
