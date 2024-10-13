@@ -1,12 +1,10 @@
 import axios from "axios";
-import { Movie } from "../models/Movie";
+import { Media, Movie, Person, TVSeries } from "../models/Movie";
+import { ENDPOINTS } from "../config/Config";
 
-export const fetchMovies = (query: string): Promise<Movie[]> => {
-    // const URL = "http://www.omdbapi.com/";
-
-    const API_KEY = "";
-
-    const URL = "https://api.themoviedb.org/3/search/movie?api_key="+API_KEY;
+export const fetchMovies = (query: string): Promise<Media[]> => {
+    // const URL = "http://localhost:8080/search/multi";
+    const URL = ENDPOINTS.multi;
 
   return axios
     .get(URL, {
@@ -14,9 +12,28 @@ export const fetchMovies = (query: string): Promise<Movie[]> => {
         query: query,
       },
     })
-    .then(response => {console.log(response.data.results); return response.data.results})
+    .then(response => {
+      const rawData = response.data.results;
+      const mediaList: Media[] = rawData.map((item: Media) => createMedia(item));
+
+      return mediaList;
+    })
     .catch(error => {
       console.error("Error fetching movies:", error);
       throw error;
     });
 };
+
+export function createMedia(mediaData: Media): Media | null {
+  switch (mediaData.media_type) {
+    case 'movie':
+      return Object.assign(new Movie(), mediaData);
+    case 'tv':
+      return Object.assign(new TVSeries(), mediaData);
+    case 'person':
+      return Object.assign(new Person(), mediaData);
+    default:
+      console.warn(`Unknown media type: ${mediaData.media_type}`);
+      return null; // or throw an error, depending on your needs
+  }
+}
