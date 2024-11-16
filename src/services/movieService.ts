@@ -4,7 +4,7 @@ import { ENDPOINTS } from "../config/Config";
 
 export const fetchMovies = (query: string): Promise<Media[]> => {
     // const URL = "http://localhost:8080/search/multi";
-    const URL = ENDPOINTS.movies;
+    const URL = ENDPOINTS.multi;
 
   return axios
     .get(URL, {
