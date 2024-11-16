@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { MovieList } from "./MovieList";
 import { Search } from "./Search";
 import { fetchMovies } from "../services/movieService";
-import { Media, Movie } from "../models/Movie";
+import { Media } from "../models/Movie";
 import Signature from "./Signature";
 import WIP from "./WIP";
 

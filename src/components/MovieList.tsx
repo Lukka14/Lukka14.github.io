@@ -1,8 +1,9 @@
-import { Media, MediaListProps, Movie, Person, TVSeries } from "../models/Movie";
+import { Media, MediaListProps } from "../models/Movie";
 import "../css/App.css";
 import "../utils/Utils";
 import { normalizeString } from "../utils/Utils";
-{  /* <div class="container text-center">
+{
+  /* <div class="container text-center">
   <div class="row">
     <div class="col">
       Column
@@ -15,35 +16,32 @@ import { normalizeString } from "../utils/Utils";
     </div>
   </div>
 </div> */
-
 }
 
 export const MovieList = ({ mediaList }: MediaListProps) => {
+  const getMediaURL = (media: Media) =>
+    media.mediaType === "Movie"
+      ? `https://vidsrc.cc/v2/embed/movie/${media.id}?autoPlay=true`
+      : media.mediaType === "TV Series"
+      ? `https://vidsrc.cc/v2/embed/tv/${media.id}/1/1?autoPlay=false`
+      : "";
+
   return (
     <div className="container">
       <ul className="row row-cols-5">
         {mediaList.map((media: Media) => (
           <li key={media.id} className="col no-bullets">
             <div className="movie">
-              <a
-                href={"https://vidsrc.icu/embed/movie/" + media.id}
-                target="_blank"
-              >
+              <a href={getMediaURL(media)} target="_blank">
                 <img
-                  src={"https://image.tmdb.org/t/p/original" + media.getImgPath()}
-                  alt={media.getName()}
+                  src={media.posterUrl}
+                  alt={media.title}
                   className="img-fluid"
                 />
               </a>
-              {/* <?php if(){ ?> <div> </div> <?php } ?> */}
-              {/* {media.media_type === "tv" ? (} */}
-              {/* {media.media_type === "tv" ? <div>TV Series</div> : <div>Movie</div>} */}
-              <div> {normalizeString(media.getMediaType())}</div>
-              <h3>
-                {media.getName()}
-              </h3>
-              {/* <p>{media.release_date}</p> */}
-              <p>{media.popularity}</p>
+              <div> {normalizeString(media.mediaType)}</div>
+              <h3>{media.title}</h3>
+              <p>{media.rating}</p>
             </div>
           </li>
         ))}
@@ -51,5 +49,3 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
     </div>
   );
 };
-
-

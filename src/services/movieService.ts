@@ -1,10 +1,10 @@
 import axios from "axios";
-import { Media, Movie, Person, TVSeries } from "../models/Movie";
+import { Media } from "../models/Movie";
 import { ENDPOINTS } from "../config/Config";
 
 export const fetchMovies = (query: string): Promise<Media[]> => {
     // const URL = "http://localhost:8080/search/multi";
-    const URL = ENDPOINTS.multi;
+    const URL = ENDPOINTS.movies;
 
   return axios
     .get(URL, {
@@ -25,15 +25,5 @@ export const fetchMovies = (query: string): Promise<Media[]> => {
 };
 
 export function createMedia(mediaData: Media): Media | null {
-  switch (mediaData.media_type) {
-    case 'movie':
-      return Object.assign(new Movie(), mediaData);
-    case 'tv':
-      return Object.assign(new TVSeries(), mediaData);
-    case 'person':
-      return Object.assign(new Person(), mediaData);
-    default:
-      console.warn(`Unknown media type: ${mediaData.media_type}`);
-      return null; // or throw an error, depending on your needs
-  }
+  return Object.assign(new Media(), mediaData);
 }
