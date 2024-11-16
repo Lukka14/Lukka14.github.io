@@ -6,6 +6,10 @@ export const fetchMovies = (query: string): Promise<Media[]> => {
     // const URL = "http://localhost:8080/search/multi";
     const URL = ENDPOINTS.multi;
 
+  if (query.length === 0) {
+    return Promise.resolve([]);
+  }
+
   return axios
     .get(URL, {
       params: {

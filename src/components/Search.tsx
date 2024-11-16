@@ -11,6 +11,7 @@ interface SearchBarProps {
       onClick(query); // Pass the query back to the parent
     };
 
+    // search only if enter was pressed
     const enterPressed = (e : React.KeyboardEvent<any>) => {
       e.key === 'Enter' && handleSearch();
       return e;
@@ -19,7 +20,8 @@ interface SearchBarProps {
   
     return (
       <div className="searchBar">
-        <input type="text" placeholder="Search..." onKeyDown={e => enterPressed(e)} />
+        {/* <input type="text" placeholder="Search..." onKeyUp={e => enterPressed(e)} /> */}
+        <input type="text" placeholder="Search..." onChange={handleSearch} />
         <button type="button" onClick={handleSearch}>
           Search
         </button>
