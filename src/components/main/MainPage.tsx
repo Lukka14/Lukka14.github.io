@@ -21,8 +21,11 @@ const MainPage: React.FC = () => {
 
   return (
     <>
-      <Background url="src/assets/movieplus-full-bg.png"></Background>
-      <PrimarySearchAppBar onClick={handleSearch}/>
+      <Background
+        url={`${process.env.PUBLIC_URL}/assets/movieplus-full-bg.png`}
+      />
+
+      <PrimarySearchAppBar onClick={handleSearch} />
       <MovieList mediaList={medias} />
       <WIP></WIP>
       <Signature />
