@@ -32,7 +32,8 @@ const WatchPage: React.FC = () => {
           // Decide final bgUrl based on fetched data
           const finalBgUrl =
             data?.backDropUrl ||
-            "https://i.pinimg.com/originals/e5/d7/42/e5d7426b911e35aa1e517c52d56b984b.jpg";
+            // "https://i.pinimg.com/originals/e5/d7/42/e5d7426b911e35aa1e517c52d56b984b.jpg";
+            "https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true";
 
           // Set both media and bgUrl once data is fetched
           setState({ media: data, bgUrl: finalBgUrl });

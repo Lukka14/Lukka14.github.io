@@ -36,6 +36,8 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
               {/* <Rating name="read-only" value={media.rating} readOnly /> */}
               <Rating name="half-rating" defaultValue={media.rating == undefined ? 0 : media.rating / 2.0} precision={0.25} readOnly />
               <span className="white-text">{media.rating}</span>
+              <div className="white-text">{media.releaseDate?.split("-")[0]}</div>
+                <br></br>
             </div>
           </li>
         ))}
