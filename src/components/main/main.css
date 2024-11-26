@@ -14,3 +14,18 @@
   .white-text {
     color: white;
   }
+
+  /*  */
+
+  .watchBtn {
+    background-color: rgba(129, 129, 129, 0.7) !important;
+    
+    color: #ffffff;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+  }

@@ -13,7 +13,7 @@ export class Media {
   releaseDate?: string;
   mediaType?: MediaType;
   rating?: number;
-  genres?: string[];
+  genreList?: string[];
   originalLanguage?: string;
 
   constructor(data?: Partial<Media>) {

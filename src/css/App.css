@@ -81,3 +81,67 @@
   background-size: cover;
 } */
 
+/* .hover-opacity-100:hover {
+  opacity: 0.95 !important;
+}
+.transition-opacity {
+  transition: opacity 0.3s ease-in-out;
+} */
+
+
+.media-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+}
+
+.media-card:hover {
+  transform: scale(1.05);
+}
+
+/* Image container to hold the darken effect */
+.image-container {
+  position: relative;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  transition: filter 0.3s ease-in-out;
+  filter: brightness(1); /* Default brightness */
+}
+
+.media-card:hover .image-container img {
+  filter: brightness(0.7); /* Darkens only on hover */
+}
+
+/* Dark overlay stays on top of the image */
+.darken-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  z-index: 1;
+  pointer-events: none; /* Allows clicks to pass through */
+  opacity: 0; /* Initially invisible */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.media-card:hover .darken-overlay {
+  opacity: 1; /* Overlay becomes visible on hover */
+}
+
+/* Text overlay sits above the darkened image */
+.overlay-text {
+  position: relative;
+  z-index: 2; /* Ensures text appears above the dark overlay */
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.media-card:hover .overlay-text {
+  opacity: 1; /* Text appears on hover */
+}
+
