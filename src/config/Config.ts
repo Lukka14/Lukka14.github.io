@@ -1,5 +1,5 @@
-const API_URL = "http://localhost:8080";
-// const API_URL = "https://api.movieplus.live";
+// const API_URL = "http://localhost:8080";
+const API_URL = "https://api.movieplus.live";
 
 const URL_SEARCH = API_URL+"/search";
 
