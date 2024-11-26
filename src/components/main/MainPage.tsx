@@ -22,7 +22,7 @@ const MainPage: React.FC = () => {
   return (
     <>
       <Background
-        url={`${process.env.PUBLIC_URL}/assets/movieplus-full-bg.png`}
+        url="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true"
       />
 
       <PrimarySearchAppBar onClick={handleSearch} />
