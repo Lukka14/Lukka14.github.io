@@ -19,10 +19,10 @@ interface SearchBarProps {
 
   
     return (
-      <div className="searchBar">
+      <div  className="searchBar">
         {/* <input type="text" placeholder="Search..." onKeyUp={e => enterPressed(e)} /> */}
-        <input type="text" placeholder="Search..." onChange={handleSearch} />
-        <button type="button" onClick={handleSearch}>
+        <input autoFocus type="text" placeholder="Search..." onChange={handleSearch} />
+        <button  type="button" onClick={handleSearch}>
           Search
         </button>
       </div>

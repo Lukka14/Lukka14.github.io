@@ -1,11 +1,20 @@
+const API_URL = "http://localhost:8080";
+// const API_URL = "https://api.movieplus.live";
 
-export const API_URL = "https://api.movieplus.live";
+const URL_SEARCH = API_URL+"/search";
 
-export const URL_SEARCH = API_URL+"/search";
+export enum Endpoints{
+    MOVIES = `${URL_SEARCH}/movies`,
+    SERIES = `${URL_SEARCH}/series`,
+    MULTI = `${URL_SEARCH}/multi`,
 
-export const ENDPOINTS = {
-    movies: `${URL_SEARCH}/movies`,
-    series: `${URL_SEARCH}/series`,
-    multi: `${URL_SEARCH}/multi`,
+    DETAILED_MOVIE = `${URL_SEARCH}/movieDetails`,
+    DETAILED_SERIES = `${URL_SEARCH}/seriesDetails`,
   };
 
+
+export enum RoutePaths {
+    HOME = '/',
+    WATCH = '/watch',
+    LOGIN = '/login',
+}

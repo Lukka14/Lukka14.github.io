@@ -1,11 +1,17 @@
-import MainPage from "./components/MainPage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainPage from "./components/main/MainPage";
+import WatchPage from "./components/watch/WatchPage";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div>
-      <MainPage></MainPage>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/watch" element={<WatchPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

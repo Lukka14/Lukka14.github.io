@@ -66,7 +66,8 @@
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.8); /* Optional: to make the background slightly transparent */
   font-size: 14px;
-  color: #000; /* Adjust the color as needed */
+  color: #ffffff; /* Adjust the color as needed */
+  background-color: transparent;
 }
 
 /* body {
@@ -79,3 +80,4 @@
   background-position: center;
   background-size: cover;
 } */
+
