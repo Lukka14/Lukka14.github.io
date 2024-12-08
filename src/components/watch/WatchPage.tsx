@@ -76,7 +76,7 @@ const WatchPage: React.FC = () => {
   };
 
   const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(new SeasonEpisode(1, episode!));
-
+  
   return (
     <>
       <Background url={bgUrl} />
@@ -87,6 +87,7 @@ const WatchPage: React.FC = () => {
         mediaType={mediaType}
         season={seasonEpisode?.season ?? null} // Keep the actual value
         episode={seasonEpisode?.episode ?? null}
+        posterURL={state.bgUrl}
       />
       <MediaInfo media={media!} setSeasonEpisode={setSeasonEpisode}></MediaInfo>
     </>

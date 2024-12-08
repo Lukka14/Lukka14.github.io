@@ -5,4 +5,5 @@ export interface VideoPlayerProps {
   mediaType: MediaType;
   season: number | null;
   episode: number | null;
+  posterURL : string;
 }
