@@ -31,7 +31,7 @@ const getMediaURL = (props: VideoPlayerProps): string => {
 
   switch (props.mediaType) {
     case MediaType.MOVIE:
-      return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=${autoPlay}}`;
+      return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=${autoPlay}`;
     case MediaType.TV_SERIES:
       return `https://vidsrc.cc/v2/embed/tv/${id}/${props.season}/${props.episode}?autoPlay=${autoPlay}`;
     default:
