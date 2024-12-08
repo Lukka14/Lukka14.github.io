@@ -27,10 +27,10 @@ const WatchPage: React.FC = () => {
   const episode = queryParams.get("e");
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
 
-  console.log("id:", id);
-  console.log("season:", season);
-  console.log("episode:", episode);
-  console.log("mediaType:", mediaType);
+  // console.log("id:", id);
+  // console.log("season:", season);
+  // console.log("episode:", episode);
+  // console.log("mediaType:", mediaType);
 
   const [state, setState] = useState<{
     media: ImdbMedia | TvSeries | null;
