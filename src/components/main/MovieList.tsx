@@ -1,4 +1,3 @@
-import React from "react";
 import { Media, MediaListProps, MediaType } from "../../models/Movie";
 import { RoutePaths } from "../../config/Config";
 import { MediaCard } from "./MediaCard";
@@ -6,12 +5,12 @@ import { MediaCard } from "./MediaCard";
 export const MovieList = ({ mediaList }: MediaListProps) => {
   const generateHref = (media: Media): string => {
     let seriesSuffix = "";
-
     if (media.mediaType === MediaType.TV_SERIES) {
       seriesSuffix = `&s=${1}&e=${1}`;
     }
-
-    return `${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
+  
+    // For hash routing, ensure the correct URL structure
+    return `#${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
   };
 
   return (
