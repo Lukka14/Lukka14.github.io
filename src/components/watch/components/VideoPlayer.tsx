@@ -27,11 +27,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 const getMediaURL = (props: VideoPlayerProps): string => {
   const id = props.id;
 
+  const autoPlay = true;
+
   switch (props.mediaType) {
     case MediaType.MOVIE:
-      return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=false`;
+      return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=${autoPlay}}`;
     case MediaType.TV_SERIES:
-      return `https://vidsrc.cc/v2/embed/tv/${id}/${props.season}/${props.episode}?autoPlay=false`;
+      return `https://vidsrc.cc/v2/embed/tv/${id}/${props.season}/${props.episode}?autoPlay=${autoPlay}`;
     default:
       return "";
   }
