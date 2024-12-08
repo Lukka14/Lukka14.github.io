@@ -1,25 +1,25 @@
-import { Media, MediaListProps } from "../../models/Movie";
-import "../../css/App.css";
-import "../../utils/Utils";
+import React from "react";
+import { Media, MediaListProps, MediaType } from "../../models/Movie";
 import { RoutePaths } from "../../config/Config";
-import { useNavigate } from "react-router-dom";
 import { MediaCard } from "./MediaCard";
 
 export const MovieList = ({ mediaList }: MediaListProps) => {
-  const navigate = useNavigate();
+  const generateHref = (media: Media): string => {
+    let seriesSuffix = "";
 
-  const handleclick = (media: Media) => {
-    navigate(
-      RoutePaths.WATCH + `?id=${media.id}&m=${media.mediaType}&s=${1}&e=${1}`
-    );
+    if (media.mediaType === MediaType.TV_SERIES) {
+      seriesSuffix = `&s=${1}&e=${1}`;
+    }
+
+    return `${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
   };
 
   return (
     <div className="container py-4">
-      <div className="row g-4  row-cols-5">
+      <div className="row g-4 row-cols-5">
         {mediaList.map((media: Media) => (
           <div key={media.id || media.title} className="col">
-            <MediaCard onClick={handleclick} mediaInfo={media} />
+            <MediaCard mediaInfo={media} href={generateHref(media)} />
           </div>
         ))}
       </div>

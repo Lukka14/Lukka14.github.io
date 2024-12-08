@@ -15,6 +15,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -168,6 +169,8 @@ export default function SearchMUI_EXP({ onClick }: SearchBarProps) {
     </Menu>
   );
 
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ flexGrow: 1 }} >
       <AppBar position="static" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.0)' }}>
@@ -185,7 +188,8 @@ export default function SearchMUI_EXP({ onClick }: SearchBarProps) {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{ display: { xs: 'none', sm: 'block', cursor: 'pointer' } }}
+            onClick={() => navigate('/')}
           >
             Movie Plus
           </Typography>

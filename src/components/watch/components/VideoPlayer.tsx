@@ -1,7 +1,7 @@
 import React from "react";
 import { MDBContainer } from "mdb-react-ui-kit";
-import { Media, MediaType } from "../../models/Movie";
-import { VideoPlayerProps } from "../../models/VidePlayerProps";
+import { Media, MediaType } from "../../../models/Movie";
+import { VideoPlayerProps } from "../../../models/VidePlayerProps";
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   id,
@@ -10,6 +10,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   episode,
 }) => {
   const mediaURL = getMediaURL({ id, mediaType, season, episode });
+  
+  // console.log("season, episode", season,episode)
 
   return (
     <>
@@ -27,9 +29,9 @@ const getMediaURL = (props: VideoPlayerProps): string => {
 
   switch (props.mediaType) {
     case MediaType.MOVIE:
-      return `https://vidsrc.cc/v2/embed/movie/${id}`;
+      return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=false`;
     case MediaType.TV_SERIES:
-      return `https://vidsrc.cc/v2/embed/tv/${id}/${props.season}/${props.episode}`;
+      return `https://vidsrc.cc/v2/embed/tv/${id}/${props.season}/${props.episode}?autoPlay=false`;
     default:
       return "";
   }

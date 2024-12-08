@@ -59,12 +59,12 @@ export class Season {
 export class TvSeries extends ImdbMedia {
   numberOfEpisodes?: number;
   numberOfSeasons?: number;
-  seasons?: Season[];
+  seasonList?: Season[];
 
   constructor(data?: Partial<TvSeries>) {
     super(data);
     if (data) {
-      this.seasons = data.seasons?.map(season => new Season(season)) || [];
+      this.seasonList = data.seasonList?.map(season => new Season(season)) || [];
     }
   }
 }
