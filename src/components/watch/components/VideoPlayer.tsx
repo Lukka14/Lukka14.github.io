@@ -1,6 +1,6 @@
 import React from "react";
 import { MDBContainer } from "mdb-react-ui-kit";
-import { Media, MediaType } from "../../../models/Movie";
+import { MediaType } from "../../../models/Movie";
 import { VideoPlayerProps } from "../../../models/VidePlayerProps";
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({

@@ -22,7 +22,7 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
         // Set the first episode of season 1 as default
         setSelectedEpisode(1);
         if (firstSeason.seasonNumber !== undefined) {
-          setSeasonEpisode(new SeasonEpisode(firstSeason.seasonNumber.toString(), "1"));
+          setSeasonEpisode(new SeasonEpisode(firstSeason.seasonNumber, 1));
         }
       }
     }
@@ -48,7 +48,7 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
 
   const handleEpisodeClick = (seasonNumber: number, episodeNumber: number) => {
     setSelectedEpisode(episodeNumber); // Set the selected episode
-    setSeasonEpisode(new SeasonEpisode(seasonNumber.toString(), episodeNumber.toString())); // Notify parent component about the selected episode
+    setSeasonEpisode(new SeasonEpisode(seasonNumber, episodeNumber)); // Notify parent component about the selected episode
   };
 
   return (

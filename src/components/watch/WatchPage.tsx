@@ -11,10 +11,10 @@ import PrimarySearchAppBar from "../main/SearchMUI_EXPERIMENTAL";
 import MediaInfo from "./components/MediaInfo";
 
 export class SeasonEpisode {
-  season: string = "1";
-  episode: string = "1";
+  season: number = 1;
+  episode: number = 1;
 
-  constructor(season: string, episode: string) {
+  constructor(season: number, episode: number) {
     this.season = season;
     this.episode = episode;
   }
@@ -24,7 +24,7 @@ const WatchPage: React.FC = () => {
   const queryParams = new URLSearchParams(window.location.hash.split('?')[1]); // Use `window.location.hash` for HashRouter
   const id = queryParams.get("id")!;
   const season = queryParams.get("s");
-  const episode = queryParams.get("e");
+  const episode = Number(queryParams.get("e"));
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
 
   // console.log("id:", id);
@@ -75,7 +75,7 @@ const WatchPage: React.FC = () => {
       .catch((err) => console.error(err));
   };
 
-  const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(new SeasonEpisode("1", episode!));
+  const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(new SeasonEpisode(1, episode!));
 
   return (
     <>
