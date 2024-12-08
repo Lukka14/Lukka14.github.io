@@ -21,11 +21,16 @@ export class SeasonEpisode {
 }
 
 const WatchPage: React.FC = () => {
-  const queryParams = new URLSearchParams(window.location.search);
+  const queryParams = new URLSearchParams(window.location.hash.split('?')[1]); // Use `window.location.hash` for HashRouter
   const id = queryParams.get("id")!;
   const season = queryParams.get("s");
-  // const episode = queryParams.get("e");
+  const episode = queryParams.get("e");
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
+
+  console.log("id:", id);
+  console.log("season:", season);
+  console.log("episode:", episode);
+  console.log("mediaType:", mediaType);
 
   const [state, setState] = useState<{
     media: ImdbMedia | TvSeries | null;
@@ -70,7 +75,7 @@ const WatchPage: React.FC = () => {
       .catch((err) => console.error(err));
   };
 
-  const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(new SeasonEpisode("1","1"));
+  const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(new SeasonEpisode("1", episode!));
 
   return (
     <>
