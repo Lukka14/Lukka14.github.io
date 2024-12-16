@@ -80,7 +80,7 @@ const WatchPage: React.FC = () => {
   return (
     <>
       <Background url={bgUrl} />
-      <PrimarySearchAppBar onClick={handleSearch} />
+      <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
       {/* <MovieList mediaList={medias} /> */}
       <VideoPlayer
         id={id}
