@@ -37,18 +37,16 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
           style={{
             width: "100%",
             aspectRatio: "3 / 4",
-            backgroundImage: `url(${posterUrl || "default-poster.jpg"})`,
+            backgroundImage: `url(${posterUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019"})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             backgroundColor: "#000",
           }}
         >
-          {/* Darkening effect */}
           <div className="darken-overlay"></div>
         </div>
 
-        {/* Overlay Text */}
         <div className="card-img-overlay d-flex flex-column justify-content-center align-items-center overlay-text">
           <h5 className="card-title text-center text-white">
             {title || "Untitled"}

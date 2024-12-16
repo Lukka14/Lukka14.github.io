@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ImdbMedia, TvSeries, MediaType, Season } from "../../../models/Movie";
 import { SeasonEpisode } from "../WatchPage";
+import { Padding } from "@mui/icons-material";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -78,8 +79,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
               />
             </div>
             <div className="col-md-8">
-              <h1>{media.title}</h1>
-              <p className="text-muted">
+            <h1 style={{ paddingTop: '5px' }}>{media.title}</h1>
+            <p className="text-muted">
                 ({media.originalLanguage?.toUpperCase()})
               </p>
               <p>{media.overview}</p>
