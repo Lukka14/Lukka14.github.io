@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Media } from "../../models/Movie";
 import "./about.css"
+import { useNavigate } from "react-router-dom";
 
 interface DataTableProps {
   mediaList: Media[];
@@ -22,6 +23,8 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList }) => {
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const navigate = useNavigate();
 
   return (
     <div
@@ -69,7 +72,11 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList }) => {
           </thead>
           <tbody>
             {paginatedData.map((media, index) => (
-              <tr key={index}>
+              <tr
+                key={index}
+                onClick={() => navigate(`/watch?id=${media.id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <td>{media.id}</td>
                 <td>{media.title}</td>
                 <td>{media.rating}</td>
