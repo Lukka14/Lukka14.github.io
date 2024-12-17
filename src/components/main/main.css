@@ -15,8 +15,6 @@
     color: white;
   }
 
-  /*  */
-
   .watchBtn {
     background-color: rgba(129, 129, 129, 0.7) !important;
     
@@ -30,14 +28,13 @@
     transition: all 0.3s ease-in-out;
   }
 
-  /* Inside a CSS file, e.g., styles.css */
 .carousel-container {
   width: 80%;
   margin: 0 auto;
 }
 
 .carousel-container .slide img {
-  width: 100%; /* Ensure the image fills the container */
+  width: 100%; 
 }
 
 .carousel-container .legend {
@@ -55,26 +52,24 @@
   max-width: 80%;
 }
 
-/* Responsive for small screens */
 @media (max-width: 768px) {
   .carousel-container {
-    width: 90%; /* Increase the width on smaller screens */
+    width: 90%; 
   }
 
   .carousel-container .legend {
-    font-size: 18px; /* Smaller font size for smaller screens */
+    font-size: 18px; 
     padding: 8px 12px;
   }
 }
 
-/* Responsive for extra small screens */
 @media (max-width: 480px) {
   .carousel-container {
-    width: 100%; /* Full width on very small screens */
+    width: 100%; 
   }
 
   .carousel-container .legend {
-    font-size: 16px; /* Even smaller font size */
+    font-size: 16px;
     padding: 6px 10px;
   }
 }

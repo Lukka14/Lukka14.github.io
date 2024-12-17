@@ -6,8 +6,7 @@ interface CenteredH1Props {
 
 const CenteredH1: React.FC<CenteredH1Props> = ({ children }) => {
   return (
-    <div style={{textAlign:"center", marginTop: "0%", color: "white" }}>
-      {/* <h3>{children}</h3> */}
+    <div style={{textAlign:"center", marginTop: "10px", color: "white" }}>
       <p className="lead">{children}</p>
     </div>
   );

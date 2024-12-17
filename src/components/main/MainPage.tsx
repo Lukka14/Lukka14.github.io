@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Media, MediaType } from "../../models/Movie";
-import { fetchDiscoverMovies, fetchMedia, fetchTrendingMedia } from "../../services/MediaService";
+import { Media } from "../../models/Movie";
+import {
+  fetchMedia,
+  fetchTrendingMedia
+} from "../../services/MediaService";
 import { MovieList } from "../shared/MovieList";
-import Signature from "../../tmp/Signature";
-import CenteredH1 from "./CenteredText";
+import CenteredH1 from "../shared/CenteredText";
 import { Background } from "../main/Background";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import MovieCarousel from "./MovieCarousel";

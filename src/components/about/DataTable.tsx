@@ -12,16 +12,13 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
 
-  // Filter mediaList based on the search query
   const filteredData = mediaList.filter((media) =>
     media.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Calculate the paginated data
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
 
-  // Calculate total pages
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const navigate = useNavigate();
@@ -34,7 +31,6 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList }) => {
         borderRadius: "8px",
       }}
     >
-      {/* Search Bar */}
       <div style={{ marginBottom: "20px", textAlign: "center" }}>
         <input
           type="text"
@@ -42,7 +38,7 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList }) => {
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
-            setCurrentPage(1); // Reset to the first page on search
+            setCurrentPage(1); 
           }}
           style={{
             padding: "10px",
@@ -53,7 +49,6 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList }) => {
         />
       </div>
 
-      {/* Table Wrapper for Responsiveness */}
       <div style={{ overflowX: "auto", marginBottom: "20px" }}>
         <table
           className="table table-striped"
@@ -96,7 +91,6 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList }) => {
         </table>
       </div>
 
-      {/* Pagination Controls */}
       <div style={{ textAlign: "center" }}>
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

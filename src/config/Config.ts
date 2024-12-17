@@ -3,7 +3,6 @@ const API_URL = "https://api.movieplus.live";
 
 const URL_SEARCH = `${API_URL}/search`;
 
-// Use an object literal for endpoints
 export const Endpoints = {
   MOVIES: `${URL_SEARCH}/movies`,
   SERIES: `${URL_SEARCH}/series`,
@@ -17,7 +16,6 @@ export const Endpoints = {
   DETAILED_SERIES: `${URL_SEARCH}/seriesDetails`,
 };
 
-// Use an enum for static, string-literal route paths
 export enum RoutePaths {
   HOME = '/',
   WATCH = '/watch',
