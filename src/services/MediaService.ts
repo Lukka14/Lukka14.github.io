@@ -83,3 +83,42 @@ export const fetchTvSeries = (id: string): Promise<TvSeries> => {
       throw error;
     });
 };
+
+// todo resolve duplication
+
+export const fetchDiscoverMovies = (): Promise<Media[]> => {
+  const URL = Endpoints.DISCOVER_MOVIES;
+
+  return axios
+  .get(URL, {
+  })
+  .then(response => {
+    const rawData = response.data.results;
+    const mediaList: Media[] = rawData.map((item: Media) => Object.assign(new Media(), item));
+
+    return mediaList;
+  })
+  .catch(error => {
+    console.error("Error fetching movies:", error);
+    throw error;
+  });
+};
+
+
+export const fetchDiscoverTvSeries = (): Promise<Media[]> => {
+  const URL = Endpoints.DISCOVER_TV_SERIES;
+
+return axios
+  .get(URL, {
+  })
+  .then(response => {
+    const rawData = response.data.results;
+    const mediaList: Media[] = rawData.map((item: Media) => Object.assign(new Media(), item));
+
+    return mediaList;
+  })
+  .catch(error => {
+    console.error("Error fetching movies:", error);
+    throw error;
+  });
+};

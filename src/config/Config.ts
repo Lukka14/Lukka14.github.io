@@ -8,6 +8,8 @@ export const Endpoints = {
   MOVIES: `${URL_SEARCH}/movies`,
   SERIES: `${URL_SEARCH}/series`,
   MULTI: `${URL_SEARCH}/multi`,
+  DISCOVER_MOVIES: `${URL_SEARCH}/discoverMovies`,
+  DISCOVER_TV_SERIES: `${URL_SEARCH}/discoverTvSeries`,
 
   DETAILED_MOVIE: `${URL_SEARCH}/movieDetails`,
   DETAILED_SERIES: `${URL_SEARCH}/seriesDetails`,
