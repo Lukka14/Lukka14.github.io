@@ -129,6 +129,9 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
             <Button sx={{ color: 'white' }} onClick={() => navigate('/')}>
               Home
             </Button>
+            <Button sx={{ color: 'white' }} onClick={() => navigate('/multiSearch')}>
+              Search
+            </Button>
             <Button sx={{ color: 'white' }} onClick={() => navigate('/movies')}>
               Movies
             </Button>
@@ -164,6 +167,9 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/')}>
             Home
+          </Button>
+          <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/multiSearch')}>
+            Search
           </Button>
           <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/movies')}>
             Movies

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Media, MediaType } from "../../models/Movie";
-import { fetchDiscoverMovies, fetchMedia } from "../../services/MediaService";
+import { fetchDiscoverMovies, fetchMedia, fetchTrendingMedia } from "../../services/MediaService";
 import { MovieList } from "../shared/MovieList";
 import Signature from "../../tmp/Signature";
-import WIP from "../../tmp/WIP";
+import CenteredH1 from "./CenteredText";
 import { Background } from "../main/Background";
-import PrimarySearchAppBar from "./SearchMUI_EXPERIMENTAL";
+import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import MovieCarousel from "./MovieCarousel";
 
 const MainPage: React.FC = () => {
@@ -17,13 +17,13 @@ const MainPage: React.FC = () => {
       .catch((err) => console.error(err));
   };
 
-const [mediaList, setMediaList] = useState<Media[]>([]);
+  const [mediaList, setMediaList] = useState<Media[]>([]);
 
-React.useEffect(() => {
-  fetchDiscoverMovies()
-    .then(setMediaList)
-    .catch((err) => console.error(err));
-}, []);
+  React.useEffect(() => {
+    fetchTrendingMedia()
+      .then(setMediaList)
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <>
@@ -34,7 +34,7 @@ React.useEffect(() => {
 
       <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
       <MovieCarousel mediaList={mediaList} />
-      <WIP></WIP>
+      <CenteredH1>Watch Latest Movies Here!</CenteredH1>
       <MovieList mediaList={mediaList} />
       {/* <WIP></WIP> */}
       {/* <Signature /> */}

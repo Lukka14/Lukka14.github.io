@@ -13,7 +13,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ width: "80%", margin: "0 auto" }}> {/* Centering the carousel */}
+    <div style={{ width: "80%", margin: "0 auto", marginTop:'10px' }}> {/* Centering the carousel */}
       <Carousel
         dynamicHeight={true}
         centerMode={true}
@@ -32,8 +32,10 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
           >
             <img alt="sample_file" src={media.backDropUrl} />
             <p className="legend" style={{ backgroundColor: "rgba(0,0,0,0.1)", fontSize: "1.5vw" }}>
-                <p>{media.title}</p>
-                <p>⭐ {media.rating ? media.rating.toFixed(1) : "N/A"}</p>
+                <div>{media.title}</div>
+                <div>⭐ {media.rating ? media.rating.toFixed(1) : "N/A"}</div>
+                <div>{media.genreList?.join(' | ')}</div>
+                <div>{media.releaseDate?.split('-')[0]}</div>
             </p>
           
           </div>

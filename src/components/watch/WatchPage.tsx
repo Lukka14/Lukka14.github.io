@@ -7,7 +7,7 @@ import {
   fetchMedia,
   fetchTvSeries,
 } from "../../services/MediaService";
-import PrimarySearchAppBar from "../main/SearchMUI_EXPERIMENTAL";
+import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import MediaInfo from "./components/MediaInfo";
 
 export class SeasonEpisode {
@@ -21,7 +21,7 @@ export class SeasonEpisode {
 }
 
 const WatchPage: React.FC = () => {
-  const queryParams = new URLSearchParams(window.location.hash.split('?')[1]); // Use `window.location.hash` for HashRouter
+  const queryParams = new URLSearchParams(window.location.hash.split("?")[1]); // Use `window.location.hash` for HashRouter
   const id = queryParams.get("id")!;
   const season = queryParams.get("s");
   const episode = Number(queryParams.get("e"));
@@ -75,8 +75,10 @@ const WatchPage: React.FC = () => {
       .catch((err) => console.error(err));
   };
 
-  const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(new SeasonEpisode(1, episode!));
-  
+  const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(
+    new SeasonEpisode(1, episode!)
+  );
+
   return (
     <>
       <Background url={bgUrl} />

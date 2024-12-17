@@ -30,6 +30,59 @@ export const fetchMedia = (query: string): Promise<Media[]> => {
 };
 
 
+export const fetchOnlyMovies = (query: string): Promise<Media[]> => {
+  const URL = Endpoints.MOVIES;
+
+if (query.length === 0) {
+  return Promise.resolve([]);
+}
+
+return axios
+  .get(URL, {
+    params: {
+      query: query,
+    },
+  })
+  .then(response => {
+    const rawData = response.data.results;
+    const mediaList: Media[] = rawData.map((item: Media) => Object.assign(new Media(), item));
+
+    return mediaList;
+  })
+  .catch(error => {
+    console.error("Error fetching movies:", error);
+    throw error;
+  });
+};
+
+export const fetchOnlyTvSeries = (query: string): Promise<Media[]> => {
+  const URL = Endpoints.SERIES;
+
+if (query.length === 0) {
+  return Promise.resolve([]);
+}
+
+return axios
+  .get(URL, {
+    params: {
+      query: query,
+    },
+  })
+  .then(response => {
+    const rawData = response.data.results;
+    const mediaList: Media[] = rawData.map((item: Media) => Object.assign(new Media(), item));
+
+    return mediaList;
+  })
+  .catch(error => {
+    console.error("Error fetching movies:", error);
+    throw error;
+  });
+};
+
+
+
+
 export const fetchImdbMedia = (id: string): Promise<ImdbMedia> => {
     // const URL = "http://localhost:8080/search/multi";
     const URL = Endpoints.DETAILED_MOVIE;
@@ -122,3 +175,25 @@ return axios
     throw error;
   });
 };
+
+
+export const fetchTrendingMedia = (): Promise<Media[]> => {
+  const URL = Endpoints.TRENDING_ALL;
+  return fetchMediaFromUrl(URL);
+};
+
+const fetchMediaFromUrl = (url: string): Promise<Media[]> => {
+  return axios
+  .get(url, {
+  })
+  .then(response => {
+    const rawData = response.data.results;
+    const mediaList: Media[] = rawData.map((item: Media) => Object.assign(new Media(), item));
+
+    return mediaList;
+  })
+  .catch(error => {
+    console.error("Error fetching movies:", error);
+    throw error;
+  });
+}
