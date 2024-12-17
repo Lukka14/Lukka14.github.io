@@ -13,7 +13,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ width: "80%", margin: "0 auto", marginTop:'10px' }}> {/* Centering the carousel */}
+    <div style={{ width: "95%", margin: "0 auto", marginTop:'10px' }}> {/* Centering the carousel */}
       <Carousel
         dynamicHeight={true}
         centerMode={true}
