@@ -138,9 +138,6 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
             <Button sx={{ color: 'white' }} onClick={() => navigate('/tv-shows')}>
               TV Shows
             </Button>
-            <Button sx={{ color: 'white' }} onClick={() => navigate('/about')}>
-              About
-            </Button>
             <Button sx={{ color: 'white' }} onClick={() => navigate('/help')}>
               Help
             </Button>
@@ -176,9 +173,6 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
           </Button>
           <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/tv-shows')}>
             TV Shows
-          </Button>
-          <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/about')}>
-            About
           </Button>
           <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/help')}>
             Help

@@ -2,12 +2,12 @@
 import MainPage from "./components/main/MainPage";
 import WatchPage from "./components/watch/WatchPage";
 import AccountPage from "./components/account/AccountPage";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import MoviePage from "./components/movie/MoviePage";
 import TvSeriesPage from "./components/movie/TvSeriesPage";
 import MultiSearchPage from "./components/movie/MultiSearchPage";
-
+import HelpPage from "./components/about/HelpPage";
 
 const App: React.FC = () => {
   return (
@@ -18,6 +18,7 @@ const App: React.FC = () => {
         <Route path="/movies" element={<MoviePage />} />
         <Route path="/tv-shows" element={<TvSeriesPage />} />
         <Route path="/multiSearch" element={<MultiSearchPage />} />
+        <Route path="/help" element={<HelpPage />} />
         <Route path="/profile/:username" element={<AccountPage />} />
       </Routes>
     </Router>

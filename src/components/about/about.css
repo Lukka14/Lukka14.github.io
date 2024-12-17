@@ -1,0 +1,16 @@
+@media (max-width: 600px) {
+    .table th, .table td {
+      font-size: 12px;
+      padding: 8px;
+    }
+  
+    input {
+      width: 90%;
+    }
+  
+    .btn {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+  }
+  

@@ -182,6 +182,11 @@ export const fetchTrendingMedia = (): Promise<Media[]> => {
   return fetchMediaFromUrl(URL);
 };
 
+export const fetchTopRatedMovies = (): Promise<Media[]> => {
+  const URL = Endpoints.TOP_RATED_MOVIES;
+  return fetchMediaFromUrl(URL);
+};
+
 const fetchMediaFromUrl = (url: string): Promise<Media[]> => {
   return axios
   .get(url, {
