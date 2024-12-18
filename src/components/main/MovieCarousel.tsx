@@ -22,7 +22,6 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
         autoFocus={true}
         centerSlidePercentage={80}
         autoPlay={true}
-        stopOnHover={true}
       >
         {mediaList.map((media, index) => (
           <div
