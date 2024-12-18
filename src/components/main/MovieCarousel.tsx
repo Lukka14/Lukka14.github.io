@@ -21,7 +21,8 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
         infiniteLoop={true}
         autoFocus={true}
         centerSlidePercentage={80}
-        showArrows={true}
+        autoPlay={true}
+        stopOnHover={true}
       >
         {mediaList.map((media, index) => (
           <div
