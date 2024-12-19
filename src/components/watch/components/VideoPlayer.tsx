@@ -5,16 +5,23 @@ import { VideoPlayerProps } from "../../../models/VidePlayerProps";
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   id,
+  playerUrl,
   mediaType,
   season,
   episode,
   posterURL
 }) => {
   const [isPlaying, setIsPlaying] = useState(false); // State to toggle between poster and iframe
-  const mediaURL = getMediaURL({ id, mediaType, season, episode,posterURL });
+  // const mediaURL = getMediaURL({ id, playerUrl, mediaType, season, episode,posterURL });
+  playerUrl = playerUrl
+      .replace("{id}", id)
+      .replace("{season}", season.toString())
+      .replace("{episode}", episode.toString());
+
+  const mediaURL = playerUrl;
 
   const handlePlay = () => {
-    setIsPlaying(true); // Show iframe when user clicks play
+    setIsPlaying(true);
   };
 
   return (
@@ -73,14 +80,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   );
 };
 
-// Helper function to generate the media URL
 const getMediaURL = (props: VideoPlayerProps): string => {
   const id = props.id;
   const autoPlay = true;
 
   switch (props.mediaType) {
     case MediaType.MOVIE:
-      return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=${autoPlay}`;
+      // return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=${autoPlay}`;
+      return `https://vidlink.pro/movie/${id}?autoplay=${autoPlay}&icons=vid&`;
     case MediaType.TV_SERIES:
       return `https://vidsrc.cc/v2/embed/tv/${id}/${props.season}/${props.episode}?autoPlay=${autoPlay}`;
     default:

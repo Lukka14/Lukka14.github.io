@@ -1,5 +1,5 @@
 import React from "react";
-import { Media } from "../../models/Movie";
+import { Media, MediaType } from "../../models/Movie";
 import { useNavigate } from "react-router-dom";
 
 import { Carousel } from "react-responsive-carousel";
@@ -26,7 +26,16 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
         {mediaList.map((media, index) => (
           <div
             className="slide"
-            onClick={() => navigate(`/watch?id=${media.id}`)}
+            onClick={ () => {
+
+              let url = `/watch?id=${media.id}`;
+
+              if(media.mediaType === MediaType.TV_SERIES){
+                url += `&s=1&e=1`;
+              }
+
+              navigate(url)
+            }}
             style={{ cursor: "pointer" }}
             key={index}
           >

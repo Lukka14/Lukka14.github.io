@@ -2,8 +2,9 @@ import { MediaType } from "./Movie";
 
 export interface VideoPlayerProps {
   id: string;
+  playerUrl: string;
   mediaType: MediaType;
-  season: number | null;
-  episode: number | null;
+  season: number;
+  episode: number;
   posterURL : string;
 }

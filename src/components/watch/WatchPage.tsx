@@ -9,6 +9,7 @@ import {
 } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import MediaInfo from "./components/MediaInfo";
+import StreamingServerSelector from "./components/StreamingServerSelector";
 
 export class SeasonEpisode {
   season: number = 1;
@@ -79,6 +80,22 @@ const WatchPage: React.FC = () => {
     new SeasonEpisode(1, episode!)
   );
 
+  const [playerUrl, setPlayerUrl] = useState<string>("");
+
+  const selectServer = (server: Server) => {
+
+    let url;
+
+    if(mediaType === MediaType.MOVIE) {
+        url = server.movie_url;
+    }else{
+      url = server.series_url;
+    }
+
+    setPlayerUrl(url);
+  }
+    
+
   return (
     <>
       <Background url={bgUrl} />
@@ -86,11 +103,13 @@ const WatchPage: React.FC = () => {
       {/* <MovieList mediaList={medias} /> */}
       <VideoPlayer
         id={id}
+        playerUrl = {playerUrl}
         mediaType={mediaType}
         season={seasonEpisode?.season ?? null} // Keep the actual value
         episode={seasonEpisode?.episode ?? null}
         posterURL={state.bgUrl}
       />
+      <StreamingServerSelector selectServer={selectServer}></StreamingServerSelector>
       <MediaInfo media={media!} setSeasonEpisode={setSeasonEpisode}></MediaInfo>
     </>
   );

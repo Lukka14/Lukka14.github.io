@@ -5,8 +5,21 @@
     /* background-position: center; */
     background-size: cover;
     background-repeat: no-repeat;
-    /* z-index: -1;  */
+    z-index: -1; 
     filter: brightness(40%);
     background-color: rgba(0, 0, 0, 1); 
   }
+
+.streaming-server-btn {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.server-bg {
+  background-color: #1a1a1a;
+  color: white;
+  border: 1px solid #1a1a1a;
+  border-radius: 5px;
+  margin: 20px 0 20px 0;  /* top and bottom 20px */
+}
+
   

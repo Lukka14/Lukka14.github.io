@@ -53,7 +53,7 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container">
       <div
         className="card shadow-lg"
         style={{
@@ -79,7 +79,7 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
               />
             </div>
             <div className="col-md-8">
-            <h1 style={{ paddingTop: '5px' }}>{media.title}</h1>
+            <h1 style={{ paddingTop: '0px' }}>{media.title}</h1>
             <p className="text-muted">
                 ({media.originalLanguage?.toUpperCase()})
               </p>
