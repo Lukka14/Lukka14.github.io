@@ -40,12 +40,12 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
             key={index}
           >
             <img alt="sample_file" src={media.backDropUrl} />
-            <p className="legend" style={{ backgroundColor: "rgba(0,0,0,0.1)", fontSize: "1.5vw" }}>
+            <div className="legend" style={{ backgroundColor: "rgba(0,0,0,0.1)", fontSize: "1.5vw" }}>
                 <div>{media.title}</div>
                 <div>⭐ {media.rating ? media.rating.toFixed(1) : "N/A"}</div>
                 <div>{media.genreList?.join(' | ')}</div>
                 <div>{media.releaseDate?.split('-')[0]}</div>
-            </p>
+            </div>
           
           </div>
         ))}

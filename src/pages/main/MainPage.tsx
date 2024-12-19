@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { Media } from "../../models/Movie";
-import {
-  fetchMedia,
-  fetchTrendingMedia
-} from "../../services/MediaService";
+import { fetchMedia, fetchTrendingMedia } from "../../services/MediaService";
 import { MovieList } from "../shared/MovieList";
 import CenteredH1 from "../shared/CenteredText";
-import { Background } from "../main/Background";
+import { Background } from "./Background";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
-import MovieCarousel from "./MovieCarousel";
+import Carousel from "./MovieCarousel";
 
 const MainPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
@@ -35,7 +32,7 @@ const MainPage: React.FC = () => {
       />
 
       <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
-      <MovieCarousel mediaList={mediaList} />
+      <Carousel mediaList={mediaList} />
       <CenteredH1>Watch Latest Movies Here!</CenteredH1>
       <MovieList mediaList={mediaList} />
       {/* <WIP></WIP> */}

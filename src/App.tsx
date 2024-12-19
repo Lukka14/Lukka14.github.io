@@ -1,13 +1,13 @@
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainPage from "./components/main/MainPage";
-import WatchPage from "./components/watch/WatchPage";
-import AccountPage from "./components/account/AccountPage";
+import MainPage from "./pages/main/MainPage";
+import WatchPage from "./pages/watch/WatchPage";
+import AccountPage from "./pages/account/AccountPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
-import MoviePage from "./components/movie/MoviePage";
-import TvSeriesPage from "./components/movie/TvSeriesPage";
-import MultiSearchPage from "./components/movie/MultiSearchPage";
-import HelpPage from "./components/about/HelpPage";
+import MoviePage from "./pages/movie/MoviePage";
+import TvSeriesPage from "./pages/movie/TvSeriesPage";
+import MultiSearchPage from "./pages/movie/MultiSearchPage";
+import HelpPage from "./pages/about/HelpPage";
 
 const App: React.FC = () => {
   return (

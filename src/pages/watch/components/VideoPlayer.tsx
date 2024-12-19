@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MDBContainer } from "mdb-react-ui-kit";
-import { MediaType } from "../../../models/Movie";
 import { VideoPlayerProps } from "../../../models/VidePlayerProps";
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -12,7 +11,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   posterURL
 }) => {
   const [isPlaying, setIsPlaying] = useState(false); // State to toggle between poster and iframe
-  // const mediaURL = getMediaURL({ id, playerUrl, mediaType, season, episode,posterURL });
+
   playerUrl = playerUrl
       .replace("{id}", id)
       .replace("{season}", season.toString())
@@ -78,21 +77,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       </MDBContainer>
     </>
   );
-};
-
-const getMediaURL = (props: VideoPlayerProps): string => {
-  const id = props.id;
-  const autoPlay = true;
-
-  switch (props.mediaType) {
-    case MediaType.MOVIE:
-      // return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=${autoPlay}`;
-      return `https://vidlink.pro/movie/${id}?autoplay=${autoPlay}&icons=vid&`;
-    case MediaType.TV_SERIES:
-      return `https://vidsrc.cc/v2/embed/tv/${id}/${props.season}/${props.episode}?autoPlay=${autoPlay}`;
-    default:
-      return "";
-  }
 };
 
 export default VideoPlayer;

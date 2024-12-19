@@ -44,7 +44,7 @@ const StreamingServerSelector: React.FC<StreamingServerSelectorProps> = ({
     <MDBContainer breakpoint="xl">
       <div className="server-bg">
         <Row className="d-flex justify-content-center mx-0 my-4">
-          <CenteredH1>Select Different Servers:</CenteredH1>
+          <CenteredH1>Available Servers:</CenteredH1>
 
           {servers.map((server, index) => (
             <Col key={index} xs="auto" className="mb-3">
