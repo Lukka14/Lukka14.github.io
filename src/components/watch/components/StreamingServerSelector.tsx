@@ -4,6 +4,7 @@ import { FaPlay } from "react-icons/fa"; // Play icon
 import CenteredH1 from "../../shared/CenteredText";
 import { MDBContainer } from "mdb-react-ui-kit";
 import "../css/watch.css";
+import { Server } from "../models/Server";
 
 interface StreamingServerSelectorProps {
   selectServer(server: Server): void;

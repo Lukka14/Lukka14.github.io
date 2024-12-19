@@ -10,6 +10,7 @@ import {
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import MediaInfo from "./components/MediaInfo";
 import StreamingServerSelector from "./components/StreamingServerSelector";
+import { Server } from "./models/Server";
 
 export class SeasonEpisode {
   season: number = 1;
