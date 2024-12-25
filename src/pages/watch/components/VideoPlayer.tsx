@@ -13,9 +13,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [isPlaying, setIsPlaying] = useState(false); // State to toggle between poster and iframe
 
   playerUrl = playerUrl
-      .replace("{id}", id)
-      .replace("{season}", season.toString())
-      .replace("{episode}", episode.toString());
+    .replace("{id}", id)
+    .replace("{season}", season.toString())
+    .replace("{episode}", episode.toString());
 
   const mediaURL = playerUrl;
 
@@ -67,6 +67,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           ) : (
             <iframe
+              // testing, if it breaks the video player, remove the sandbox attribute
+              sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
+
               src={mediaURL}
               title="Vimeo video"
               allowFullScreen
