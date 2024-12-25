@@ -24,9 +24,8 @@ const WithBG = ({ text }: { text: string }): React.ReactElement => {
 
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
   const { title, posterUrl, rating, releaseDate, originalLanguage } = mediaInfo;
-
   return (
-    <a href={href} className="text-decoration-none">
+    <a href={href} className="text-decoration-none" style={{fontFamily: "Roboto" }}>
       <div
         className="card h-100 border-0 shadow-lg position-relative media-card"
         style={{ cursor: "pointer" }}

@@ -23,7 +23,7 @@ export class SeasonEpisode {
 const WatchPage: React.FC = () => {
   const queryParams = new URLSearchParams(window.location.hash.split("?")[1]); // Use `window.location.hash` for HashRouter
   const id = queryParams.get("id")!;
-  const season = Number(queryParams.get("s"));
+  const season = queryParams.get("s");
   const episode = Number(queryParams.get("e"));
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
 

@@ -57,7 +57,7 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   };
 
   return (
-    <div className="container">
+    <div className="container" style={{ fontFamily: "Roboto" }}>
       <div
         className="card shadow-lg"
         style={{
