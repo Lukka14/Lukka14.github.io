@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Background } from "./components/Background";
 import VideoPlayer from "./components/VideoPlayer";
-import { MediaType, ImdbMedia, TvSeries, Media } from "../../models/Movie";
-import {
-  fetchImdbMedia,
-  fetchMedia,
-  fetchTvSeries,
-} from "../../services/MediaService";
+import { MediaType, ImdbMedia, TvSeries } from "../../models/Movie";
+import { fetchImdbMedia, fetchTvSeries } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import MediaInfo from "./components/MediaInfo";
 import StreamingServerSelector from "./components/StreamingServerSelector";
 import { Server } from "./models/Server";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export class SeasonEpisode {
   season: number = 1;
@@ -25,7 +23,7 @@ export class SeasonEpisode {
 const WatchPage: React.FC = () => {
   const queryParams = new URLSearchParams(window.location.hash.split("?")[1]); // Use `window.location.hash` for HashRouter
   const id = queryParams.get("id")!;
-  const season = queryParams.get("s");
+  const season = Number(queryParams.get("s"));
   const episode = Number(queryParams.get("e"));
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
 
@@ -69,12 +67,17 @@ const WatchPage: React.FC = () => {
 
   const { media, bgUrl } = state;
 
-  const [medias, setMedias] = useState<Media[]>([]);
+  const navigate = useNavigate();
 
-  const handleSearch = (query: string) => {
-    fetchMedia(query)
-      .then(setMedias)
-      .catch((err) => console.error(err));
+  const updateSeasonEpisode = (seasonEpisode: SeasonEpisode) => {
+    const seasonAndEpisodeString = `&s=${seasonEpisode.season}&e=${seasonEpisode.episode}`;
+    const query = `/watch?id=${media?.id}${seasonAndEpisodeString}`;
+    setSeasonEpisode(seasonEpisode);
+    navigate(query);
+
+    const cookieName = String(media?.id);
+    Cookies.set(cookieName, seasonAndEpisodeString, { expires: 30 }); // Expires in 30 days
+    // alert("Cookie saved!");
   };
 
   const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(
@@ -84,34 +87,37 @@ const WatchPage: React.FC = () => {
   const [playerUrl, setPlayerUrl] = useState<string>("");
 
   const selectServer = (server: Server) => {
-
     let url;
 
-    if(mediaType === MediaType.MOVIE) {
-        url = server.movie_url;
-    }else{
+    if (mediaType === MediaType.MOVIE) {
+      url = server.movie_url;
+    } else {
       url = server.series_url;
     }
 
     setPlayerUrl(url);
-  }
-    
+  };
 
   return (
     <>
       <Background url={bgUrl} />
-      <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
+      <PrimarySearchAppBar onClick={() => {}} displaySearch={false} />
       {/* <MovieList mediaList={medias} /> */}
       <VideoPlayer
         id={id}
-        playerUrl = {playerUrl}
+        playerUrl={playerUrl}
         mediaType={mediaType}
         season={seasonEpisode?.season ?? null} // Keep the actual value
         episode={seasonEpisode?.episode ?? null}
         posterURL={state.bgUrl}
       />
-      <StreamingServerSelector selectServer={selectServer}></StreamingServerSelector>
-      <MediaInfo media={media!} setSeasonEpisode={setSeasonEpisode}></MediaInfo>
+      <StreamingServerSelector
+        selectServer={selectServer}
+      ></StreamingServerSelector>
+      <MediaInfo
+        media={media!}
+        setSeasonEpisode={updateSeasonEpisode}
+      ></MediaInfo>
     </>
   );
 };

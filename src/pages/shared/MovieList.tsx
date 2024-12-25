@@ -1,12 +1,20 @@
 import { Media, MediaListProps, MediaType } from "../../models/Movie";
 import { RoutePaths } from "../../config/Config";
 import { MediaCard } from "../main/MediaCard";
+import Cookies from "js-cookie";
 
 export const MovieList = ({ mediaList }: MediaListProps) => {
   const generateHref = (media: Media): string => {
     let seriesSuffix = "";
     if (media.mediaType === MediaType.TV_SERIES) {
-      seriesSuffix = `&s=${1}&e=${1}`;
+
+      let cookieValue = Cookies.get(String(media?.id));
+      if (cookieValue) {
+        seriesSuffix = cookieValue;
+      } else {
+        seriesSuffix = `&s=${1}&e=${1}`;
+      }
+      
     }
 
     // For hash routing, ensure the correct URL structure

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ImdbMedia, TvSeries, MediaType, Season } from "../../../models/Movie";
 import { SeasonEpisode } from "../WatchPage";
-import { Padding } from "@mui/icons-material";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -12,18 +11,23 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null);
 
+  const queryParams = new URLSearchParams(window.location.hash.split("?")[1]); // Use `window.location.hash` for HashRouter
+  const seasonFromQuery = Number(queryParams.get("s"));
+  const episodeFromQuery = Number(queryParams.get("e"));
+
   useEffect(() => {
     if (media && media.mediaType === MediaType.TV_SERIES) {
       // Set default selected season to season 1 (seasonNumber === 1)
-      const firstSeason = (media as TvSeries).seasonList?.find(
-        (season) => season.seasonNumber === 1
+      const tvSeason = (media as TvSeries).seasonList?.find(
+        (season) => season.seasonNumber === seasonFromQuery
       );
-      if (firstSeason) {
-        setSelectedSeason(firstSeason);
+      if (tvSeason) {
+        setSelectedSeason(tvSeason);
         // Set the first episode of season 1 as default
         setSelectedEpisode(1);
-        if (firstSeason.seasonNumber !== undefined) {
-          setSeasonEpisode(new SeasonEpisode(firstSeason.seasonNumber, 1));
+        if (tvSeason.seasonNumber !== undefined) {
+          setSeasonEpisode(new SeasonEpisode(tvSeason.seasonNumber, episodeFromQuery || 1));
+          setSelectedEpisode(episodeFromQuery);
         }
       }
     }
