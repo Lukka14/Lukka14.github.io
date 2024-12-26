@@ -36,8 +36,12 @@ const MainPage: React.FC = () => {
 
       <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
       <Carousel mediaList={mediaList} />
-      <CenteredH1>Recently watched:</CenteredH1>
-      <MovieList mediaList={recentylyWatched} />
+      {recentylyWatched.length > 0 && (
+        <>
+          <CenteredH1>Recently watched:</CenteredH1>
+          <MovieList mediaList={recentylyWatched} />
+        </>
+      )}
       <CenteredH1>Watch Latest Movies Here!</CenteredH1>
       <MovieList mediaList={mediaList} />
       {/* <WIP></WIP> */}
