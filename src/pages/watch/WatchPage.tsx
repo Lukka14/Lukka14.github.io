@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Background } from "./components/Background";
 import VideoPlayer from "./components/VideoPlayer";
-import { MediaType, ImdbMedia, TvSeries } from "../../models/Movie";
+import { MediaType, ImdbMedia, TvSeries, Media } from "../../models/Movie";
 import { fetchImdbMedia, fetchTvSeries } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import MediaInfo from "./components/MediaInfo";
@@ -9,6 +9,7 @@ import StreamingServerSelector from "./components/StreamingServerSelector";
 import { Server } from "./models/Server";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { saveRecentlyWatched } from "../shared/RecentlyWatchService";
 
 export class SeasonEpisode {
   season: number = 1;
@@ -97,6 +98,10 @@ const WatchPage: React.FC = () => {
 
     setPlayerUrl(url);
   };
+
+  if (media != null && (mediaType === MediaType.TV_SERIES || mediaType === MediaType.MOVIE)) {
+    saveRecentlyWatched(media!);
+  }
 
   return (
     <>

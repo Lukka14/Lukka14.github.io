@@ -50,7 +50,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
           <h5 className="card-title text-center text-white">
             {title || "Untitled"}
           </h5>
-          <p className="card-text text-white-50">⭐ {rating || "N/A"}</p>
+          <p className="card-text text-white-50">⭐ {rating ? rating.toFixed(1) : "N/A"}</p>
           <p className="card-text text-white-50">
             {releaseDate ? new Date(releaseDate).getFullYear() : "N/A"}
           </p>
