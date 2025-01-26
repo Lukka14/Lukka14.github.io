@@ -79,7 +79,8 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
           {/* Logo */}
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
             <img
-              src="https://gcdnb.pbrd.co/images/ju7aKvMSnS9w.png?o=1"
+              // src="https://gcdnb.pbrd.co/images/ju7aKvMSnS9w.png?o=1"
+              src="https://gcdnb.pbrd.co/images/IMsjmeiKbRX1.png?o=1"
               alt="Movie Plus Logo"
               style={{ height: '60px', cursor: 'pointer' }}
               onClick={() => navigate('/')}
