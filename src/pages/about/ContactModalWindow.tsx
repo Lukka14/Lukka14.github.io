@@ -18,7 +18,7 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
               className="form-control"
               id="exampleInputEmail1"
               aria-describedby="emailHelp"
-              placeholder="Enter email"
+              placeholder="mariampsu9@gmail.com"
             />
             <small id="emailHelp" className="form-text text-muted">
               We'll never share your email with anyone else.
