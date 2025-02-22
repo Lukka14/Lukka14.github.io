@@ -176,9 +176,8 @@ return axios
   });
 };
 
-
-export const fetchTrendingMedia = (): Promise<Media[]> => {
-  const URL = Endpoints.TRENDING_ALL;
+export const fetchTrendingMedia = (page: number = 1): Promise<Media[]> => {
+  const URL = `${Endpoints.TRENDING_ALL}?page=${page}`;
   return fetchMediaFromUrl(URL);
 };
 
