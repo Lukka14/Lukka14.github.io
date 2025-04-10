@@ -34,10 +34,10 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
                 let e = '1';
 
                 document.cookie.split(';').forEach(cookie => {
-                  const trimmed = cookie.trim();
-                  if (trimmed.includes(`${media.id}`)) {
-                    const sMatch = trimmed.match(/[?&]s=(\d+)/);
-                    const eMatch = trimmed.match(/[?&]e=(\d+)/);
+                  const [name, value] = cookie.trim().split('=');
+                  if (name === `${media.id}` && value) {
+                    const sMatch = value.match(/[?&]s=(\d+)/);
+                    const eMatch = value.match(/[?&]e=(\d+)/);
 
                     if (sMatch?.[1]) s = sMatch[1];
                     if (eMatch?.[1]) e = eMatch[1];
