@@ -1,25 +1,50 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formSchema } from "../../schemas";
+import { z } from "zod";
+
+type FormData = z.infer<typeof formSchema>;
 
 interface ModalProps {
   onClose: () => void;
 }
 
 const Modal: React.FC<ModalProps> = ({ onClose }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      notifyNewReleases: false,
+      notificationFrequency: "weekly"
+    }
+  });
+
+  const onSubmit = async (data: FormData) => {
+    // TODO
+  };
+
   return (
     <div style={modalOverlayStyles}>
       <div style={modalStyles}>
         <h3 className="text-center mb-4">Notify Me About Movies</h3>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
 
-          <div className="form-group mb-3">
-            <label htmlFor="exampleInputEmail1">Email address</label>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">Email address</label>
             <input
               type="email"
-              className="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
+              className={`form-control ${errors.email ? "is-invalid" : ""}`}
+              id="email"
               placeholder="Enter your email"
+              {...register("email")}
             />
+            {errors.email && (
+              <div className="invalid-feedback">{errors.email.message}</div>
+            )}
             <small id="emailHelp" className="form-text text-muted">
               We'll never share your email with anyone else.
             </small>
@@ -31,10 +56,14 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
             </label>
             <input
               type="text"
-              className="form-control"
+              className={`form-control ${errors.movieName ? "is-invalid" : ""}`}
               id="movieName"
               placeholder="Enter the movie name"
+              {...register("movieName")}
             />
+            {errors.movieName && (
+              <div className="invalid-feedback">{errors.movieName.message}</div>
+            )}
           </div>
 
           <div className="mb-3">
@@ -42,11 +71,11 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
             <div>
               <div className="form-check">
                 <input
-                  className="form-check-input"
+                  className={`form-check-input ${errors.genre ? "is-invalid" : ""}`}
                   type="radio"
-                  name="genre"
                   id="genreAction"
                   value="action"
+                  {...register("genre")}
                 />
                 <label className="form-check-label" htmlFor="genreAction">
                   Action
@@ -54,11 +83,11 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
               </div>
               <div className="form-check">
                 <input
-                  className="form-check-input"
+                  className={`form-check-input ${errors.genre ? "is-invalid" : ""}`}
                   type="radio"
-                  name="genre"
                   id="genreComedy"
                   value="comedy"
+                  {...register("genre")}
                 />
                 <label className="form-check-label" htmlFor="genreComedy">
                   Comedy
@@ -66,16 +95,19 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
               </div>
               <div className="form-check">
                 <input
-                  className="form-check-input"
+                  className={`form-check-input ${errors.genre ? "is-invalid" : ""}`}
                   type="radio"
-                  name="genre"
                   id="genreDrama"
                   value="drama"
+                  {...register("genre")}
                 />
                 <label className="form-check-label" htmlFor="genreDrama">
                   Drama
                 </label>
               </div>
+              {errors.genre && (
+                <div className="invalid-feedback d-block">{errors.genre.message}</div>
+              )}
             </div>
           </div>
 
@@ -85,6 +117,7 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
                 className="form-check-input"
                 type="checkbox"
                 id="notifyNewReleases"
+                {...register("notifyNewReleases")}
               />
               <label className="form-check-label" htmlFor="notifyNewReleases">
                 Notify me about new releases
@@ -96,11 +129,18 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
             <label htmlFor="notificationFrequency" className="form-label">
               Notification Frequency
             </label>
-            <select className="form-select" id="notificationFrequency">
+            <select
+              className={`form-select ${errors.notificationFrequency ? "is-invalid" : ""}`}
+              id="notificationFrequency"
+              {...register("notificationFrequency")}
+            >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>
             </select>
+            {errors.notificationFrequency && (
+              <div className="invalid-feedback">{errors.notificationFrequency.message}</div>
+            )}
           </div>
 
           <div className="mb-3">
@@ -108,16 +148,24 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
               Additional Notes
             </label>
             <textarea
-              className="form-control"
+              className={`form-control ${errors.additionalNotes ? "is-invalid" : ""}`}
               id="additionalNotes"
               rows={3}
               placeholder="Enter any additional preferences or notes"
+              {...register("additionalNotes")}
             ></textarea>
+            {errors.additionalNotes && (
+              <div className="invalid-feedback">{errors.additionalNotes.message}</div>
+            )}
           </div>
 
           <div className="text-center">
-            <button type="submit" className="btn btn-primary w-100">
-              Save
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Save"}
             </button>
           </div>
         </form>
