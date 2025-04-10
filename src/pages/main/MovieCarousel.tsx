@@ -27,14 +27,27 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
           <div
             className="slide"
             onClick={ () => {
-
               let url = `/watch?id=${media.id}`;
 
-              if(media.mediaType === MediaType.TV_SERIES){
-                url += `&s=1&e=1`;
+              if (media.mediaType === MediaType.TV_SERIES) {
+                let s = '1';
+                let e = '1';
+
+                document.cookie.split(';').forEach(cookie => {
+                  const trimmed = cookie.trim();
+                  if (trimmed.includes(`${media.id}`)) {
+                    const sMatch = trimmed.match(/[?&]s=(\d+)/);
+                    const eMatch = trimmed.match(/[?&]e=(\d+)/);
+
+                    if (sMatch?.[1]) s = sMatch[1];
+                    if (eMatch?.[1]) e = eMatch[1];
+                  }
+                });
+
+                url += `&s=${s}&e=${e}`;
               }
 
-              navigate(url)
+              navigate(url);
             }}
             style={{ cursor: "pointer" }}
             key={index}
