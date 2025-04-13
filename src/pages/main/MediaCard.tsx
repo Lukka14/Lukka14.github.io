@@ -9,7 +9,7 @@ interface MediaCardProps {
 
 const WithBG = ({ text }: { text: string }): React.ReactElement => {
   return (
-    <div className="card-text-with-bg">
+    <div className="text-white-50">
       {text}
     </div>
   );
@@ -43,7 +43,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
             ⭐ {rating ? rating.toFixed(1) : "N/A"}
           </p>
           <p className="card-year text-white-50">
-            {releaseYear ? new Date(releaseYear).getFullYear() : "N/A"}
+            {releaseYear ? releaseYear : "N/A"}
           </p>
           {mediaInfo?.genreList!.length > 0 && (
             <WithBG text={mediaInfo.genreList!.join(" | ")} />
@@ -54,9 +54,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
         <div className="card-footer text-white d-flex justify-content-between align-items-center">
           <div className="rating-badge">
             <span className="imdb-star">⭐</span> {rating ? rating.toFixed(1) : "N/A"}
-          </div>
-          <div className="title-badge text-truncate mx-2">
-            {title || "Untitled"}
           </div>
           <div className="year-badge">
             {releaseYear ? releaseYear : "N/A"}
