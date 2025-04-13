@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Cookies from "js-cookie";
 
 interface MovieCarouselProps {
   mediaList: Media[];
@@ -31,7 +32,15 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
               let url = `/watch?id=${media.id}`;
 
               if(media.mediaType === MediaType.TV_SERIES){
-                url += `&s=1&e=1`;
+                if (media.mediaType === MediaType.TV_SERIES) {
+                  let cookieValue = Cookies.get(String(media?.id));
+                  if (cookieValue) {
+                    url += cookieValue;
+                  }else{
+                    url += `&s=${1}&e=${1}`;
+                  }
+                }
+
               }
 
               navigate(url)
@@ -44,7 +53,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
                 <div>{media.title}</div>
                 <div>⭐ {media.rating ? media.rating.toFixed(1) : "N/A"}</div>
                 <div>{media.genreList?.join(' | ')}</div>
-                <div>{media.releaseDate?.split('-')[0]}</div>
+                <div>{media.releaseYear?.split('-')[0]}</div>
             </div>
           
           </div>

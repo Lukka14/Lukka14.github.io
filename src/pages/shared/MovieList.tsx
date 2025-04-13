@@ -7,7 +7,6 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
   const generateHref = (media: Media): string => {
     let seriesSuffix = "";
     if (media.mediaType === MediaType.TV_SERIES) {
-
       let cookieValue = Cookies.get(String(media?.id));
       if (cookieValue) {
         seriesSuffix = cookieValue;

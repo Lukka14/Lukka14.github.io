@@ -1,4 +1,4 @@
-import { ImdbMedia, Media, TvSeries } from "../models/Movie";
+import { ImdbMedia, Media, Movie, TvSeries } from "../models/Movie";
 import { Endpoints } from "../config/Config";
 import axios from "axios";
 
@@ -83,31 +83,28 @@ return axios
 
 
 
-export const fetchImdbMedia = (id: string): Promise<ImdbMedia> => {
+export const fetchMovie = async (id: string): Promise<Movie> => {
     // const URL = "http://localhost:8080/search/multi";
     const URL = Endpoints.DETAILED_MOVIE;
 
   if (id.length === 0) {
-    return Promise.resolve({} as ImdbMedia);
+    return Promise.resolve({} as Movie);
   }
 
-  return axios
-    .get(URL, {
-      params: {
-        id: id,
-      },
-    })
-    .then(response => {
-      const rawData = response.data;
-      const imdbMedia: ImdbMedia = Object.assign(new ImdbMedia(), rawData);
-
-
-      return imdbMedia;
-    })
-    .catch(error => {
-      console.error("Error fetching movies:", error);
-      throw error;
-    });
+  try {
+    const response = await axios
+      .get(URL, {
+        params: {
+          id: id,
+        },
+      });
+    const rawData = response.data;
+    const movie: Movie = Object.assign(new Movie(), rawData);
+    return movie;
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
 };
 
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Background } from "./components/Background";
 import VideoPlayer from "./components/VideoPlayer";
 import { MediaType, ImdbMedia, TvSeries, Media } from "../../models/Movie";
-import { fetchImdbMedia, fetchTvSeries } from "../../services/MediaService";
+import { fetchMovie, fetchTvSeries } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import MediaInfo from "./components/MediaInfo";
 import StreamingServerSelector from "./components/StreamingServerSelector";
@@ -28,11 +28,6 @@ const WatchPage: React.FC = () => {
   const episode = Number(queryParams.get("e"));
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
 
-  // console.log("id:", id);
-  // console.log("season:", season);
-  // console.log("episode:", episode);
-  // console.log("mediaType:", mediaType);
-
   const [state, setState] = useState<{
     media: ImdbMedia | TvSeries | null;
     bgUrl: string;
@@ -48,7 +43,7 @@ const WatchPage: React.FC = () => {
         let data: ImdbMedia | TvSeries | null = null;
 
         if (mediaType === MediaType.MOVIE) {
-          data = await fetchImdbMedia(id);
+          data = await fetchMovie(id);
         } else if (mediaType === MediaType.TV_SERIES) {
           data = await fetchTvSeries(id);
         }

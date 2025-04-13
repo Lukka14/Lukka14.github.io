@@ -10,12 +10,13 @@ export class Media {
   posterUrl?: string;
   backDropUrl!: string;
   overview?: string;
-  releaseDate?: string;
+  releaseYear?: string;
   mediaType?: MediaType;
   rating?: number;
   genreList?: string[];
   originalLanguage?: string;
-
+  similar?: Media[];
+  
   constructor(data?: Partial<Media>) {
     if (data) {
       Object.assign(this, data);
@@ -66,5 +67,15 @@ export class TvSeries extends ImdbMedia {
     if (data) {
       this.seasonList = data.seasonList?.map(season => new Season(season)) || [];
     }
+  }
+}
+
+export class Movie extends ImdbMedia {
+
+  runtime?: number;
+  budget?: number;
+
+  constructor(data?: Partial<Movie>) {
+    super(data);
   }
 }

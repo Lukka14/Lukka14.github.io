@@ -1,8 +1,9 @@
 import { Media } from "../../models/Movie";
 
+const maxHistorySize = 5;
+
 export const saveRecentlyWatched = (newMedia: Media): void => {
 
-  const maxCapacity = 5;
 
   const items: Media[] = getRecentlyWatched();
 
@@ -13,7 +14,7 @@ export const saveRecentlyWatched = (newMedia: Media): void => {
   updatedItems.unshift(newMedia);
 
   // Enforce the maximum capacity
-  if (updatedItems.length > maxCapacity) {
+  if (updatedItems.length > maxHistorySize) {
     updatedItems.pop(); // Remove the last item if the list exceeds the capacity
   }
 
@@ -26,5 +27,5 @@ export const getRecentlyWatched = (): Media[] => {
   const items = JSON.parse(localStorage.getItem("recentlyWatched") || "[]");
   
   // Map items to instances of the Media class
-  return items.map((item: any) => new Media(item));
+  return items.map((item: any) => new Media(item)).slice(0, maxHistorySize);
 };

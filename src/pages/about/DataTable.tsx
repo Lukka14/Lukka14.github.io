@@ -75,7 +75,7 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList }) => {
                 <td>{media.id}</td>
                 <td>{media.title}</td>
                 <td>{media.rating}</td>
-                <td>{media.releaseDate?.split("-")[0]}</td>
+                <td>{media.releaseYear?.split("-")[0]}</td>
                 <td>{media.originalLanguage?.toLocaleUpperCase()}</td>
                 <td>{media.genreList?.join(" | ") || "N/A"}</td>
                 <td>

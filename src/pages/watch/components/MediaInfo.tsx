@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ImdbMedia, TvSeries, MediaType, Season } from "../../../models/Movie";
+import { ImdbMedia, TvSeries, MediaType, Season, Movie } from "../../../models/Movie";
 import { SeasonEpisode } from "../WatchPage";
+import { ClassNames } from "@emotion/react";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -17,7 +18,7 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
 
   useEffect(() => {
     if (media && media.mediaType === MediaType.TV_SERIES) {
-      // Set default selected season to season 1 (seasonNumber === 1)
+
       const tvSeason = (media as TvSeries).seasonList?.find(
         (season) => season.seasonNumber === seasonFromQuery
       );
@@ -56,6 +57,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
     setSeasonEpisode(new SeasonEpisode(seasonNumber, episodeNumber)); // Notify parent component about the selected episode
   };
 
+  const textClass = "text-light fw-bold";
+
   return (
     <div className="container" style={{ fontFamily: "Roboto" }}>
       <div
@@ -83,20 +86,27 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
               />
             </div>
             <div className="col-md-8">
-            <h1 style={{ paddingTop: '0px' }}>{media.title}</h1>
-            <p className="text-muted">
+              <h1 style={{ paddingTop: '0px' }}>{media.title}</h1>
+              <p className="text-muted">
                 ({media.originalLanguage?.toUpperCase()})
               </p>
-              <p>{media.overview}</p>
+
               <p>
-                <strong>Genres:</strong> {genres}
+                <span className={textClass}>Description:</span> <br />
+
+                <p className="text-light">
+                  {media.overview}
+                </p>
               </p>
               <p>
-                <strong>Release Date:</strong> {media.releaseDate}
+                <strong className={textClass}>Genres:</strong> {genres}
+              </p>
+              <p >
+                <strong className={textClass}>Release Year:</strong> {media.releaseYear ? new Date(media.releaseYear).getFullYear() : "N/A"}
               </p>
               {media.imdbId && (
                 <p>
-                  <strong>IMDb: ⭐</strong>{" "}
+                  <strong className={textClass}>IMDb: ⭐</strong>{" "}
                   <a
                     href={`https://www.imdb.com/title/${media.imdbId}`}
                     target="_blank"
@@ -124,9 +134,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
                         season.episodeCount == undefined || season.episodeCount > 0 ? (
                           <button
                             key={season.id}
-                            className={`btn btn-outline-warning ${
-                              selectedSeason?.id === season.id ? "active" : ""
-                            }`}
+                            className={`btn btn-outline-warning ${selectedSeason?.id === season.id ? "active" : ""
+                              }`}
                             onClick={() => handleSeasonClick(season)}
                             style={{
                               border: selectedSeason?.id === season.id ? "2px solid orange" : "2px solid rgba(255, 165, 0, 0.5)", // Orange border when unselected
@@ -149,9 +158,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
                           (_, index) => (
                             <button
                               key={index}
-                              className={`btn btn-outline-info ${
-                                selectedEpisode === index + 1 ? "active" : ""
-                              }`}
+                              className={`btn btn-outline-info ${selectedEpisode === index + 1 ? "active" : ""
+                                }`}
                               onClick={() => selectedSeason?.seasonNumber && handleEpisodeClick(selectedSeason.seasonNumber, index + 1)}
                               style={{
                                 border: selectedEpisode === index + 1 ? "2px solid #17a2b8" : "2px solid rgba(23, 162, 184, 0.5)", // Cyan border when unselected
@@ -166,6 +174,20 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
                       </div>
                     </div>
                   )}
+                </>
+              )}
+              {!isTvSeries && (
+                <>
+                    <p>
+                    <strong className={textClass}>Duration:</strong>{" "}
+                    {(media as Movie).runtime
+                      ? `${Math.floor(((media as Movie).runtime ?? 0) / 60)} ${Math.floor(((media as Movie).runtime ?? 0) / 60) > 1 ? "Hours" : "Hour"} ${((media as Movie).runtime ?? 0) % 60} Minutes`
+                      : "N/A"}
+                    </p>
+                  <p>
+                    <strong className={textClass}>Budget:</strong>{" "}
+                    {(media as Movie).budget && (media as Movie).budget! > 0 ? "$"+(media as Movie).budget : "N/A"}
+                  </p>
                 </>
               )}
             </div>

@@ -23,7 +23,7 @@ const WithBG = ({ text }: { text: string }): React.ReactElement => {
 };
 
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
-  const { title, posterUrl, rating, releaseDate, originalLanguage } = mediaInfo;
+  const { title, posterUrl, rating, releaseYear: releaseDate, originalLanguage } = mediaInfo;
   return (
     <a href={href} className="text-decoration-none" style={{fontFamily: "Roboto" }}>
       <div
@@ -52,7 +52,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
           </h5>
           <p className="card-text text-white-50">⭐ {rating ? rating.toFixed(1) : "N/A"}</p>
           <p className="card-text text-white-50">
-            {releaseDate ? new Date(releaseDate).getFullYear() : "N/A"}
+            {releaseDate ? releaseDate : "N/A"}
           </p>
           <WithBG text={mediaInfo?.genreList?.join(" | ") || "N/A"} />
           <WithBG text={originalLanguage?.toUpperCase() || "N/A"} />

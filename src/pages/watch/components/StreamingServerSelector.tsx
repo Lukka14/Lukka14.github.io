@@ -24,7 +24,7 @@ const StreamingServerSelector: React.FC<StreamingServerSelectorProps> = ({
         return response.json();
       })
       .then((data: Server[]) => setServers(data))
-      .catch((err) => console.log(err.message));
+      .catch((err) => console.error(err.message));
   }, []);
 
   const [selectedServer, setSelectedServer] = useState<number>(0);
