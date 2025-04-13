@@ -10,6 +10,7 @@ import { Server } from "./models/Server";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { saveRecentlyWatched } from "../shared/RecentlyWatchService";
+import MoviesCarousel from "./components/MoviesCarouselV2";
 
 export class SeasonEpisode {
   season: number = 1;
@@ -106,7 +107,7 @@ const WatchPage: React.FC = () => {
   return (
     <>
       <Background url={bgUrl} />
-      <PrimarySearchAppBar onClick={() => {}} displaySearch={false} />
+      <PrimarySearchAppBar onClick={() => { }} displaySearch={false} />
       {/* <MovieList mediaList={medias} /> */}
       <VideoPlayer
         id={id}
@@ -123,6 +124,12 @@ const WatchPage: React.FC = () => {
         media={media!}
         setSeasonEpisode={updateSeasonEpisode}
       ></MediaInfo>
+      <div style={{
+        maxWidth: "1200px",
+        margin: "auto"
+      }}>
+        {media?.similar && <MoviesCarousel similarMovies={media?.similar!} title={media.mediaType === MediaType.TV_SERIES ? "Similar TV Series" : "Similar Movies"} />}
+      </div>
     </>
   );
 };
