@@ -10,18 +10,25 @@ export class Media {
   posterUrl?: string;
   backDropUrl!: string;
   overview?: string;
-  releaseDate?: string;
+  releaseYear?: string;
   mediaType?: MediaType;
   rating?: number;
   genreList?: string[];
   originalLanguage?: string;
+  budget?: number;
+  runtime?: number;
+  similar?: Media[];
 
   constructor(data?: Partial<Media>) {
     if (data) {
+      if (Array.isArray(data.similar)) {
+        this.similar = data.similar.map(item => new Media(item));
+      }
       Object.assign(this, data);
     }
   }
 }
+
 
 export interface MediaListProps {
   mediaList: Media[];
