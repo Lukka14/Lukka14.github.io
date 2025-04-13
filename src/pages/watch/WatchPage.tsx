@@ -10,6 +10,7 @@ import { Server } from "./models/Server";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { saveRecentlyWatched } from "../shared/RecentlyWatchService";
+import MoviesCarouselV2 from "./components/MoviesCarouselV2";
 
 export class SeasonEpisode {
   season: number = 1;
@@ -38,6 +39,7 @@ const WatchPage: React.FC = () => {
   });
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchData = async () => {
       try {
         let data: ImdbMedia | TvSeries | null = null;
@@ -101,7 +103,7 @@ const WatchPage: React.FC = () => {
   return (
     <>
       <Background url={bgUrl} />
-      <PrimarySearchAppBar onClick={() => {}} displaySearch={false} />
+      <PrimarySearchAppBar onClick={() => { }} displaySearch={false} />
       {/* <MovieList mediaList={medias} /> */}
       <VideoPlayer
         id={id}
@@ -118,6 +120,16 @@ const WatchPage: React.FC = () => {
         media={media!}
         setSeasonEpisode={updateSeasonEpisode}
       ></MediaInfo>
+      <div style={{
+        maxWidth: "1296px",
+        margin: "auto",
+        backdropFilter: "blur(8px)",
+        background: "rgba(0, 0, 0, 0.7)",
+        padding: "24px",
+        marginTop: "24px"
+      }}>
+        {media?.similar && <MoviesCarouselV2 similarMovies={media?.similar!} title={media.mediaType === MediaType.TV_SERIES ? "Similar TV Series" : "Similar Movies"} />}
+      </div>
     </>
   );
 };

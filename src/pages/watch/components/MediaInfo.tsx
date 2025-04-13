@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ImdbMedia, TvSeries, MediaType, Season, Movie } from "../../../models/Movie";
 import { SeasonEpisode } from "../WatchPage";
 import { ClassNames } from "@emotion/react";
+import { convertMinutes, formatMoney } from "../../../utils/Utils";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -58,6 +59,14 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   };
 
   const textClass = "text-light fw-bold";
+
+  const runtime = (media as Movie).runtime;
+  const budget = (media as Movie).budget;
+
+  let hours = 0, minutes = 0;
+  if (!isTvSeries && runtime) {
+    ({ hours, minutes } = convertMinutes(runtime));
+  }
 
   return (
     <div className="container" style={{ fontFamily: "Roboto" }}>
@@ -178,15 +187,19 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
               )}
               {!isTvSeries && (
                 <>
-                    <p>
-                    <strong className={textClass}>Duration:</strong>{" "}
-                    {(media as Movie).runtime
-                      ? `${Math.floor(((media as Movie).runtime ?? 0) / 60)} ${Math.floor(((media as Movie).runtime ?? 0) / 60) > 1 ? "Hours" : "Hour"} ${((media as Movie).runtime ?? 0) % 60} Minutes`
-                      : "N/A"}
-                    </p>
                   <p>
-                    <strong className={textClass}>Budget:</strong>{" "}
-                    {(media as Movie).budget && (media as Movie).budget! > 0 ? "$"+(media as Movie).budget : "N/A"}
+                    <strong>Duration:</strong>{" "}
+                    {runtime ? (
+                      <>
+                        {hours > 0 && <>{hours} Hours </>}
+                        {minutes > 0 && <>{minutes} Minutes</>}
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
+                  </p>
+                  <p>
+                    <strong>Budget:</strong> {budget ? <>${formatMoney(budget)}</> : "N/A"}
                   </p>
                 </>
               )}
