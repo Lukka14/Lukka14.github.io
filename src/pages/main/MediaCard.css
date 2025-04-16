@@ -1,0 +1,131 @@
+.media-card-link {
+    font-family: "Roboto";
+}
+
+.media-card {
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 12px;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.media-card.hovered {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background-color: #000;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.darken-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.darken-overlay.visible {
+    opacity: 1;
+}
+
+.overlay-text {
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    transition: opacity 0.3s ease;
+}
+
+.overlay-text.visible {
+    opacity: 1;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+    margin-bottom: 10px;
+}
+
+.card-rating {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.card-year {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.card-text-with-bg {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 4px 10px;
+    margin: 4px 0;
+    border-radius: 6px;
+    backdrop-filter: blur(2px);
+}
+
+.card-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-top: none !important;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.rating-badge {
+    background: rgba(0, 0, 0, 0.6) !important;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: bold;
+    padding: 3px 11px 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+}
+
+.imdb-star {
+    color: #000;
+    margin-right: 3px;
+}
+
+.title-badge {
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    max-width: 60%;
+}
+
+.year-badge {
+    background: rgba(0, 0, 0, 0.6) !important;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: bold;
+    opacity: 0.9;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 3px 8px 3px 8px;
+    border-radius: 4px;
+}
