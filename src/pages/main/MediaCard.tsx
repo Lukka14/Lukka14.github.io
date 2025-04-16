@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Media } from "../../models/Movie";
 import "./MediaCard.css";
 
@@ -9,7 +9,7 @@ interface MediaCardProps {
 
 const WithBG = ({ text }: { text: string }): React.ReactElement => {
   return (
-    <div className="text-white-50">
+    <div className="text-white-50 text-center forMb">
       {text}
     </div>
   );
@@ -18,6 +18,31 @@ const WithBG = ({ text }: { text: string }): React.ReactElement => {
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
   const { title, posterUrl, rating, releaseYear, originalLanguage } = mediaInfo;
   const [isHovered, setIsHovered] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
+  const getDisplayGenres = () => {
+    if (!mediaInfo?.genreList || mediaInfo.genreList.length === 0) {
+      return null;
+    }
+    
+    if (windowWidth <= 576) {
+      const limitedGenres = mediaInfo.genreList.slice(0, 2);
+      return <WithBG text={limitedGenres.join(" | ")} />;
+    } else {
+      return <WithBG text={mediaInfo.genreList.join(" | ")} />;
+    }
+  };
 
   return (
     <a href={href} className="text-decoration-none media-card-link">
@@ -45,9 +70,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
           <p className="card-year text-white-50">
             {releaseYear ? releaseYear : "N/A"}
           </p>
-          {mediaInfo?.genreList!.length > 0 && (
-            <WithBG text={mediaInfo.genreList!.join(" | ")} />
-          )}
+          {getDisplayGenres()}
           <WithBG text={originalLanguage?.toUpperCase() || "N/A"} />
         </div>
 

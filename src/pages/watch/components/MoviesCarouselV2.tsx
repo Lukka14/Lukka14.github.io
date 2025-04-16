@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Media } from '../../../models/Movie';
 import { MediaCard } from '../../main/MediaCard';
 import { generateHref } from '../../../utils/Utils';
@@ -7,8 +7,7 @@ const carouselStyles = `
   .similar-movies-container {
     width: 100%;
     position: relative;
-    padding: 20px 0;
-  }
+    }
 
   .similar-movies-header {
     display: flex;
@@ -68,7 +67,6 @@ const carouselStyles = `
     box-sizing: border-box;
   }
 
-  /* Responsive adjustments */
   @media (max-width: 992px) {
     .similar-movie-card {
       width: 33.33%;
@@ -89,94 +87,97 @@ const carouselStyles = `
 `;
 
 interface SimilarMoviesCarouselProps {
-    similarMovies: Media[];
-    title?: string;
-    cardsToShow?: number;
+  similarMovies: Media[];
+  title?: string;
 }
 
 const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
-    similarMovies,
-    title = "Similar Movies",
-    cardsToShow = 5
+  similarMovies,
+  title = "Similar Movies"
 }) => {
-    const [startIndex, setStartIndex] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
+  const [cardsToShow, setCardsToShow] = useState(5);
+  // const [textSize, setTextSize] = useState("fs-2")
 
-    const maxIndex = Math.max(0, similarMovies.length - cardsToShow);
+  const updateCardsToShow = () => {
+    const width = window.innerWidth;
+    if (width < 411) setCardsToShow(1);
+    else if (width < 668) setCardsToShow(2);
+    else if (width < 992) setCardsToShow(3);
+    else if (width < 1200) setCardsToShow(4);
+    else setCardsToShow(5);
+  };
 
-    const handleNext = () => {
-        setStartIndex(prevIndex => Math.min(prevIndex + 1, maxIndex));
-    };
+  useEffect(() => {
+    updateCardsToShow();
+    window.addEventListener('resize', updateCardsToShow);
+    return () => window.removeEventListener('resize', updateCardsToShow);
+  }, []);
 
-    const handlePrev = () => {
-        setStartIndex(prevIndex => Math.max(prevIndex - 1, 0));
-    };
+  const maxIndex = Math.max(0, similarMovies.length - cardsToShow);
 
-    if (!similarMovies || similarMovies.length === 0) {
-        return null;
-    }
+  const handleNext = () => {
+    setStartIndex((prev) => Math.min(prev + 1, maxIndex));
+  };
 
-    return (
-        <>
-            <style>{carouselStyles}</style>
-            <div className="similar-movies-container">
-                <div className="similar-movies-header">
-                    <h2 className="similar-movies-title">{title}</h2>
-                    <div className="similar-movies-controls">
-                        <button
-                            onClick={handlePrev}
-                            disabled={startIndex === 0}
-                            className="similar-movies-button"
-                            aria-label="Previous movies"
-                        >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="15 18 9 12 15 6"></polyline>
-                            </svg>
-                        </button>
-                        <button
-                            onClick={handleNext}
-                            disabled={startIndex >= maxIndex}
-                            className="similar-movies-button"
-                            aria-label="Next movies"
-                        >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+  const handlePrev = () => {
+    setStartIndex((prev) => Math.max(prev - 1, 0));
+  };
 
-                <div className="similar-movies-track-container">
-                    <div
-                        className="similar-movies-track"
-                        style={{
-                            transform: `translateX(-${startIndex * (100 / cardsToShow)}%)`,
-                        }}
-                    >
-                        {similarMovies.map((movie) => (
-                            <div
-                                key={movie.id}
-                                className="similar-movie-card"
-                                style={{ width: `${100 / cardsToShow}%` }}
-                            >
-                                <MediaCard
-                                    mediaInfo={{
-                                        title: movie.title,
-                                        posterUrl: movie.posterUrl,
-                                        rating: movie.rating,
-                                        releaseYear: movie.releaseYear,
-                                        backDropUrl: movie.backDropUrl,
-                                        originalLanguage: movie.originalLanguage,
-                                        genreList: movie.genreList
-                                    }}
-                                    href={generateHref(movie)}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </>
-    );
+  if (!similarMovies || similarMovies.length === 0) return null;
+
+  return (
+    <>
+      <style>{carouselStyles}</style>
+      <div className="similar-movies-container">
+        <div className="similar-movies-header">
+          <h2 className="similar-movies-title">{title}</h2>
+          <div className="similar-movies-controls">
+            <button onClick={handlePrev} disabled={startIndex === 0} className="similar-movies-button">
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <button onClick={handleNext} disabled={startIndex >= maxIndex} className="similar-movies-button">
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="similar-movies-track-container">
+          <div
+            className="similar-movies-track"
+            style={{
+              transform: `translateX(-${startIndex * (100 / cardsToShow)}%)`,
+            }}
+          >
+            {similarMovies.map((movie) => (
+              <div
+                key={movie.id}
+                className="similar-movie-card"
+                style={{ width: `${100 / cardsToShow}%` }}
+              >
+                <MediaCard
+                  mediaInfo={{
+                    title: movie.title,
+                    posterUrl: movie.posterUrl,
+                    rating: movie.rating,
+                    releaseYear: movie.releaseYear,
+                    backDropUrl: movie.backDropUrl,
+                    originalLanguage: movie.originalLanguage,
+                    genreList: movie.genreList
+                  }}
+                  href={generateHref(movie)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default MoviesCarouselV2;

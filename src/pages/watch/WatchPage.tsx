@@ -120,15 +120,24 @@ const WatchPage: React.FC = () => {
         media={media!}
         setSeasonEpisode={updateSeasonEpisode}
       ></MediaInfo>
-      <div style={{
-        maxWidth: "1296px",
-        margin: "auto",
-        backdropFilter: "blur(8px)",
-        background: "rgba(0, 0, 0, 0.7)",
-        padding: "24px",
-        marginTop: "24px"
-      }}>
-        {media?.similar && <MoviesCarouselV2 similarMovies={media?.similar!} title={media.mediaType === MediaType.TV_SERIES ? "Similar TV Series" : "Similar Movies"} />}
+
+      <div className="container-xl" >
+        {media?.similar && (
+          <div className="row" style={{
+            margin: "auto",
+            padding: "24px",
+            marginTop: "24px",
+            background: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(8px)"
+          }}>
+            <div className="col-12">
+              <MoviesCarouselV2
+                similarMovies={media.similar}
+                title={media.mediaType === MediaType.TV_SERIES ? "Similar TV Series" : "Similar Movies"}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
