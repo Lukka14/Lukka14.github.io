@@ -133,7 +133,7 @@ const WatchPage: React.FC = () => {
             <div className="col-12">
               <MoviesCarouselV2
                 similarMovies={media.similar}
-                title={media.mediaType === MediaType.TV_SERIES ? "Similar TV Series" : "Similar Movies"}
+                title="Recommended"
               />
             </div>
           </div>
