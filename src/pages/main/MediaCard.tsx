@@ -17,7 +17,6 @@ const WithBG = ({ text }: { text: string }): React.ReactElement => {
 
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
   const { title, posterUrl, rating, releaseYear, originalLanguage } = mediaInfo;
-  const [isHovered, setIsHovered] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   
   useEffect(() => {
@@ -47,9 +46,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
   return (
     <a href={href} className="text-decoration-none media-card-link">
       <div
-        className={`card h-100 border-0 shadow-lg position-relative media-card ${isHovered ? 'hovered' : ''}`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        className={`card h-100 border-0 shadow-lg position-relative media-card `}
       >
         <div
           className="image-container"
@@ -57,10 +54,11 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
             backgroundImage: `url(${posterUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019"})`
           }}
         >
-          <div className={`darken-overlay ${isHovered ? 'visible' : ''}`}></div>
+          {/* Uncomment if dark overlay is needed when hovering media card */}
+          {/* <div className={`darken-overlay`}></div> */}
         </div>
 
-        <div className={`card-img-overlay d-flex flex-column justify-content-center align-items-center overlay-text ${isHovered ? 'visible' : ''}`}>
+        <div className={`card-img-overlay d-flex flex-column justify-content-center align-items-center overlay-text`}>
           <h5 className="card-title text-center text-white">
             {title || "Untitled"}
           </h5>
