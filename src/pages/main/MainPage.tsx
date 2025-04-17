@@ -74,7 +74,7 @@ const MainPage: React.FC = () => {
           <MovieList mediaList={recentylyWatched} />
         </>
       )}
-      <CenteredH1>Watch Latest Movies Here!</CenteredH1>
+      <CenteredH1>Watch Latest Movies Right Here!</CenteredH1>
       <MovieList mediaList={mediaList} />
       {/* <WIP></WIP> */}
       {/* <Signature /> */}
