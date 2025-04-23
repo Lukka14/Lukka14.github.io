@@ -129,3 +129,83 @@
     padding: 3px 8px 3px 8px;
     border-radius: 4px;
 }
+
+.skeleton-card {
+    background-color: #242424;
+}
+
+.skeleton-image {
+    height: 300px;
+    width: 100%;
+    background: linear-gradient(110deg, #333 8%, #444 18%, #333 33%);
+    background-size: 200% 100%;
+    animation: shine 1.5s infinite linear;
+    border-radius: 8px 8px 0 0;
+}
+
+.skeleton-title {
+    height: 24px;
+    width: 80%;
+    margin-bottom: 10px;
+    background: linear-gradient(110deg, #333 8%, #444 18%, #333 33%);
+    background-size: 200% 100%;
+    animation: shine 1.5s infinite linear;
+    border-radius: 4px;
+}
+
+.skeleton-rating,
+.skeleton-year,
+.skeleton-genre,
+.skeleton-language {
+    height: 16px;
+    width: 60%;
+    margin-bottom: 8px;
+    background: linear-gradient(110deg, #333 8%, #444 18%, #333 33%);
+    background-size: 200% 100%;
+    animation: shine 1.5s infinite linear;
+    border-radius: 4px;
+}
+
+.skeleton-genre {
+    width: 70%;
+}
+
+.skeleton-language {
+    width: 40%;
+}
+
+.skeleton-badge {
+    height: 18px;
+    width: 50px;
+    background: linear-gradient(110deg, #333 8%, #444 18%, #333 33%);
+    background-size: 200% 100%;
+    animation: shine 1.5s infinite linear;
+    border-radius: 4px;
+}
+
+@keyframes shine {
+    to {
+        background-position-x: -200%;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.image-container {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px 8px 0 0;
+}
