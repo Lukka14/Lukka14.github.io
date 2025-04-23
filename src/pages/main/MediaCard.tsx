@@ -8,11 +8,7 @@ interface MediaCardProps {
 }
 
 const WithBG = ({ text }: { text: string }): React.ReactElement => {
-  return (
-    <div className="text-white-50 text-center forMb">
-      {text}
-    </div>
-  );
+  return <div className="text-white-50 text-center forMb">{text}</div>;
 };
 
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
@@ -28,7 +24,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
 
     window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -52,7 +48,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
     };
     img.src = posterUrl;
   }, [posterUrl]);
-
+          
   const getDisplayGenres = () => {
     if (!mediaInfo?.genreList || mediaInfo.genreList.length === 0) {
       return null;
