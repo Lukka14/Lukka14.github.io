@@ -8,33 +8,29 @@ interface MediaCardProps {
 }
 
 const WithBG = ({ text }: { text: string }): React.ReactElement => {
-  return (
-    <div className="text-white-50 text-center forMb">
-      {text}
-    </div>
-  );
+  return <div className="text-white-50 text-center forMb">{text}</div>;
 };
 
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
   const { title, posterUrl, rating, releaseYear, originalLanguage } = mediaInfo;
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-    
-    window.addEventListener('resize', handleResize);
+
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
-  
+
   const getDisplayGenres = () => {
     if (!mediaInfo?.genreList || mediaInfo.genreList.length === 0) {
       return null;
     }
-    
+
     if (windowWidth <= 576) {
       const limitedGenres = mediaInfo.genreList.slice(0, 2);
       return <WithBG text={limitedGenres.join(" | ")} />;
@@ -51,14 +47,19 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
         <div
           className="image-container"
           style={{
-            backgroundImage: `url(${posterUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019"})`
+            backgroundImage: `url(${
+              posterUrl ||
+              "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019"
+            })`,
           }}
         >
           {/* Uncomment if dark overlay is needed when hovering media card */}
           {/* <div className={`darken-overlay`}></div> */}
         </div>
 
-        <div className={`card-img-overlay d-flex flex-column justify-content-center align-items-center overlay-text`}>
+        <div
+          className={`card-img-overlay d-flex flex-column justify-content-center align-items-center overlay-text`}
+        >
           <h5 className="card-title text-center text-white">
             {title || "Untitled"}
           </h5>
@@ -74,11 +75,10 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
 
         <div className="card-footer text-white d-flex justify-content-between align-items-center">
           <div className="rating-badge">
-            <span className="imdb-star">⭐</span> {rating ? rating.toFixed(1) : "N/A"}
+            <span className="imdb-star">⭐</span>{" "}
+            {rating ? rating.toFixed(1) : "N/A"}
           </div>
-          <div className="year-badge">
-            {releaseYear ? releaseYear : "N/A"}
-          </div>
+          <div className="year-badge">{releaseYear ? releaseYear : "N/A"}</div>
         </div>
       </div>
     </a>
