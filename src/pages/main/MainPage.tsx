@@ -7,20 +7,28 @@ import { Background } from "./Background";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import Carousel from "./MovieCarousel";
 import { getRecentlyWatched } from "../shared/RecentlyWatchService";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 let page = 1;
 
 // It's responsible for loading more media when the user scrolls to the bottom of the page.
-const setNewMediaLoader = (offset = 0, addMediaList: (newMedia: Media[]) => void) => {
+const setNewMediaLoader = (offset = 0, addMediaList: (newMedia: Media[]) => void, setIsLoading: (loading: boolean) => void) => {
   useEffect(() => {
     const handleScroll = () => {
       const scrolledToBottom =
         window.innerHeight + window.scrollY >= document.body.offsetHeight - offset;
 
       if (scrolledToBottom) {
+          setIsLoading(true);
           fetchTrendingMedia(++page)
-            .then(addMediaList)
-            .catch((err) => console.error(err));
+            .then((media) => {
+              addMediaList(media);
+              setIsLoading(false);
+            })
+            .catch((err) => {
+              console.error(err);
+              setIsLoading(false);
+            });
       }
     };
 
@@ -32,11 +40,20 @@ const setNewMediaLoader = (offset = 0, addMediaList: (newMedia: Media[]) => void
 
 const MainPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const handleSearch = (query: string) => {
+    setIsLoading(true);
     fetchMedia(query)
-      .then(setMedias)
-      .catch((err) => console.error(err));
+      .then((media) => {
+        setMedias(media);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
   };
 
   const [mediaList, setMediaList] = useState<Media[]>([]);
@@ -47,15 +64,20 @@ const MainPage: React.FC = () => {
   };
 
   React.useEffect(() => {
+    setInitialLoading(true);
     fetchTrendingMedia()
       .then((media) => {
         setMediaList(media);
         setMediaListCarousel(media);
+        setInitialLoading(false);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        setInitialLoading(false);
+      });
   }, []);
 
-  setNewMediaLoader(0, addMediaList);
+  setNewMediaLoader(0, addMediaList, setIsLoading);
 
   const recentylyWatched: Media[] = getRecentlyWatched();
 
@@ -67,15 +89,22 @@ const MainPage: React.FC = () => {
       />
 
       <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
-      <Carousel mediaList={mediaListCarousel} />
-      {recentylyWatched.length > 0 && (
+      {initialLoading && <LoadingSpinner initial={true} />}
+
+      {!initialLoading && (
         <>
-          <CenteredH1>Recently watched:</CenteredH1>
-          <MovieList mediaList={recentylyWatched} />
+          <Carousel mediaList={mediaListCarousel} />
+          {recentylyWatched.length > 0 && (
+            <>
+              <CenteredH1>Recently watched:</CenteredH1>
+              <MovieList mediaList={recentylyWatched} />
+            </>
+          )}
+          <CenteredH1>Watch Latest Movies Here!</CenteredH1>
+          <MovieList mediaList={mediaList} />
+          {isLoading && <LoadingSpinner />}
         </>
       )}
-      <CenteredH1>Watch Latest Movies Here!</CenteredH1>
-      <MovieList mediaList={mediaList} />
       {/* <WIP></WIP> */}
       {/* <Signature /> */}
     </>
