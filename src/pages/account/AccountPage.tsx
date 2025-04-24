@@ -1,23 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Background } from "../main/Background";
-import { Heart, Bookmark, Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { fetchMedia } from "../../services/MediaService";
 import { Media, Movie } from "../../models/Movie";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import { getRecentlyWatched } from "../shared/RecentlyWatchService";
-import { MediaCard } from "../main/MediaCard";
-import { generateHref } from "../../utils/Utils";
 import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
+import AccountStatCard from "../shared/AccountStatCard";
 
 const AccountPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
   const { username } = useParams<{ username: string }>();
-  const [user] = useState({
+  const [user, setUser] = useState({
     name: username,
     email: username + "@example.com",
-    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShVpGLjXCmAqHxC8L4xztCuXKWuUEOJIfz7g&s"
+    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShVpGLjXCmAqHxC8L4xztCuXKWuUEOJIfz7g&s",
+    createdAt: new Date("2023-01-01")
   });
+
+  useEffect(() => {
+    setUser({
+      name: username,
+      email: username + "@example.com",
+      avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShVpGLjXCmAqHxC8L4xztCuXKWuUEOJIfz7g&s",
+      createdAt: new Date("2023-01-01")
+    });
+  }, [username]);
+
+  // vitom bazidanaa
+  const accountStats = [
+    {
+      value: "42",
+      label: "Films Watched"
+    },
+    {
+      value: "16",
+      label: "Favorites"
+    },
+    {
+      value: "23",
+      label: "Watchlist"
+    },
+    {
+      value: "4.2",
+      label: "Avg Rating"
+    }
+  ];
 
   const handleSearch = (query: string) => {
     fetchMedia(query)
@@ -60,38 +89,23 @@ const AccountPage: React.FC = () => {
             <div>
               <h2 className="h3 text-white">{user.name}</h2>
               <p className="text-muted">{user.email}</p>
-              <p className="small text-muted">Member since Jan 2023</p>
+              <p className="small text-muted">Member since {user.createdAt.toLocaleString("default", { month: "short", year: "numeric" })}</p>
             </div>
           </div>
 
           <div className="mt-4 d-flex gap-2 justify-content-center">
-            <button className="btn btn-outline-primary px-4 py-2 d-flex align-items-center gap-2">
+            <button className="btn btn-outline-primary px-4 py-2 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
               <Edit size={16} />
               Edit Profile
             </button>
-            <button className="btn btn-outline-danger px-4 py-2 d-flex align-items-center gap-2">
+            <button className="btn btn-outline-danger px-4 py-2 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
               <Trash2 size={16} />
               Delete Account
             </button>
           </div>
 
-          <div className="mt-4 d-flex justify-content-between" style={{maxWidth: "500px", margin: "auto"}}>
-            <div className="text-center">
-              <p className="h4 text-white">42</p>
-              <p className="small text-muted">Films Watched</p>
-            </div>
-            <div className="text-center">
-              <p className="h4 text-white">16</p>
-              <p className="small text-muted">Favorites</p>
-            </div>
-            <div className="text-center">
-              <p className="h4 text-white">23</p>
-              <p className="small text-muted">Watchlist</p>
-            </div>
-            <div className="text-center">
-              <p className="h4 text-white">4.2</p>
-              <p className="small text-muted">Avg Rating</p>
-            </div>
+          <div className="mt-4 d-flex justify-content-between" style={{ maxWidth: "500px", margin: "auto" }}>
+            {accountStats.map((stat, index) => <AccountStatCard key={index} label={stat.label} value={stat.value} />)}
           </div>
         </div>
 
