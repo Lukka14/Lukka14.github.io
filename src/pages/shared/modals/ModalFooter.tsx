@@ -9,13 +9,14 @@ export default function ModalFooter({
     primaryBtnText,
     onPrimaryClick,
     closeButtonRef,
-    primaryBtnClass = "btn-primary"
+    primaryBtnClass = "btn-outline-primary"
 }: ModalFooterInterface) {
     return (
         <div className="modal-footer">
             <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-outline-secondary"
+                style={{ color: "#f5f5f5" }}    
                 data-bs-dismiss="modal"
                 ref={closeButtonRef}
             >

@@ -1,0 +1,32 @@
+input.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+input.form-control {
+    color: white !important;
+    border: none;
+    background-color: #464D5F !important;
+}
+
+input.form-control:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+input {
+    color: #f5f5f5 !important;
+}
+
+label.form-label {
+    color: #f5f5f5 !important;
+}
+
+
+.modal-footer {
+    border-top: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color) !important;
+}
+
+.modal-header {
+    border-bottom: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color) !important;
+}

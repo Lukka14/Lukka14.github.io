@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Background } from "../main/Background";
 import { Edit, Trash2 } from "lucide-react";
-import { fetchMedia } from "../../services/MediaService";
+import { fetchMe, fetchMedia } from "../../services/MediaService";
 import { Media, Movie } from "../../models/Movie";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import { getRecentlyWatched } from "../shared/RecentlyWatchService";
@@ -26,6 +26,17 @@ const AccountPage: React.FC = () => {
       avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShVpGLjXCmAqHxC8L4xztCuXKWuUEOJIfz7g&s",
       createdAt: new Date("2023-01-01")
     });
+    async function fetchUser() {
+      const me = await fetchMe();
+      if (me?.username && me?.username === username) {
+        setUser((prev) => {
+          const updated = { ...prev, ...me };
+          // console.log(updated);
+          return updated;
+        });
+      }
+    }
+    fetchUser();
   }, [username]);
 
   // vitom bazidanaa

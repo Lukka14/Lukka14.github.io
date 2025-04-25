@@ -4,6 +4,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ModalFooter from "./ModalFooter";
 import ModalHeader from "./ModalHeader";
+import axios from "axios";
+import { Endpoints } from "../../../config/Config";
 
 const profileSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters").max(50, "Username cannot exceed 50 characters"),
@@ -52,6 +54,20 @@ export default function EditProfileModal() {
         // };
 
         // console.log(formData);
+        if (!profileImage) {
+            console.error('No profile image selected');
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('image', profileImage);
+
+        axios.post(Endpoints.IMG_UPLOAD, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
         reset();
         if (closeButtonRef.current) {
             closeButtonRef.current.click();
@@ -61,7 +77,11 @@ export default function EditProfileModal() {
     return (
         <div className="modal fade" id="editProfileModal" tabIndex={-1} aria-labelledby="editProfileModalLabel" aria-hidden="true">
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className="modal-content" style={{
+                    backgroundColor: "#1c2231"
+                    // backgroundImage: "url(https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true)",
+                    // backgroundSize: "cover"
+                }}>
                     <ModalHeader title="Edit Profile" />
                     <div className="modal-body">
                         <form id="profileForm" onSubmit={handleSubmit(onSubmit)}>

@@ -8,6 +8,7 @@ import MoviePage from "./pages/movie/MoviePage";
 import TvSeriesPage from "./pages/movie/TvSeriesPage";
 import MultiSearchPage from "./pages/movie/MultiSearchPage";
 import HelpPage from "./pages/about/HelpPage";
+import RegisterPage from "./pages/register/RegisterPage";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const App: React.FC = () => {
         <Route path="/tv-shows" element={<TvSeriesPage />} />
         <Route path="/multiSearch" element={<MultiSearchPage />} />
         <Route path="/help" element={<HelpPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile/:username" element={<AccountPage />} />
       </Routes>
     </Router>

@@ -39,11 +39,17 @@ export default function DeleteAccountModal() {
     return (
         <div className="modal fade" id="deleteAccountModal" tabIndex={-1} aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className="modal-content" style={{
+                    backgroundColor: "#1c2231"
+                    // backgroundImage: "url(https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true)",
+                    // backgroundSize: "cover"
+                }}>
                     <ModalHeader title="Delete Account" />
                     <div className="modal-body">
                         <form id="deleteAccountForm" onSubmit={handleSubmit(onSubmit)}>
-                            <p>To confirm account deletion, please type <strong>DELETE</strong> in the field below:</p>
+                            <p style={{
+                                color: "#c2c2c2"
+                            }}>To confirm account deletion, please type <strong>DELETE</strong> in the field below:</p>
 
                             <div className="mb-3">
                                 <input
@@ -61,7 +67,7 @@ export default function DeleteAccountModal() {
                     </div>
                     <ModalFooter
                         primaryBtnText="Delete My Account"
-                        primaryBtnClass="btn-danger"
+                        primaryBtnClass="btn-outline-danger"
                         onPrimaryClick={handleSubmit(onSubmit)}
                         closeButtonRef={closeButtonRef}
                     />
