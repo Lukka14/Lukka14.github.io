@@ -7,7 +7,7 @@ import ModalHeader from "./ModalHeader";
 import axios from "axios";
 import { Endpoints } from "../../../config/Config";
 import Cookies from "js-cookie";
-import { fetchMe } from "../../../services/MediaService";
+import { fetchMe, refreshAccessToken } from "../../../services/MediaService";
 
 const profileSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters").max(50, "Username cannot exceed 50 characters"),
@@ -80,8 +80,20 @@ export default function EditProfileModal() {
     };
 
     const onSubmit = async (data: ProfileFormData) => {
+        let accessToken: string | null | undefined = Cookies.get("accessToken");
+
+        const isValidAccessToken = (token: string | undefined) => {
+            return token && token !== "expired";
+        };
+
+        if (!isValidAccessToken(accessToken)) {
+            accessToken = await refreshAccessToken();
+            if (!accessToken) {
+                return;
+            }
+        }
+
         if (!profileImage) {
-            console.error('No profile image selected');
             return;
         }
 
@@ -96,8 +108,6 @@ export default function EditProfileModal() {
                     'Authorization': `Bearer ${accessToken}`
                 }
             });
-
-            // console.log(response);
 
             const a = new CustomEvent('profile-updated', {
                 detail: {
@@ -115,7 +125,7 @@ export default function EditProfileModal() {
             setImagePreview(null);
             setProfileImage(null);
         } catch (error) {
-            console.error("Error uploading profile image:", error);
+            console.error(error);
         } finally {
             setIsLoading(false);
         }

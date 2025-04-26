@@ -62,7 +62,7 @@ export default function RegisterPage() {
                 password: data.password,
             });
 
-            const { accessToken, refreshToken } = res.data;
+            const { accessToken } = res.data;
 
             Cookies.set("accessToken", accessToken.token, {
                 expires: new Date(Date.now() + accessToken.expiresIn),
@@ -70,18 +70,18 @@ export default function RegisterPage() {
                 sameSite: "Strict",
             });
 
-            Cookies.set("refreshToken", refreshToken.token, {
-                expires: new Date(Date.now() + refreshToken.expiresIn),
+            // Cookies.set("refreshToken", refreshToken.token, {
+            //     expires: new Date(Date.now() + refreshToken.expiresIn),
+            //     secure: true,
+            //     sameSite: "Strict",
+            // });
+
+            Cookies.set("username", data.username, {
+                expires: new Date(Date.now() + accessToken.expiresIn),
                 secure: true,
                 sameSite: "Strict",
             });
 
-            Cookies.set("username", data.username, {
-                expires: new Date(Date.now() + refreshToken.expiresIn),
-                secure: true,
-                sameSite: "Strict",
-            });
-            
             reset();
             window.location.href = "/#/profile/" + data.username;
         } catch (err: any) {

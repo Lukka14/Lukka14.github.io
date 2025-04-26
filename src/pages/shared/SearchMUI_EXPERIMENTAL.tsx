@@ -103,7 +103,7 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
 
   const handleLogout = () => {
     Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
+    // Cookies.remove("refreshToken");
     Cookies.remove("username");
     setUser(null);
     navigate("/");
