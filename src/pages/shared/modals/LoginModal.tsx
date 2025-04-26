@@ -37,20 +37,20 @@ export default function LoginModal() {
         setErrorMessage("");
         try {
             const res = await axios.post(Endpoints.LOGIN, data);
-            const { accessToken, refreshToken } = res.data;
+            const { accessToken } = res.data;
 
             Cookies.set("accessToken", accessToken.token, {
                 expires: new Date(Date.now() + accessToken.expiresIn),
                 secure: true,
                 sameSite: "Strict",
             });
-            Cookies.set("refreshToken", refreshToken.token, {
-                expires: new Date(Date.now() + refreshToken.expiresIn),
-                secure: true,
-                sameSite: "Strict",
-            });
+            // Cookies.set("refreshToken", refreshToken.token, {
+            //     expires: new Date(Date.now() + refreshToken.expiresIn),
+            //     secure: true,
+            //     sameSite: "Strict",
+            // });
             Cookies.set("username", data.username, {
-                expires: new Date(Date.now() + refreshToken.expiresIn),
+                expires: new Date(Date.now() + accessToken.expiresIn),
                 secure: true,
                 sameSite: "Strict",
             });
