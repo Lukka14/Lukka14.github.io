@@ -146,7 +146,8 @@ export default function EditProfileModal() {
                                                 className="rounded-circle border-2 border-primary"
                                                 style={{
                                                     width: "120px",
-                                                    height: "120px"
+                                                    height: "120px",
+                                                    objectFit: "cover"
                                                 }}
                                             />
                                         ) : (
@@ -156,7 +157,8 @@ export default function EditProfileModal() {
                                                 className="rounded-circle border-2 border-primary"
                                                 style={{
                                                     width: "120px",
-                                                    height: "120px"
+                                                    height: "120px",
+                                                    objectFit: "cover"
                                                 }}
                                                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                                                     const target = e.target as HTMLImageElement;
@@ -183,7 +185,7 @@ export default function EditProfileModal() {
                                     </div>
                                 </div>
 
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                     <label htmlFor="username" className="form-label">Username</label>
                                     <div className="input-group">
                                         <input
@@ -211,7 +213,7 @@ export default function EditProfileModal() {
                                     {errors.email && (
                                         <div className="invalid-feedback d-block">{errors.email.message}</div>
                                     )}
-                                </div>
+                                </div> */}
                             </form>
                         )}
                     </div>

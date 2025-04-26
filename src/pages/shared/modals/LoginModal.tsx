@@ -126,6 +126,8 @@ export default function LoginModal() {
                                     }} className="text-decoration-none">Sign up</a>
                                 </div>
                             </div>
+                            <button type="submit" style={{ display: "none" }}></button>
+
                         </form>
                     </div>
                     <ModalFooter
