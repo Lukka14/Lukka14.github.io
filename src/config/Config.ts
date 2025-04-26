@@ -18,7 +18,8 @@ export const Endpoints = {
   DETAILED_SERIES: `${URL_SEARCH}/seriesDetails`,
   IMG_UPLOAD: `${API_URL}/image/upload`,
   ME: `${API_URL}/auth/me`,
-  ACCESS_TOKEN: `${API_URL}/auth/accessToken`
+  ACCESS_TOKEN: `${API_URL}/auth/accessToken`,
+  IMG_VIEW: `${API_URL}/image/view`
 };
 
 export enum RoutePaths {

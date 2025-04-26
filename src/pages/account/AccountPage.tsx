@@ -8,22 +8,32 @@ import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import { getRecentlyWatched } from "../shared/RecentlyWatchService";
 import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
 import AccountStatCard from "../shared/AccountStatCard";
+import { Endpoints } from "../../config/Config";
 
 const AccountPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
   const { username } = useParams<{ username: string }>();
+  const [authed, setAuthed] = useState(false);
+  const [avatarVersion, setAvatarVersion] = useState(Date.now());
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [user, setUser] = useState({
-    name: username,
+    username: username,
     email: username + "@example.com",
-    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShVpGLjXCmAqHxC8L4xztCuXKWuUEOJIfz7g&s",
+    avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
     createdAt: new Date("2023-01-01")
   });
 
   useEffect(() => {
+    const newAvatarUrl = `${Endpoints.IMG_VIEW}/${username}.webp`;
+    setAvatarUrl(newAvatarUrl);
+  }, [username, avatarVersion]);
+
+
+  useEffect(() => {
     setUser({
-      name: username,
+      username: username,
       email: username + "@example.com",
-      avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShVpGLjXCmAqHxC8L4xztCuXKWuUEOJIfz7g&s",
+      avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
       createdAt: new Date("2023-01-01")
     });
     async function fetchUser() {
@@ -31,13 +41,28 @@ const AccountPage: React.FC = () => {
       if (me?.username && me?.username === username) {
         setUser((prev) => {
           const updated = { ...prev, ...me };
-          // console.log(updated);
+          setAuthed(true);
           return updated;
         });
       }
     }
     fetchUser();
   }, [username]);
+
+  useEffect(() => {
+    const handleProfileUpdated = (event: Event) => {
+      setAvatarVersion((currentEvent) => {
+        const customEvent = event as CustomEvent;
+        return customEvent.detail?.timestamp || Date.now();
+      });
+    };
+
+    window.addEventListener('profile-updated', handleProfileUpdated);
+
+    return () => {
+      window.removeEventListener('profile-updated', handleProfileUpdated);
+    };
+  }, []);
 
   // vitom bazidanaa
   const accountStats = [
@@ -89,22 +114,29 @@ const AccountPage: React.FC = () => {
         }}>
           <div className="d-flex align-items-center gap-3 justify-content-center">
             <img
-              src={user.avatar}
+              key={`avatar-${avatarVersion}`}
+              src={avatarUrl}
               alt="Profile"
               className="rounded-circle border-2 border-primary"
               style={{
                 width: "120px",
                 height: "120px"
               }}
+              onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = user.avatar;
+              }}
             />
+
             <div>
-              <h2 className="h3 text-white">{user.name}</h2>
+              <h2 className="h3 text-white">{user.username}</h2>
               <p className="text-muted">{user.email}</p>
               <p className="small text-muted">Member since {user.createdAt.toLocaleString("default", { month: "short", year: "numeric" })}</p>
             </div>
           </div>
 
-          <div className="mt-4 d-flex gap-2 justify-content-center">
+          {authed && <div className="mt-4 d-flex gap-2 justify-content-center">
             <button className="btn btn-outline-primary px-4 py-2 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
               <Edit size={16} />
               Edit Profile
@@ -113,7 +145,7 @@ const AccountPage: React.FC = () => {
               <Trash2 size={16} />
               Delete Account
             </button>
-          </div>
+          </div>}
 
           <div className="mt-4 d-flex justify-content-between" style={{ maxWidth: "500px", margin: "auto" }}>
             {accountStats.map((stat, index) => <AccountStatCard key={index} label={stat.label} value={stat.value} />)}

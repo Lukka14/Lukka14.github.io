@@ -80,7 +80,6 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
-
   const handleSearch = () => {
     const searchInput = document.querySelector(
       "#movieSearchInput"
@@ -180,7 +179,7 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
               Help
             </Button>
             {user?.username ? <Button sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }} onClick={() => navigate(`/profile/${user?.username}`)}>
-              <User2Icon />
+              <User2Icon fill="currentColor" />
             </Button> : <Button sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }} data-bs-toggle="modal" data-bs-target="#loginModal">
               <User2Icon />
             </Button>}

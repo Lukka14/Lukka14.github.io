@@ -37,7 +37,7 @@ export default function RegisterPage() {
         }
         fetchUser();
     }, [])
-    
+
     const {
         register,
         handleSubmit,
@@ -76,6 +76,12 @@ export default function RegisterPage() {
                 sameSite: "Strict",
             });
 
+            Cookies.set("username", data.username, {
+                expires: new Date(Date.now() + refreshToken.expiresIn),
+                secure: true,
+                sameSite: "Strict",
+            });
+            
             reset();
             window.location.href = "/#/profile/" + data.username;
         } catch (err: any) {

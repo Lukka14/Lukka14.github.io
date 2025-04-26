@@ -111,45 +111,55 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 
   if (!refreshToken || !username) return null;
 
-  const res = await fetch(`${Endpoints.ACCESS_TOKEN}?username=${username}`, {
-    headers: {
-      Authorization: `Bearer ${refreshToken}`,
-    },
-  });
+  try {
+    const res = await axios.post(Endpoints.ACCESS_TOKEN,
+      { username },
+      {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      }
+    );
 
-  if (!res.ok) return null;
-
-  const data = await res.json();
-  Cookies.set("accessToken", data.accessToken);
-  return data.accessToken;
+    const accessToken = res.data.accessToken;
+    console.log(res.data);
+    Cookies.set("accessToken", accessToken);
+    return accessToken;
+  } catch (error) {
+    return null;
+  }
 };
-
 
 export const fetchMe = async (): Promise<any> => {
   let accessToken = Cookies.get("accessToken");
 
-  const res = await fetch(`${Endpoints.ME}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (res.status === 401) {
-    const newAccessToken = await refreshAccessToken();
-    if (!newAccessToken) return null;
-
-    const retryRes = await fetch(`${Endpoints.ME}`, {
+  try {
+    const res = await axios.get(Endpoints.ME, {
       headers: {
-        Authorization: `Bearer ${newAccessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
-    if (!retryRes.ok) return null;
-    return await retryRes.json();
-  }
+    return res.data;
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      const newAccessToken = await refreshAccessToken();
+      if (!newAccessToken) return null;
 
-  if (!res.ok) return null;
-  return await res.json();
+      try {
+        const retryRes = await axios.get(Endpoints.ME, {
+          headers: {
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        });
+
+        return retryRes.data;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
 };
 
 export const fetchTvSeries = (id: string): Promise<TvSeries> => {

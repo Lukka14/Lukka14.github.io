@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Cookies from "js-cookie";
 import ModalFooter from "./ModalFooter";
@@ -10,7 +10,7 @@ import { Endpoints } from "../../../config/Config";
 
 const loginSchema = z.object({
     username: z.string().min(1, "Username is required"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    password: z.string().min(1, "Password must be at least 6 characters"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -26,7 +26,6 @@ export default function LoginModal() {
         formState: { errors },
         reset
     } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
         defaultValues: {
             username: "",
             password: ""
