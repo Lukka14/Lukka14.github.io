@@ -11,6 +11,11 @@ import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
+import { User2Icon } from 'lucide-react';
+import Cookies from 'js-cookie';
+import { fetchMe } from '../../services/MediaService';
+import { ExitToApp, LogoutOutlined } from '@mui/icons-material';
+import { Endpoints } from '../../config/Config';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -56,10 +61,26 @@ interface SearchBarProps {
   displaySearch: boolean;
 }
 
+export interface Authority {
+  authority: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  password: string;
+  email: string;
+  enabled: boolean;
+  authorities: Authority[];
+  accountNonExpired: boolean;
+  accountNonLocked: boolean;
+  credentialsNonExpired: boolean;
+}
+
 export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps) {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-
+  const [user, setUser] = React.useState<User | null>(null);
   const handleSearch = () => {
     const searchInput = document.querySelector(
       "#movieSearchInput"
@@ -71,6 +92,22 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
   const toggleDrawer = (open: boolean) => {
     setDrawerOpen(open);
   };
+
+  React.useEffect(() => {
+    async function fetchUser() {
+      const user = await fetchMe();
+      if (user?.username) setUser(user);
+    }
+    fetchUser();
+  }, [])
+
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    Cookies.remove("username");
+    setUser(null);
+    navigate("/");
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -98,19 +135,19 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
           </Typography>
 
           {/* Search Bar */}
-            {displaySearch && (
+          {displaySearch && (
             <Search>
               <SearchIconWrapper>
-              <SearchIcon />
+                <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-              id="movieSearchInput"
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'movie' }}
-              onChange={handleSearch}
+                id="movieSearchInput"
+                placeholder="Search…"
+                inputProps={{ 'aria-label': 'movie' }}
+                onChange={handleSearch}
               />
             </Search>
-            )}
+          )}
 
           {/* Hamburger Icon for Mobile */}
           <Box sx={{ flexGrow: 1 }} />
@@ -142,6 +179,45 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
             <Button sx={{ color: 'white' }} onClick={() => navigate('/help')}>
               Help
             </Button>
+            {user?.username ? (
+              <Button
+                sx={{
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  p: '2px 18px',
+                  minWidth: 'auto',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+                onClick={() => navigate(`/profile/${user?.username}`)}
+              >
+                <div className="header-profile-image-container">
+                  <img
+                    src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                    alt="pfp"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
+                    }}
+                  />
+                </div>
+              </Button>
+            ) : (
+              <Button
+                sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }}
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal"
+              >
+                <User2Icon />
+              </Button>
+            )}
+            {user?.username && (
+              <Button
+                sx={{ color: '#FF4C4C', fontSize: '1.2rem', p: '4px 8px', minWidth: 'auto' }}
+                onClick={handleLogout}
+              >
+                <ExitToApp />
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
@@ -178,6 +254,40 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
           <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/help')}>
             Help
           </Button>
+          {user?.username ? (
+            <Button
+              sx={{
+                color: 'white',
+                fontSize: '1.2rem',
+                p: '2px 18px',
+                minWidth: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                gap: "8px"
+              }}
+              onClick={() => navigate(`/profile/${user?.username}`)}
+            >
+              <div className="header-profile-image-container">
+                <img
+                  src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                  alt="pfp"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
+                  }}
+                />
+              </div>
+              <span>Profile</span>
+            </Button>
+          ) : (
+            <Button
+              sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }}
+              data-bs-toggle="modal"
+              data-bs-target="#loginModal"
+            >
+              <User2Icon />
+            </Button>
+          )}
+          {user?.username && <Button sx={{ color: '#FF4C4C', fontSize: '1.2rem', display: "flex", gap: "10px" }} onClick={() => handleLogout()}><ExitToApp /> Logout</Button>}
         </Box>
       </Drawer>
     </Box>

@@ -11,8 +11,10 @@
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
+    "@hookform/resolvers": "^5.0.1",
     "@mui/icons-material": "^6.1.8",
     "@mui/material": "^6.1.8",
+    "@tailwindcss/vite": "^4.1.4",
     "@types/jquery": "^3.5.32",
     "axios": "^1.7.7",
     "bootstrap": "^5.2.3",
@@ -20,13 +22,17 @@
     "datatables.net-dt": "^2.1.8",
     "jquery": "^3.7.1",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.501.0",
     "mdb-react-ui-kit": "^9.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.7",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.56.1",
     "react-icons": "^5.4.0",
     "react-responsive-carousel": "^3.2.23",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.28.0",
+    "tailwindcss": "^4.1.4",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",

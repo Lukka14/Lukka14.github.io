@@ -17,6 +17,21 @@
   background-color: transparent;
 }
 
+.header-profile-image-container {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid white;
+  transition: all 0.3s ease;
+}
+
+.header-profile-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* body {
   background-image: url('/Users/luka/Desktop/web/movieplus-front/src/assets/movieplus-bg.png');
   -o-background-size:35% auto;
