@@ -4,7 +4,6 @@ import { Media } from "../../models/Movie";
 import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
 import { useNavigate } from "react-router-dom";
 import quotesData from "../../dict/404_quotes.json";
-import { MediaCard } from "../main/MediaCard";
 import { generateHref } from "../../utils/Utils";
 import { Background } from "../watch/components/Background";
 
@@ -82,6 +81,7 @@ export default function UserNotFound({ username }: {
                                     </footer>
                                 </blockquote>
 
+                                <h6 className="mb-3">Here's recommended movie from us: </h6>
                                 <div onClick={() => navigate("/" + generateHref(randomMedia as Media).split("#")[1].split("/")[1])} style={{
                                     cursor: "pointer"
                                 }}>
@@ -105,10 +105,10 @@ export default function UserNotFound({ username }: {
                                                 </span>
                                             </div>
                                             <p className="mb-1 small">
-                                                <strong>{randomMedia?.originalLanguage?.toUpperCase() || "EN"}</strong>
+                                                <strong>{randomMedia?.originalLanguage?.toUpperCase() || "N/A"}</strong>
                                             </p>
                                             <p className="small">
-                                                Genres: {randomMedia?.genreList?.join(" | ") || "Action | Adventure"}
+                                                Genres: {randomMedia?.genreList?.join(" | ") || "N/A"}
                                             </p>
                                         </div>
                                     </div>

@@ -144,7 +144,8 @@ const AccountPage: React.FC = () => {
               className="rounded-circle border-2 border-primary"
               style={{
                 width: "120px",
-                height: "120px"
+                height: "120px",
+                objectFit: "cover"
               }}
               onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                 const target = e.target as HTMLImageElement;
