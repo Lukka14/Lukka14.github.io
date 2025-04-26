@@ -125,11 +125,9 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 
   try {
     const res = await axios.post(Endpoints.ACCESS_TOKEN,
-      { username },
       {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
+        username,
+        refreshToken
       }
     );
 
