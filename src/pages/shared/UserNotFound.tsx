@@ -81,7 +81,7 @@ export default function UserNotFound({ username }: {
                                     </footer>
                                 </blockquote>
 
-                                <h6 className="mb-3">Here's recommended movie from us: </h6>
+                                <h6 className="mb-3">Here's a recommended movie from us: </h6>
                                 <div onClick={() => navigate("/" + generateHref(randomMedia as Media).split("#")[1].split("/")[1])} style={{
                                     cursor: "pointer"
                                 }}>
