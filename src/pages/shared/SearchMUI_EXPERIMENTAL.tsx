@@ -15,6 +15,7 @@ import { User2Icon } from 'lucide-react';
 import Cookies from 'js-cookie';
 import { fetchMe } from '../../services/MediaService';
 import { ExitToApp, LogoutOutlined } from '@mui/icons-material';
+import { Endpoints } from '../../config/Config';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -178,17 +179,45 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
             <Button sx={{ color: 'white' }} onClick={() => navigate('/help')}>
               Help
             </Button>
-            {user?.username ? <Button sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }} onClick={() => navigate(`/profile/${user?.username}`)}>
-              <User2Icon fill="currentColor" />
-            </Button> : <Button sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }} data-bs-toggle="modal" data-bs-target="#loginModal">
-              <User2Icon />
-            </Button>}
-            {user?.username && <Button
-              sx={{ color: '#FF4C4C', fontSize: '1.2rem', p: '4px 8px', minWidth: 'auto' }}
-              onClick={handleLogout}
-            >
-              <ExitToApp />
-            </Button>}
+            {user?.username ? (
+              <Button
+                sx={{
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  p: '2px 18px',
+                  minWidth: 'auto',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+                onClick={() => navigate(`/profile/${user?.username}`)}
+              >
+                <div className="header-profile-image-container">
+                  <img
+                    src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                    alt="pfp"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
+                    }}
+                  />
+                </div>
+              </Button>
+            ) : (
+              <Button
+                sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }}
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal"
+              >
+                <User2Icon />
+              </Button>
+            )}
+            {user?.username && (
+              <Button
+                sx={{ color: '#FF4C4C', fontSize: '1.2rem', p: '4px 8px', minWidth: 'auto' }}
+                onClick={handleLogout}
+              >
+                <ExitToApp />
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
@@ -225,11 +254,39 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
           <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/help')}>
             Help
           </Button>
-          {user?.username ? <Button sx={{ color: 'white', fontSize: '1.2rem', display: "flex", gap: "10px" }} onClick={() => navigate(`/profile/${user?.username}`)}>
-            <User2Icon /> Profile
-          </Button> : <Button sx={{ color: 'white', fontSize: '1.2rem', display: "flex", gap: "10px" }} data-bs-toggle="modal" data-bs-target="#loginModal">
-            <User2Icon /> Profile
-          </Button>}
+          {user?.username ? (
+            <Button
+              sx={{
+                color: 'white',
+                fontSize: '1.2rem',
+                p: '2px 18px',
+                minWidth: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                gap: "8px"
+              }}
+              onClick={() => navigate(`/profile/${user?.username}`)}
+            >
+              <div className="header-profile-image-container">
+                <img
+                  src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                  alt="pfp"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
+                  }}
+                />
+              </div>
+              <span>Profile</span>
+            </Button>
+          ) : (
+            <Button
+              sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }}
+              data-bs-toggle="modal"
+              data-bs-target="#loginModal"
+            >
+              <User2Icon />
+            </Button>
+          )}
           {user?.username && <Button sx={{ color: '#FF4C4C', fontSize: '1.2rem', display: "flex", gap: "10px" }} onClick={() => handleLogout()}><ExitToApp /> Logout</Button>}
         </Box>
       </Drawer>

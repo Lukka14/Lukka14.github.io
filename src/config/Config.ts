@@ -19,7 +19,8 @@ export const Endpoints = {
   IMG_UPLOAD: `${API_URL}/image/upload`,
   ME: `${API_URL}/auth/me`,
   ACCESS_TOKEN: `${API_URL}/auth/accessToken`,
-  IMG_VIEW: `${API_URL}/image/view`
+  IMG_VIEW: `${API_URL}/image/view`,
+  GET_USER: `${API_URL}/auth/user`
 };
 
 export enum RoutePaths {

@@ -30,6 +30,18 @@ export const fetchMedia = (query: string): Promise<Media[]> => {
     });
 };
 
+export const fetchUserByUsername = (username: string) => {
+  return axios.get(Endpoints.GET_USER, {
+    params: {
+      username
+    }
+  }).then((res) => {
+    return res.data;
+  }).catch(err => {
+    console.error(err);
+    return null;
+  })
+}
 
 export const fetchOnlyMovies = (query: string): Promise<Media[]> => {
   const URL = Endpoints.MOVIES;
