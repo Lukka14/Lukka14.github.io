@@ -7,7 +7,7 @@ import {
 import { MovieList } from "../shared/MovieList";
 import CenteredH1 from "../shared/CenteredText";
 import { Background } from "../main/Background";
-import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
+import PrimarySearchAppBar from "../shared/TopNavBar";
 
 const TvSeriesPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);

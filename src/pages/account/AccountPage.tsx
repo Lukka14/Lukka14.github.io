@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Background } from "../main/Background";
 import { Edit, Trash2 } from "lucide-react";
-import { fetchMe, fetchMedia, fetchUserByUsername } from "../../services/MediaService";
+import {
+  fetchMe,
+  fetchMedia,
+  fetchUserByUsername,
+} from "../../services/MediaService";
 import { Media, Movie } from "../../models/Movie";
-import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
+import PrimarySearchAppBar from "../shared/TopNavBar";
 import { getRecentlyWatched } from "../shared/RecentlyWatchService";
 import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
 import AccountStatCard from "../shared/AccountStatCard";
@@ -22,7 +26,7 @@ const AccountPage: React.FC = () => {
   const [user, setUser] = useState<any>({
     username: username,
     avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
-    createdAt: new Date("2023-01-01")
+    createdAt: new Date("2023-01-01"),
   });
 
   useEffect(() => {
@@ -30,12 +34,11 @@ const AccountPage: React.FC = () => {
     setAvatarUrl(newAvatarUrl);
   }, [username, avatarVersion]);
 
-
   useEffect(() => {
     setUser({
       username: username,
       avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
-      createdAt: new Date("2023-01-01")
+      createdAt: new Date("2023-01-01"),
     });
     async function fetchUser() {
       const me = await fetchMe();
@@ -51,7 +54,7 @@ const AccountPage: React.FC = () => {
     async function fetchUserByUsrname() {
       const userByUsername = await fetchUserByUsername(username!);
       if (userByUsername) {
-        setUser((prev: any) => ({ ...prev, ...userByUsername }))
+        setUser((prev: any) => ({ ...prev, ...userByUsername }));
       } else {
         setUser(null);
       }
@@ -59,7 +62,7 @@ const AccountPage: React.FC = () => {
 
     if (cookieUsername) {
       if (username == cookieUsername) {
-        fetchUser()
+        fetchUser();
       } else {
         fetchUserByUsrname();
       }
@@ -76,10 +79,10 @@ const AccountPage: React.FC = () => {
       });
     };
 
-    window.addEventListener('profile-updated', handleProfileUpdated);
+    window.addEventListener("profile-updated", handleProfileUpdated);
 
     return () => {
-      window.removeEventListener('profile-updated', handleProfileUpdated);
+      window.removeEventListener("profile-updated", handleProfileUpdated);
     };
   }, []);
 
@@ -87,20 +90,20 @@ const AccountPage: React.FC = () => {
   const accountStats = [
     {
       value: "42",
-      label: "Films Watched"
+      label: "Films Watched",
     },
     {
       value: "16",
-      label: "Favorites"
+      label: "Favorites",
     },
     {
       value: "23",
-      label: "Watchlist"
+      label: "Watchlist",
     },
     {
       value: "4.2",
-      label: "Avg Rating"
-    }
+      label: "Avg Rating",
+    },
   ];
 
   const handleSearch = (query: string) => {
@@ -109,8 +112,12 @@ const AccountPage: React.FC = () => {
       .catch((err) => console.error(err));
   };
 
-  const [favorites, setFavorites] = useState<Movie[]>(() => getRecentlyWatched());
-  const [watchlist, setWatchlist] = useState<Movie[]>(() => getRecentlyWatched());
+  const [favorites, setFavorites] = useState<Movie[]>(() =>
+    getRecentlyWatched()
+  );
+  const [watchlist, setWatchlist] = useState<Movie[]>(() =>
+    getRecentlyWatched()
+  );
 
   function removeFromFavorites(id: number): void {
     throw new Error("Function not implemented.");
@@ -120,9 +127,8 @@ const AccountPage: React.FC = () => {
     throw new Error("Function not implemented.");
   }
 
-
   if (user == null) {
-    return <UserNotFound username={username!} />
+    return <UserNotFound username={username!} />;
   }
 
   return (
@@ -130,12 +136,15 @@ const AccountPage: React.FC = () => {
       <Background url="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true" />
       <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
       <div className="container-xl px-4 py-1">
-        <div className="rounded-lg shadow-lg p-4 mb-4" style={{
-          padding: "24px",
-          marginTop: "24px",
-          background: "rgba(0, 0, 0, 0.4)",
-          backdropFilter: "blur(8px)"
-        }}>
+        <div
+          className="rounded-lg shadow-lg p-4 mb-4"
+          style={{
+            padding: "24px",
+            marginTop: "24px",
+            background: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
           <div className="d-flex align-items-center gap-3 justify-content-center">
             <img
               key={`avatar-${avatarVersion}`}
@@ -145,7 +154,7 @@ const AccountPage: React.FC = () => {
               style={{
                 width: "120px",
                 height: "120px",
-                objectFit: "cover"
+                objectFit: "cover",
               }}
               onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                 const target = e.target as HTMLImageElement;
@@ -157,53 +166,78 @@ const AccountPage: React.FC = () => {
             <div>
               <h2 className="h3 text-white">{user.username}</h2>
               {user?.email && <p className="text-muted">{user.email}</p>}
-              <p className="small text-muted">Member since {user.createdAt.toLocaleString("default", { month: "short", year: "numeric" })}</p>
+              <p className="small text-muted">
+                Member since{" "}
+                {user.createdAt.toLocaleString("default", {
+                  month: "short",
+                  year: "numeric",
+                })}
+              </p>
             </div>
           </div>
 
-          {authed && <div className="mt-4 d-flex gap-2 justify-content-center">
-            <button className="btn btn-outline-primary px-4 py-2 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-              <Edit size={16} />
-              Edit Profile
-            </button>
-            <button className="btn btn-outline-danger px-4 py-2 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-              <Trash2 size={16} />
-              Delete Account
-            </button>
-          </div>}
+          {authed && (
+            <div className="mt-4 d-flex gap-2 justify-content-center">
+              <button
+                className="btn btn-outline-primary px-4 py-2 d-flex align-items-center gap-2"
+                data-bs-toggle="modal"
+                data-bs-target="#editProfileModal"
+              >
+                <Edit size={16} />
+                Edit Profile
+              </button>
+              <button
+                className="btn btn-outline-danger px-4 py-2 d-flex align-items-center gap-2"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteAccountModal"
+              >
+                <Trash2 size={16} />
+                Delete Account
+              </button>
+            </div>
+          )}
 
-          <div className="mt-4 d-flex justify-content-between" style={{ maxWidth: "500px", margin: "auto" }}>
-            {accountStats.map((stat, index) => <AccountStatCard key={index} label={stat.label} value={stat.value} />)}
+          <div
+            className="mt-4 d-flex justify-content-between"
+            style={{ maxWidth: "500px", margin: "auto" }}
+          >
+            {accountStats.map((stat, index) => (
+              <AccountStatCard
+                key={index}
+                label={stat.label}
+                value={stat.value}
+              />
+            ))}
           </div>
         </div>
 
-        <div className="row" style={{
-          margin: "auto",
-          padding: "24px",
-          marginTop: "24px",
-          background: "rgba(0, 0, 0, 0.4)",
-          backdropFilter: "blur(8px)"
-        }}>
+        <div
+          className="row"
+          style={{
+            margin: "auto",
+            padding: "24px",
+            marginTop: "24px",
+            background: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
           <div className="col-12">
-            <MoviesCarouselV2
-              similarMovies={favorites}
-              title="Favorites"
-            />
+            <MoviesCarouselV2 similarMovies={favorites} title="Favorites" />
           </div>
         </div>
 
-        <div className="row" style={{
-          margin: "24px auto 0px auto",
-          padding: "24px",
-          marginTop: "24px",
-          background: "rgba(0, 0, 0, 0.4)",
-          backdropFilter: "blur(8px)"
-        }}>
+        <div
+          className="row"
+          style={{
+            margin: "24px auto 0px auto",
+            padding: "24px",
+            marginTop: "24px",
+            background: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
           <div className="col-12">
-            <MoviesCarouselV2
-              similarMovies={watchlist}
-              title="Watchlist"
-            />
+            <MoviesCarouselV2 similarMovies={watchlist} title="Watchlist" />
           </div>
         </div>
       </div>

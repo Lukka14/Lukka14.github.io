@@ -77,7 +77,7 @@ export interface User {
   credentialsNonExpired: boolean;
 }
 
-export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps) {
+export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
@@ -116,8 +116,7 @@ export default function SearchMUI_EXP({ onClick, displaySearch }: SearchBarProps
           {/* Logo */}
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
             <img
-              // src="https://gcdnb.pbrd.co/images/ju7aKvMSnS9w.png?o=1"
-              src="https://gcdnb.pbrd.co/images/IMsjmeiKbRX1.png?o=1"
+              src="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-logo-no-bg.png?raw=true"
               alt="Movie Plus Logo"
               style={{ height: '60px', cursor: 'pointer' }}
               onClick={() => navigate('/')}

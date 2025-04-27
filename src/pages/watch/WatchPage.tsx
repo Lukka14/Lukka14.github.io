@@ -3,7 +3,7 @@ import { Background } from "./components/Background";
 import VideoPlayer from "./components/VideoPlayer";
 import { MediaType, ImdbMedia, TvSeries, Media } from "../../models/Movie";
 import { fetchMovie, fetchTvSeries } from "../../services/MediaService";
-import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
+import PrimarySearchAppBar from "../shared/TopNavBar";
 import MediaInfo from "./components/MediaInfo";
 import StreamingServerSelector from "./components/StreamingServerSelector";
 import { Server } from "./models/Server";
@@ -96,14 +96,17 @@ const WatchPage: React.FC = () => {
     setPlayerUrl(url);
   };
 
-  if (media != null && (mediaType === MediaType.TV_SERIES || mediaType === MediaType.MOVIE)) {
+  if (
+    media != null &&
+    (mediaType === MediaType.TV_SERIES || mediaType === MediaType.MOVIE)
+  ) {
     saveRecentlyWatched(media!);
   }
 
   return (
     <>
       <Background url={bgUrl} />
-      <PrimarySearchAppBar onClick={() => { }} displaySearch={false} />
+      <PrimarySearchAppBar onClick={() => {}} displaySearch={false} />
       {/* <MovieList mediaList={medias} /> */}
       <VideoPlayer
         id={id}
@@ -121,15 +124,18 @@ const WatchPage: React.FC = () => {
         setSeasonEpisode={updateSeasonEpisode}
       ></MediaInfo>
 
-      <div className="container-xl" >
+      <div className="container-xl">
         {media?.similar && (
-          <div className="row" style={{
-            margin: "auto",
-            padding: "24px",
-            marginTop: "24px",
-            background: "rgba(0, 0, 0, 0.4)",
-            backdropFilter: "blur(8px)"
-          }}>
+          <div
+            className="row"
+            style={{
+              margin: "auto",
+              padding: "24px",
+              marginTop: "24px",
+              background: "rgba(0, 0, 0, 0.4)",
+              backdropFilter: "blur(8px)",
+            }}
+          >
             <div className="col-12">
               <MoviesCarouselV2
                 similarMovies={media.similar}

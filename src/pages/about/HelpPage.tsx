@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Background } from "../main/Background";
-import PrimarySearchAppBar from "../shared/SearchMUI_EXPERIMENTAL";
+import PrimarySearchAppBar from "../shared/TopNavBar";
 import DataTable from "./DataTable";
 import Breadcrumb from "./BreadCrumb";
 import { Media } from "../../models/Movie";
