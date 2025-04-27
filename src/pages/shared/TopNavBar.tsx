@@ -1,57 +1,57 @@
-import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
-import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
-import MenuIcon from '@mui/icons-material/Menu';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import { User2Icon } from 'lucide-react';
-import Cookies from 'js-cookie';
-import { fetchMe } from '../../services/MediaService';
-import { ExitToApp, LogoutOutlined } from '@mui/icons-material';
-import { Endpoints } from '../../config/Config';
+import * as React from "react";
+import { styled, alpha } from "@mui/material/styles";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import SearchIcon from "@mui/icons-material/Search";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import { User2Icon } from "lucide-react";
+import Cookies from "js-cookie";
+import { fetchMe } from "../../services/MediaService";
+import { ExitToApp, LogoutOutlined } from "@mui/icons-material";
+import { Endpoints } from "../../config/Config";
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
+  "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('md')]: {
+  width: "100%",
+  [theme.breakpoints.up("md")]: {
     marginLeft: theme.spacing(3),
-    width: 'auto',
+    width: "auto",
   },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
+  color: "inherit",
+  "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
   },
 }));
@@ -99,7 +99,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
       if (user?.username) setUser(user);
     }
     fetchUser();
-  }, [])
+  }, []);
 
   const handleLogout = () => {
     Cookies.remove("accessToken");
@@ -107,19 +107,22 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
     Cookies.remove("username");
     setUser(null);
     navigate("/");
-  }
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.0)' }}>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: "rgba(255, 255, 255, 0.0)" }}
+      >
         <Toolbar>
           {/* Logo */}
-          <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
             <img
               src="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-logo-no-bg.png?raw=true"
               alt="Movie Plus Logo"
-              style={{ height: '60px', cursor: 'pointer' }}
-              onClick={() => navigate('/')}
+              style={{ height: "60px", cursor: "pointer" }}
+              onClick={() => navigate("/")}
             />
           </Box>
           {/* Title */}
@@ -127,8 +130,8 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', md: 'block', cursor: 'pointer' } }}
-            onClick={() => navigate('/')}
+            sx={{ display: { xs: "none", md: "block", cursor: "pointer" } }}
+            onClick={() => navigate("/")}
           >
             Movie Plus
           </Typography>
@@ -142,7 +145,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
               <StyledInputBase
                 id="movieSearchInput"
                 placeholder="Search…"
-                inputProps={{ 'aria-label': 'movie' }}
+                inputProps={{ "aria-label": "movie" }}
                 onChange={handleSearch}
               />
             </Search>
@@ -155,38 +158,44 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             edge="end"
             color="inherit"
             aria-label="menu"
-            sx={{ display: { xs: 'block', md: 'none' } }}
+            sx={{ display: { xs: "block", md: "none" } }}
             onClick={() => toggleDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
 
           {/* Desktop Menu Items */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, ml: 2 }}>
-            <Button sx={{ color: 'white' }} onClick={() => navigate('/')}>
+          <Box sx={{ display: { xs: "none", md: "flex" }, ml: 2 }}>
+            <Button sx={{ color: "white" }} onClick={() => navigate("/")}>
               Home
             </Button>
-            <Button sx={{ color: 'white' }} onClick={() => navigate('/multiSearch')}>
+            <Button
+              sx={{ color: "white" }}
+              onClick={() => navigate("/multiSearch")}
+            >
               Search
             </Button>
-            <Button sx={{ color: 'white' }} onClick={() => navigate('/movies')}>
+            <Button sx={{ color: "white" }} onClick={() => navigate("/movies")}>
               Movies
             </Button>
-            <Button sx={{ color: 'white' }} onClick={() => navigate('/tv-shows')}>
+            <Button
+              sx={{ color: "white" }}
+              onClick={() => navigate("/tv-shows")}
+            >
               TV Shows
             </Button>
-            <Button sx={{ color: 'white' }} onClick={() => navigate('/help')}>
+            <Button sx={{ color: "white" }} onClick={() => navigate("/help")}>
               Help
             </Button>
             {user?.username ? (
               <Button
                 sx={{
-                  color: 'white',
-                  fontSize: '1.2rem',
-                  p: '2px 18px',
-                  minWidth: 'auto',
-                  display: 'flex',
-                  alignItems: 'center'
+                  color: "white",
+                  fontSize: "1.2rem",
+                  p: "2px 18px",
+                  minWidth: "auto",
+                  display: "flex",
+                  alignItems: "center",
                 }}
                 onClick={() => navigate(`/profile/${user?.username}`)}
               >
@@ -202,7 +211,12 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
               </Button>
             ) : (
               <Button
-                sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }}
+                sx={{
+                  color: "white",
+                  fontSize: "1.2rem",
+                  p: "4px 18px",
+                  minWidth: "auto",
+                }}
                 data-bs-toggle="modal"
                 data-bs-target="#loginModal"
               >
@@ -211,7 +225,12 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             )}
             {user?.username && (
               <Button
-                sx={{ color: '#FF4C4C', fontSize: '1.2rem', p: '4px 8px', minWidth: 'auto' }}
+                sx={{
+                  color: "#FF4C4C",
+                  fontSize: "1.2rem",
+                  p: "4px 8px",
+                  minWidth: "auto",
+                }}
                 onClick={handleLogout}
               >
                 <ExitToApp />
@@ -227,42 +246,65 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
         open={drawerOpen}
         onClose={() => toggleDrawer(false)}
         sx={{
-          '& .MuiDrawer-paper': {
-            backgroundImage: 'url(https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            color: 'white',
+          "& .MuiDrawer-paper": {
+            backgroundImage:
+              "url(https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            color: "white",
             width: 200, // Smaller width
             padding: 2, // Add padding inside the drawer
           },
         }}
       >
-        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/')}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <Button
+            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
+            onClick={() => navigate("/")}
+          >
             Home
           </Button>
-          <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/multiSearch')}>
+          <Button
+            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
+            onClick={() => navigate("/multiSearch")}
+          >
             Search
           </Button>
-          <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/movies')}>
+          <Button
+            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
+            onClick={() => navigate("/movies")}
+          >
             Movies
           </Button>
-          <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/tv-shows')}>
+          <Button
+            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
+            onClick={() => navigate("/tv-shows")}
+          >
             TV Shows
           </Button>
-          <Button sx={{ width: '100%', color: 'white', fontSize: '1.2rem' }} onClick={() => navigate('/help')}>
+          <Button
+            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
+            onClick={() => navigate("/help")}
+          >
             Help
           </Button>
           {user?.username ? (
             <Button
               sx={{
-                color: 'white',
-                fontSize: '1.2rem',
-                p: '2px 18px',
-                minWidth: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                gap: "8px"
+                color: "white",
+                fontSize: "1.2rem",
+                p: "2px 18px",
+                minWidth: "auto",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
               }}
               onClick={() => navigate(`/profile/${user?.username}`)}
             >
@@ -279,14 +321,31 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             </Button>
           ) : (
             <Button
-              sx={{ color: 'white', fontSize: '1.2rem', p: '4px 18px', minWidth: 'auto' }}
+              sx={{
+                color: "white",
+                fontSize: "1.2rem",
+                p: "4px 18px",
+                minWidth: "auto",
+              }}
               data-bs-toggle="modal"
               data-bs-target="#loginModal"
             >
               <User2Icon />
             </Button>
           )}
-          {user?.username && <Button sx={{ color: '#FF4C4C', fontSize: '1.2rem', display: "flex", gap: "10px" }} onClick={() => handleLogout()}><ExitToApp /> Logout</Button>}
+          {user?.username && (
+            <Button
+              sx={{
+                color: "#FF4C4C",
+                fontSize: "1.2rem",
+                display: "flex",
+                gap: "10px",
+              }}
+              onClick={() => handleLogout()}
+            >
+              <ExitToApp /> Logout
+            </Button>
+          )}
         </Box>
       </Drawer>
     </Box>
