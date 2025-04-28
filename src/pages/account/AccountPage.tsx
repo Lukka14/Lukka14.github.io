@@ -14,7 +14,7 @@ import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
 import AccountStatCard from "../shared/AccountStatCard";
 import { Endpoints } from "../../config/Config";
 import Cookies from "js-cookie";
-import UserNotFound from "../shared/UserNotFound";
+import NotFoundPage from "../shared/NotFoundPage";
 
 const AccountPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
@@ -132,7 +132,7 @@ const AccountPage: React.FC = () => {
   }
 
   if (user == null) {
-    return <UserNotFound username={username!} />;
+    return <NotFoundPage />;
   }
 
   return (

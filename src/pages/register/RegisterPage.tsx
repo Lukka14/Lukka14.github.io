@@ -18,10 +18,36 @@ import { useNavigate } from "react-router-dom";
 
 const schema = z
   .object({
-    username: z.string().min(3, "Username must be at least 3 characters"),
-    email: z.string().email("Invalid email"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(6),
+    username: z
+      .string()
+      .min(3, "Username must be at least 3 characters")
+      .max(20, "Username must not exceed 20 characters")
+      .regex(
+        /^[a-zA-Z0-9._-]+$/,
+        "Username can only contain letters, numbers, dots, underscores, and hyphens"
+      )
+      .refine((val) => val.trim().length > 0, "Username cannot be empty"),
+
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .regex(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+        "Invalid email format"
+      )
+      .refine((val) => val.trim().length > 0, "Email cannot be empty"),
+
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(50, "Password must not exceed 50 characters")
+      .regex(
+        /^(?=.*[a-zA-Z])[\x00-\x7F]+$/,
+        "Password must contain at least one letter"
+      )
+      .refine((val) => val.trim().length > 0, "Password cannot be empty"),
+
+    confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -75,12 +101,6 @@ export default function RegisterPage() {
         secure: true,
         sameSite: "Strict",
       });
-
-      // Cookies.set("refreshToken", refreshToken.token, {
-      //     expires: new Date(Date.now() + refreshToken.expiresIn),
-      //     secure: true,
-      //     sameSite: "Strict",
-      // });
 
       Cookies.set("username", data.username, {
         expires: new Date(Date.now() + accessToken.expiresIn),
@@ -197,10 +217,6 @@ export default function RegisterPage() {
           >
             {loading ? "Registering..." : "Register"}
           </button>
-          {/* idk */}
-          {/* <div className="text-center mt-3">
-                        Already have an account? <a href="/login">Login</a>
-                    </div> */}
         </form>
       </div>
     </>

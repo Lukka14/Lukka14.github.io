@@ -7,7 +7,7 @@ import quotesData from "../../dict/404_quotes.json";
 import { generateHref } from "../../utils/Utils";
 import { Background } from "../watch/components/Background";
 
-export default function UserNotFound({ username }: { username: string }) {
+export default function NotFoundPage() {
   const [medias, setMedias] = useState<Media[]>([]);
   const [randomMedia, setRandomMedia] = useState<Media>();
   const [randomQuote, setRandomQuote] = useState<{
@@ -101,9 +101,9 @@ export default function UserNotFound({ username }: { username: string }) {
                     onClick={() =>
                       navigate(
                         "/" +
-                          generateHref(randomMedia as Media)
-                            .split("#")[1]
-                            .split("/")[1]
+                        generateHref(randomMedia as Media)
+                          .split("#")[1]
+                          .split("/")[1]
                       )
                     }
                     style={{

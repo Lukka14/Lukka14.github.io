@@ -13,7 +13,7 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
       } else {
         seriesSuffix = `&s=${1}&e=${1}`;
       }
-      
+
     }
 
     // For hash routing, ensure the correct URL structure
@@ -22,7 +22,7 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
 
   return (
     <div className="container py-4">
-      <div className="row g-4 row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-5">
+      <div className="row g-4 row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-5 justify-content-center">
         {mediaList.map((media: Media) => (
           <div key={media.id || media.title} className="col">
             <MediaCard mediaInfo={media} href={generateHref(media)} />
