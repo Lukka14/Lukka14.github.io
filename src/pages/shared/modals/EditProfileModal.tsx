@@ -21,7 +21,6 @@ export default function EditProfileModal() {
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const closeButtonRef = useRef<HTMLButtonElement>(null);
     const username = Cookies.get("username");
-    const accessToken = Cookies.get("accessToken");
     const [isLoading, setIsLoading] = useState(true);
 
     const [user, setUser] = useState({
