@@ -32,6 +32,8 @@ const AccountPage: React.FC = () => {
   useEffect(() => {
     const newAvatarUrl = `${Endpoints.IMG_VIEW}/${username}.webp`;
     setAvatarUrl(newAvatarUrl);
+    if (username === cookieUsername) setAuthed(true)
+    else setAuthed(false);
   }, [username, avatarVersion]);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ const AccountPage: React.FC = () => {
     });
     async function fetchUser() {
       const me = await fetchMe();
-      if (me?.username && me?.username === username) {
+      if (me?.username && me?.username?.toLowerCase() === username?.toLowerCase()) {
         setUser((prev: any) => {
           const updated = { ...prev, ...me };
           setAuthed(true);
@@ -55,13 +57,15 @@ const AccountPage: React.FC = () => {
       const userByUsername = await fetchUserByUsername(username!);
       if (userByUsername) {
         setUser((prev: any) => ({ ...prev, ...userByUsername }));
+        setAvatarUrl(userByUsername?.avatarUrl);
+        window.history.replaceState({}, '', `/#/profile/` + userByUsername.username);
       } else {
         setUser(null);
       }
     }
 
     if (cookieUsername) {
-      if (username == cookieUsername) {
+      if (username?.toLowerCase() == cookieUsername?.toLowerCase()) {
         fetchUser();
       } else {
         fetchUserByUsrname();
