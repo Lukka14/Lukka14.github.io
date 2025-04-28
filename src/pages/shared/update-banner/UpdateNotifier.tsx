@@ -33,7 +33,7 @@ export default function UpdateNotifier() {
         setIsExiting(true);
         setTimeout(() => {
             setShowUpdate(false);
-            // Cookies.set("dismissedUpdateCode", CURRENT_UPDATE_CODE, { expires: 365 });
+            Cookies.set("dismissedUpdateCode", CURRENT_UPDATE_CODE, { expires: 365 });
         }, 500);
     };
 

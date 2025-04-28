@@ -121,7 +121,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             <img
               src="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-logo-no-bg.png?raw=true"
               alt="Movie Plus Logo"
-              style={{ height: "60px", cursor: "pointer" }}
+              style={{ height: "50px", cursor: "pointer" }}
               onClick={() => navigate("/")}
             />
           </Box>
