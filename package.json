@@ -1,7 +1,7 @@
 {
   "name": "movieplus-front",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0-beta",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
+    "@types/node": "^22.15.3",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/react-router-dom": "^5.3.3",

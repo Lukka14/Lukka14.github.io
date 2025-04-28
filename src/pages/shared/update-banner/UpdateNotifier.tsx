@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import "./UpdateNotifier.css";
 
-const CURRENT_UPDATE_CODE = "v1.2.1";
+declare const APP_VERSION: string;
+
+const CURRENT_UPDATE_CODE = `v${APP_VERSION}`;
 
 const updateInfo = [
     {
-        title: "Version 1.2.1 Updates",
+        title: `🚀 Big Updates Arrived!`,
         items: [
-            "New dashboard interface with improved analytics",
-            "Performance optimizations for faster load times",
-            "Dark mode support across all pages",
-            "Bug fixes for mobile responsiveness"
+            "Now you'll get notified about important updates on the page!",
+            "Added credentials validation for registration",
+            "Updated Media Card style"
         ]
     }
 ];
@@ -32,7 +33,7 @@ export default function UpdateNotifier() {
         setIsExiting(true);
         setTimeout(() => {
             setShowUpdate(false);
-            Cookies.set("dismissedUpdateCode", CURRENT_UPDATE_CODE, { expires: 365 });
+            // Cookies.set("dismissedUpdateCode", CURRENT_UPDATE_CODE, { expires: 365 });
         }, 500);
     };
 
