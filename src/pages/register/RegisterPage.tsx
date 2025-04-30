@@ -15,6 +15,7 @@ import PrimarySearchAppBar from "../shared/TopNavBar";
 import "./RegisterPage.css";
 import { Endpoints } from "../../config/Config";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 const schema = z
   .object({
@@ -89,31 +90,32 @@ export default function RegisterPage() {
         password: data.password,
       });
 
-      const res = await axios.post(Endpoints.LOGIN, {
-        username: data.username,
-        password: data.password,
-      });
-
-      const { accessToken } = res.data;
-
-      Cookies.set("accessToken", accessToken.token, {
-        expires: new Date(Date.now() + accessToken.expiresIn),
-        secure: true,
-        sameSite: "Strict",
-      });
-
       Cookies.set("username", data.username, {
-        expires: new Date(Date.now() + accessToken.expiresIn),
+        expires: 7,
         secure: true,
         sameSite: "Strict",
       });
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.setAttribute("data-bs-toggle", "modal");
+      button.setAttribute("data-bs-target", "#verificationModal");
+      button.style.display = "none";
+
+      document.body.appendChild(button);
+      button.click();
+      document.body.removeChild(button);
 
       reset();
-      window.location.href = "/#/profile/" + data.username;
     } catch (err: any) {
-      setErrorMessage(
-        err.response?.data?.message || "Registration failed. Please try again."
-      );
+      const response = err.response;
+      if (response?.status === 409 && response?.data?.detail) {
+        setErrorMessage(response.data.detail);
+      } else {
+        setErrorMessage(
+          response?.data?.message || "Registration failed. Please try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -212,9 +214,12 @@ export default function RegisterPage() {
           </div>
           <button
             type="submit"
-            className="btn btn-outline-primary w-100"
+            className="btn btn-outline-primary d-flex align-items-center  justify-content-center w-100"
             disabled={loading}
           >
+            {loading && <CircularProgress size={15} style={{
+              marginRight: "10px"
+            }} />}
             {loading ? "Registering..." : "Register"}
           </button>
         </form>

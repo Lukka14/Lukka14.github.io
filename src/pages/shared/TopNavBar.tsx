@@ -109,6 +109,28 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
     navigate("/");
   };
 
+  const handleUserBtn = () => {
+    async function fetchUser() {
+      const user = await fetchMe();
+      if (user?.username) {
+        setUser(user);
+        navigate(`/profile/${user?.username}`);
+      } else {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("data-bs-toggle", "modal");
+        button.setAttribute("data-bs-target", "#loginModal");
+        button.style.display = "none";
+
+        document.body.appendChild(button);
+        button.click();
+        document.body.removeChild(button);
+
+      }
+    }
+    fetchUser();
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -151,18 +173,65 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             </Search>
           )}
 
-          {/* Hamburger Icon for Mobile */}
           <Box sx={{ flexGrow: 1 }} />
-          <IconButton
-            size="large"
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            sx={{ display: { xs: "block", md: "none" } }}
-            onClick={() => toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
+          <div className="d-flex align-items-center gap-2">
+            {user?.username ? (
+              <Button
+                sx={{
+                  color: "white",
+                  fontSize: "1.2rem",
+                  p: "2px 18px",
+                  minWidth: "auto",
+                  alignItems: "center",
+                  borderRight: "1px solid white",
+                  borderTopRightRadius: "0px",
+                  borderBottomRightRadius: "0px",
+                  display: { xs: "flex", md: "none" },
+                  textTransform: "none",
+                }}
+                onClick={() => navigate(`/profile/${user?.username}`)}
+              >
+                <div className="d-flex align-items-center gap-2">
+                  <span className="h6 mb-0">
+                    {user?.username}
+                  </span>
+                  <div className="header-profile-image-container">
+                    <img
+                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                      alt="pfp"
+                      onError={(e) => {
+                        e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
+                      }}
+                    />
+                  </div>
+                </div>
+              </Button>
+            ) : (
+              <Button
+                sx={{
+                  color: "white",
+                  fontSize: "1.2rem",
+                  p: "4px 5px",
+                  minWidth: "auto",
+                  display: { xs: "block", md: "none" }
+                }}
+                onClick={() => handleUserBtn()}
+              >
+                <User2Icon />
+              </Button>
+            )}
+            {/* Hamburger Icon for Mobile */}
+            <IconButton
+              size="large"
+              edge="end"
+              color="inherit"
+              aria-label="menu"
+              sx={{ display: { xs: "block", md: "none" } }}
+              onClick={() => toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+          </div>
 
           {/* Desktop Menu Items */}
           <Box sx={{ display: { xs: "none", md: "flex" }, ml: 2 }}>
@@ -187,6 +256,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             <Button sx={{ color: "white" }} onClick={() => navigate("/help")}>
               Help
             </Button>
+
             {user?.username ? (
               <Button
                 sx={{
@@ -196,17 +266,26 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
                   minWidth: "auto",
                   display: "flex",
                   alignItems: "center",
+                  borderLeft: "1px solid white",
+                  borderTopLeftRadius: "0px",
+                  borderBottomLeftRadius: "0px",
+                  textTransform: "none",
                 }}
                 onClick={() => navigate(`/profile/${user?.username}`)}
               >
-                <div className="header-profile-image-container">
-                  <img
-                    src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
-                    alt="pfp"
-                    onError={(e) => {
-                      e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
-                    }}
-                  />
+                <div className="d-flex align-items-center gap-2">
+                  <span className="h6 mb-0">
+                    {user?.username}
+                  </span>
+                  <div className="header-profile-image-container">
+                    <img
+                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                      alt="pfp"
+                      onError={(e) => {
+                        e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
+                      }}
+                    />
+                  </div>
                 </div>
               </Button>
             ) : (
@@ -217,8 +296,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
                   p: "4px 18px",
                   minWidth: "auto",
                 }}
-                data-bs-toggle="modal"
-                data-bs-target="#loginModal"
+                onClick={() => handleUserBtn()}
               >
                 <User2Icon />
               </Button>
@@ -240,7 +318,6 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer Menu */}
       <Drawer
         anchor="right"
         open={drawerOpen}
@@ -257,6 +334,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
           },
         }}
       >
+
         <Box
           sx={{
             width: "100%",
@@ -295,44 +373,6 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
           >
             Help
           </Button>
-          {user?.username ? (
-            <Button
-              sx={{
-                color: "white",
-                fontSize: "1.2rem",
-                p: "2px 18px",
-                minWidth: "auto",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-              onClick={() => navigate(`/profile/${user?.username}`)}
-            >
-              <div className="header-profile-image-container">
-                <img
-                  src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
-                  alt="pfp"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
-                  }}
-                />
-              </div>
-              <span>Profile</span>
-            </Button>
-          ) : (
-            <Button
-              sx={{
-                color: "white",
-                fontSize: "1.2rem",
-                p: "4px 18px",
-                minWidth: "auto",
-              }}
-              data-bs-toggle="modal"
-              data-bs-target="#loginModal"
-            >
-              <User2Icon />
-            </Button>
-          )}
           {user?.username && (
             <Button
               sx={{
@@ -348,6 +388,6 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
           )}
         </Box>
       </Drawer>
-    </Box>
+    </Box >
   );
 }

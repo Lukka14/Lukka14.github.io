@@ -48,7 +48,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
     };
     img.src = posterUrl;
   }, [posterUrl]);
-          
+
   const getDisplayGenres = () => {
     if (!mediaInfo?.genreList || mediaInfo.genreList.length === 0) {
       return null;
@@ -64,7 +64,10 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href }) => {
 
   return (
     <a href={href} className="text-decoration-none media-card-link">
-      <div className={`card h-100 border-0 shadow-lg position-relative media-card ${!imageLoaded ? 'skeleton-card' : ''}`}>
+      <div className={`card h-100 border-0 shadow-lg position-relative media-card ${!imageLoaded ? 'skeleton-card' : ''}`}
+        style={{
+          background: "black"
+        }}>
         {!imageLoaded ? (
           <>
             <div className="skeleton-image"></div>
