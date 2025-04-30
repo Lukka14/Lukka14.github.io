@@ -77,6 +77,7 @@ const AccountPage: React.FC = () => {
         setUser((prev: any) => {
           const updated = { ...prev, ...me };
           setAuthed(true);
+          setAvatarUrl(me?.avatarUrl);
           return updated;
         });
       }
@@ -86,7 +87,6 @@ const AccountPage: React.FC = () => {
       const userByUsername = await fetchUserByUsername(username!);
       if (userByUsername) {
         setUser((prev: any) => ({ ...prev, ...userByUsername }));
-        console.log(userByUsername);
         setAvatarUrl(userByUsername?.avatarUrl);
         window.history.replaceState({}, '', `/#/profile/` + userByUsername.username);
       } else {
