@@ -1,5 +1,4 @@
 // const API_URL = "http://localhost:8080";
-// const API_URL = "https://42a5-2a0b-6204-12b2-c00-189b-3455-5692-8a0a.ngrok-free.app";
 const API_URL = "https://api.movieplus.live";
 // const API_URL = "https://dev.movieplus.live";
 
