@@ -129,6 +129,7 @@ export default function LoginModal() {
                         loading={loading}
                         onPrimaryClick={handleSubmit(onSubmit)}
                         closeButtonRef={closeButtonRef}
+                        primaryBtnText="Login"
                     />
                 </div>
             </div>
