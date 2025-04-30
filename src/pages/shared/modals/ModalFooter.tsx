@@ -34,7 +34,7 @@ export default function ModalFooter({
                 {loading && <CircularProgress size={15} style={{
                     marginRight: "10px"
                 }} />}
-                {loading ? "Logging in..." : "Login"}
+                {loading ? primaryBtnText == "Login" ? "Logging in..." : primaryBtnText : primaryBtnText}
             </button>}
         </div>
     );

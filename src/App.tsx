@@ -9,7 +9,7 @@ import TvSeriesPage from "./pages/movie/TvSeriesPage";
 import MultiSearchPage from "./pages/movie/MultiSearchPage";
 import HelpPage from "./pages/about/HelpPage";
 import RegisterPage from "./pages/register/RegisterPage";
-import DevelopmentFooter from "./pages/shared/DevelopmentFooter";
+import DevelopmentFooter from "./pages/shared/development-footer/DevelopmentFooter";
 import UpdateNotifier from "./pages/shared/update-banner/UpdateNotifier";
 import VerifyEmailPage from "./pages/verify-email/VerifyEmailPage";
 
