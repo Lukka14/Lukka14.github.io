@@ -10,9 +10,9 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
+            "Email verification is now required after signing up",
             "Now you'll get notified about important updates on the page!",
             "Added credentials validation for registration",
-            "Email verification is now required after signing up",
             "Updated Media Card style"
         ]
     }
