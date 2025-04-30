@@ -6,11 +6,9 @@ import Breadcrumb from "./BreadCrumb";
 import { Media } from "../../models/Movie";
 import { fetchTopRatedMovies } from "../../services/MediaService";
 import CenteredH1 from "../shared/CenteredText";
-import Modal from "./ContactModalWindow";
 
 const HelpPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (medias.length === 0) {
     fetchTopRatedMovies()
@@ -18,14 +16,23 @@ const HelpPage: React.FC = () => {
       .catch((err) => console.error(err));
   }
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = () => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.setAttribute("data-bs-toggle", "modal");
+    button.setAttribute("data-bs-target", "#contactModalWindow");
+    button.style.display = "none";
+
+    document.body.appendChild(button);
+    button.click();
+    document.body.removeChild(button);
+  }
 
   return (
     <>
       <Background url="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true" />
 
-      <PrimarySearchAppBar onClick={() => {}} displaySearch={false} />
+      <PrimarySearchAppBar onClick={() => { }} displaySearch={false} />
 
       <Breadcrumb />
 
@@ -52,8 +59,6 @@ const HelpPage: React.FC = () => {
           Notify Me
         </button>
       </div>
-
-      {isModalOpen && <Modal onClose={closeModal} />}
     </>
   );
 };

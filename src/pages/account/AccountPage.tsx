@@ -10,11 +10,40 @@ import {
 import { Media, Movie } from "../../models/Movie";
 import PrimarySearchAppBar from "../shared/TopNavBar";
 import { getRecentlyWatched } from "../shared/RecentlyWatchService";
-import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
 import AccountStatCard from "../shared/AccountStatCard";
 import { Endpoints } from "../../config/Config";
 import Cookies from "js-cookie";
 import NotFoundPage from "../shared/NotFoundPage";
+import { WorkInProgress } from "../shared/WorkInProgress";
+
+const accountPageStyle = `
+  .similar-movies-controls {
+    display: flex;
+    gap: 10px;
+  }
+
+  .similar-movies-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: #fff;
+  }
+
+  .similar-movies-button:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .similar-movies-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }`
 
 const AccountPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
@@ -57,6 +86,7 @@ const AccountPage: React.FC = () => {
       const userByUsername = await fetchUserByUsername(username!);
       if (userByUsername) {
         setUser((prev: any) => ({ ...prev, ...userByUsername }));
+        console.log(userByUsername);
         setAvatarUrl(userByUsername?.avatarUrl);
         window.history.replaceState({}, '', `/#/profile/` + userByUsername.username);
       } else {
@@ -137,6 +167,9 @@ const AccountPage: React.FC = () => {
 
   return (
     <>
+      <style>
+        {accountPageStyle}
+      </style>
       <Background url="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true" />
       <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
       <div className="container-xl px-4 py-1">
@@ -159,6 +192,7 @@ const AccountPage: React.FC = () => {
                 width: "120px",
                 height: "120px",
                 objectFit: "cover",
+                border: "1px solid white"
               }}
               onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                 const target = e.target as HTMLImageElement;
@@ -172,7 +206,7 @@ const AccountPage: React.FC = () => {
               {user?.email && <p className="text-muted">{user.email}</p>}
               <p className="small text-muted">
                 Member since{" "}
-                {user.createdAt.toLocaleString("default", {
+                {new Date(user.createdAt).toLocaleString("default", {
                   month: "short",
                   year: "numeric",
                 })}
@@ -226,7 +260,22 @@ const AccountPage: React.FC = () => {
           }}
         >
           <div className="col-12">
-            <MoviesCarouselV2 similarMovies={favorites} title="Favorites" />
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h3 className="text-white mb-0">Favourites</h3>
+              <div className="similar-movies-controls">
+                <button disabled={true} className="similar-movies-button">
+                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button disabled={true} className="similar-movies-button">
+                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <WorkInProgress />
           </div>
         </div>
 
@@ -241,7 +290,22 @@ const AccountPage: React.FC = () => {
           }}
         >
           <div className="col-12">
-            <MoviesCarouselV2 similarMovies={watchlist} title="Watchlist" />
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h3 className="text-white mb-0">Watchlist</h3>
+              <div className="similar-movies-controls">
+                <button disabled={true} className="similar-movies-button">
+                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button disabled={true} className="similar-movies-button">
+                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <WorkInProgress />
           </div>
         </div>
       </div>

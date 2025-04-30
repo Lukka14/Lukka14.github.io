@@ -156,7 +156,8 @@ export default function EditProfileModal() {
                                                 style={{
                                                     width: "120px",
                                                     height: "120px",
-                                                    objectFit: "cover"
+                                                    objectFit: "cover",
+                                                    border: "1px solid white"
                                                 }}
                                             />
                                         ) : (
@@ -167,7 +168,8 @@ export default function EditProfileModal() {
                                                 style={{
                                                     width: "120px",
                                                     height: "120px",
-                                                    objectFit: "cover"
+                                                    objectFit: "cover",
+                                                    border: "1px solid white"
                                                 }}
                                                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                                                     const target = e.target as HTMLImageElement;

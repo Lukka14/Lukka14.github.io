@@ -1,15 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function DevelopmentFooter() {
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
 
-    if (!visible) return null;
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY;
+            if (scrollPosition > 200) {
+                setVisible(true);
+            } else {
+                setVisible(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     return (
         <div
             style={{
                 position: "fixed",
-                bottom: 0,
+                bottom: visible ? 0 : "-100px",
                 width: "100%",
                 backgroundColor: "rgba(255, 193, 7, 1)",
                 color: "#212529",
@@ -17,7 +32,8 @@ export default function DevelopmentFooter() {
                 textAlign: "center",
                 zIndex: 1000,
                 boxShadow: "0 -2px 5px rgba(0,0,0,0.2)",
-                // backdropFilter: "blur(5px)",
+                transition: "bottom 0.4s ease-in-out",
+                opacity: visible ? 1 : 0
             }}
         >
             <span>This website is currently under development 🚧</span>

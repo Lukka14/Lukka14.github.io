@@ -1,3 +1,4 @@
+import ContactModalWindow from "./modals/ContactModalWindow";
 import DeleteAccountModal from "./modals/DeleteAccountModal";
 import EditProfileModal from "./modals/EditProfileModal";
 import LoginModal from "./modals/LoginModal";
@@ -9,5 +10,6 @@ export default function ModalProvider() {
         <DeleteAccountModal />
         <LoginModal />
         <VerificationModal />
+        <ContactModalWindow />
     </>
 }
