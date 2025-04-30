@@ -1,8 +1,11 @@
-export const LoadingSpinner = ({ initial = false }) => (
+export const LoadingSpinner = ({ initial = false, size }: {
+    initial?: boolean;
+    size?: number;
+}) => (
     <div style={{
         display: 'flex',
         justifyContent: 'center',
-        padding: '20px',
+        padding: size ? "3px" : "20px",
         width: '100%',
         ...(initial && {
             position: 'fixed',
@@ -16,11 +19,11 @@ export const LoadingSpinner = ({ initial = false }) => (
         })
     }}>
         <div style={{
-            border: '4px solid rgba(0, 0, 0, 0.1)',
+            border: `${size ? "6px" : "4px"} solid rgba(0, 0, 0, 0.1)`,
             borderTopColor: '#3498db',
             borderRadius: '50%',
-            width: initial ? '60px' : '40px',
-            height: initial ? '60px' : '40px',
+            width: initial ? '60px' : size ? "64px" : "40px",
+            height: initial ? '60px' : size ? "64px" : "40px",
             animation: 'spin 1s linear infinite'
         }} />
         <style>{`

@@ -11,6 +11,7 @@ import HelpPage from "./pages/about/HelpPage";
 import RegisterPage from "./pages/register/RegisterPage";
 import DevelopmentFooter from "./pages/shared/DevelopmentFooter";
 import UpdateNotifier from "./pages/shared/update-banner/UpdateNotifier";
+import VerifyEmailPage from "./pages/verify-email/VerifyEmailPage";
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
         <Route path="/help" element={<HelpPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile/:username" element={<AccountPage />} />
+        <Route path="/verify/:token" element={<VerifyEmailPage />} />
       </Routes>
 
       {/* <DevelopmentFooter /> */}

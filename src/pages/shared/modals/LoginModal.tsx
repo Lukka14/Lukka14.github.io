@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-// import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Cookies from "js-cookie";
 import ModalFooter from "./ModalFooter";
@@ -44,11 +43,7 @@ export default function LoginModal() {
                 secure: true,
                 sameSite: "Strict",
             });
-            // Cookies.set("refreshToken", refreshToken.token, {
-            //     expires: new Date(Date.now() + refreshToken.expiresIn),
-            //     secure: true,
-            //     sameSite: "Strict",
-            // });
+
             Cookies.set("username", data.username, {
                 expires: new Date(Date.now() + accessToken.expiresIn),
                 secure: true,
@@ -131,7 +126,7 @@ export default function LoginModal() {
                         </form>
                     </div>
                     <ModalFooter
-                        primaryBtnText={loading ? "Logging in..." : "Login"}
+                        loading={loading}
                         onPrimaryClick={handleSubmit(onSubmit)}
                         closeButtonRef={closeButtonRef}
                     />
