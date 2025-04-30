@@ -1,4 +1,3 @@
-import { AlertTriangle } from "lucide-react";
 import { firstToUppercase } from "../../utils/Utils";
 
 interface AccountStatCard {
@@ -11,7 +10,7 @@ export default function AccountStatCard({
     label
 }: AccountStatCard) {
     return <div className="text-center">
-        <p className="h6 text-white">WiP <AlertTriangle size={24} className="text-warning mb-2" /></p>
+        <p className="h6 text-white">WiP</p>
         <p className="small text-muted">{firstToUppercase(label)}</p>
     </div>
 }
