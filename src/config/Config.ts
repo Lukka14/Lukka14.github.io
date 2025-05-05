@@ -21,7 +21,13 @@ export const Endpoints = {
   ACCESS_TOKEN: `${API_URL}/auth/accessToken`,
   IMG_VIEW: `${API_URL}/image/view`,
   GET_USER: `${API_URL}/auth/user`,
-  VERIFY_EMAIL: `${API_URL}/auth/verify`
+  VERIFY_EMAIL: `${API_URL}/auth/verify`,
+  WATCHED: `${API_URL}/user/watched`,
+  WATCHLIST: `${API_URL}/user/watchlist`,
+  FAVOURITES: `${API_URL}/user/favourites`,
+  HANDLE_WATCHED: `${API_URL}/user/watched`,
+  HANDLE_WATCHLIST: `${API_URL}/user/watchlist`,
+  HANDLE_FAVOURITES: `${API_URL}/user/favourites`,
 };
 
 export enum RoutePaths {

@@ -1,3 +1,4 @@
+import AuthRequiredModal from "./modals/AuthRequiredModal";
 import ContactModalWindow from "./modals/ContactModalWindow";
 import DeleteAccountModal from "./modals/DeleteAccountModal";
 import EditProfileModal from "./modals/EditProfileModal";
@@ -11,5 +12,6 @@ export default function ModalProvider() {
         <LoginModal />
         <VerificationModal />
         <ContactModalWindow />
+        <AuthRequiredModal />
     </>
 }

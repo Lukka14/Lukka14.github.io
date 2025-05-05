@@ -10,7 +10,10 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "Email verification is now required after registration"
+            "Added functionalities to add and remove movies from favourites and wishlist",
+            "You can now see statistics on your profile page (watched movies, favourites, wishlist amount)",
+            "Watched movies now appear on the profile page",
+            "Movies are added to watched list if you watch at least 50% of them"
         ]
     }
 ];

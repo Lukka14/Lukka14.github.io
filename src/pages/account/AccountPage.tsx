@@ -15,6 +15,9 @@ import { Endpoints } from "../../config/Config";
 import Cookies from "js-cookie";
 import NotFoundPage from "../shared/NotFoundPage";
 import { WorkInProgress } from "../shared/WorkInProgress";
+import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
+import axios from "axios";
+import { fetchAllPages } from "../../utils/Utils";
 
 const accountPageStyle = `
   .similar-movies-controls {
@@ -52,6 +55,7 @@ const AccountPage: React.FC = () => {
   const [avatarVersion, setAvatarVersion] = useState(Date.now());
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const cookieUsername = Cookies.get("username");
+  const [accountStats, setaccountStats] = useState<any>([]);
   const [user, setUser] = useState<any>({
     username: username,
     avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
@@ -120,38 +124,67 @@ const AccountPage: React.FC = () => {
     };
   }, []);
 
-  // vitom bazidanaa
-  const accountStats = [
-    {
-      value: "42",
-      label: "Films Watched",
-    },
-    {
-      value: "16",
-      label: "Favorites",
-    },
-    {
-      value: "23",
-      label: "Watchlist",
-    },
-    {
-      value: "4.2",
-      label: "Avg Rating",
-    },
-  ];
-
   const handleSearch = (query: string) => {
     fetchMedia(query)
       .then(setMedias)
       .catch((err) => console.error(err));
   };
 
-  const [favorites, setFavorites] = useState<Movie[]>(() =>
-    getRecentlyWatched()
-  );
-  const [watchlist, setWatchlist] = useState<Movie[]>(() =>
-    getRecentlyWatched()
-  );
+  const [favourites, setFavourites] = useState([]);
+  const [watchlist, setWatchlist] = useState([]);
+  const [watched, setWatched] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const favEndpoint = `${Endpoints.FAVOURITES}?username=${user.username}`;
+        const watchEndpoint = `${Endpoints.WATCHLIST}?username=${user.username}`;
+        const watchedList = `${Endpoints.WATCHED}?username=${user.username}`;
+
+        const [favouritesData, watchlistData, watchedListData] = await Promise.all([
+          fetchAllPages(favEndpoint),
+          fetchAllPages(watchEndpoint),
+          fetchAllPages(watchedList)
+        ]);
+
+        setFavourites(
+          (favouritesData as any).map((item: { [key: string]: any }) => ({
+            ...item,
+            id: item.tmdbId
+          }))
+        );
+
+        setWatchlist(
+          (watchlistData as any).map((item: { [key: string]: any }) => ({
+            ...item,
+            id: item.tmdbId
+          }))
+        );
+
+        setWatched(
+          (watchedListData as any).map((item: { [key: string]: any }) => ({
+            ...item,
+            id: item.tmdbId
+          }))
+        );
+
+
+        setaccountStats([
+          { value: watched.length, label: "Films Watched" },
+          { value: favourites.length, label: "Favorites" },
+          { value: watchlist.length, label: "Watchlist" },
+          { value: "WiP", label: "Avg Rating" }
+        ]);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (user.username) fetchData();
+  }, [user.username, accountStats]);
+
+
 
   function removeFromFavorites(id: number): void {
     throw new Error("Function not implemented.");
@@ -239,43 +272,13 @@ const AccountPage: React.FC = () => {
             className="mt-4 d-flex justify-content-between"
             style={{ maxWidth: "500px", margin: "auto" }}
           >
-            {accountStats.map((stat, index) => (
+            {accountStats.map((stat: any, index: any) => (
               <AccountStatCard
                 key={index}
                 label={stat.label}
                 value={stat.value}
               />
             ))}
-          </div>
-        </div>
-
-        <div
-          className="row"
-          style={{
-            margin: "auto",
-            padding: "24px",
-            marginTop: "24px",
-            background: "rgba(0, 0, 0, 0.4)",
-            backdropFilter: "blur(8px)",
-          }}
-        >
-          <div className="col-12">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h3 className="text-white mb-0">Favourites</h3>
-              <div className="similar-movies-controls">
-                <button disabled={true} className="similar-movies-button">
-                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </button>
-                <button disabled={true} className="similar-movies-button">
-                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <WorkInProgress />
           </div>
         </div>
 
@@ -290,22 +293,51 @@ const AccountPage: React.FC = () => {
           }}
         >
           <div className="col-12">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h3 className="text-white mb-0">Watchlist</h3>
-              <div className="similar-movies-controls">
-                <button disabled={true} className="similar-movies-button">
-                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </button>
-                <button disabled={true} className="similar-movies-button">
-                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <WorkInProgress />
+            <MoviesCarouselV2
+              similarMovies={favourites ?? []}
+              title="Favourites"
+              accountPage={true}
+            />
+          </div>
+        </div>
+
+
+        <div
+          className="row"
+          style={{
+            margin: "24px auto 29px auto",
+            padding: "24px",
+            marginTop: "24px",
+            background: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <div className="col-12">
+            <MoviesCarouselV2
+              similarMovies={watchlist ?? []}
+              title="Watchlist"
+              accountPage={true}
+            />
+          </div>
+
+        </div>
+
+        <div
+          className="row"
+          style={{
+            margin: "24px auto 29px auto",
+            padding: "24px",
+            marginTop: "24px",
+            background: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <div className="col-12">
+            <MoviesCarouselV2
+              similarMovies={watched ?? []}
+              title="Watched"
+              accountPage={true}
+            />
           </div>
         </div>
       </div>
