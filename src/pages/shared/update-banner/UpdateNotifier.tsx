@@ -10,8 +10,8 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "Now you can now add your favorite movies and TV shows to your Favorites and Watchlist which will appear on your profile!",
-            "Movies will appear in your Watched list on your profile once you've watched more than 50% of their total runtime"
+            "You can now add your favorite movies and TV shows to your Favorites and Watchlist which will appear on your profile!",
+            "Movies will appear in your Watched list on your profile once you've watched more than 50% of their total runtime!"
         ]
     }
 ];
