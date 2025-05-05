@@ -148,26 +148,31 @@ const AccountPage: React.FC = () => {
         ]);
 
         setFavourites(
-          (favouritesData as any).map((item: { [key: string]: any }) => ({
-            ...item,
-            id: item.tmdbId
-          }))
+          (favouritesData as any)
+            .map((item: { [key: string]: any }) => ({
+              ...item,
+              id: item.tmdbId
+            }))
+            .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
         );
 
         setWatchlist(
-          (watchlistData as any).map((item: { [key: string]: any }) => ({
-            ...item,
-            id: item.tmdbId
-          }))
+          (watchlistData as any)
+            .map((item: { [key: string]: any }) => ({
+              ...item,
+              id: item.tmdbId
+            }))
+            .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
         );
 
         setWatched(
-          (watchedListData as any).map((item: { [key: string]: any }) => ({
-            ...item,
-            id: item.tmdbId
-          }))
+          (watchedListData as any)
+            .map((item: { [key: string]: any }) => ({
+              ...item,
+              id: item.tmdbId
+            }))
+            .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
         );
-
 
         setaccountStats([
           { value: watched.length, label: "Films Watched" },

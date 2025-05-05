@@ -10,10 +10,8 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "Added functionalities to add and remove movies and TV shows from favourites and watchlist",
-            "You can now see statistics on your profile page (watched movies, favourites, watchlist amount)",
-            "Watched movies now appear on the profile page",
-            "Movie is now added to watched list if you watch at least 50% of it"
+            "Now you can now add your favorite movies and TV shows to your Favorites and Watchlist which will appear on your profile!",
+            "Movies will appear in your Watched list on your profile once you've watched more than 50% of their total runtime"
         ]
     }
 ];
