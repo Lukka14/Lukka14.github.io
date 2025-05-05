@@ -33,6 +33,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   const queryParams = new URLSearchParams(window.location.hash.split("?")[1]); // Use `window.location.hash` for HashRouter
   const seasonFromQuery = Number(queryParams.get("s"));
   const episodeFromQuery = Number(queryParams.get("e"));
+  const [isFavouriteLoading, setIsFavouriteLoading] = useState(false);
+  const [isWatchlistLoading, setIsWatchlistLoading] = useState(false);
 
   useEffect(() => {
     if (media && media.mediaType === MediaType.TV_SERIES) {
@@ -84,15 +86,24 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
     if (username && media) getT();
   }, [media]);
 
-
   const handleFavoriteClick = async () => {
-    const newStatus = await toggleFavorite(media?.id, media?.mediaType);
-    setIsFavorite(newStatus);
+    setIsFavouriteLoading(true);
+    try {
+      const newStatus = await toggleFavorite(media?.id, media?.mediaType);
+      setIsFavorite(newStatus);
+    } finally {
+      setIsFavouriteLoading(false);
+    }
   };
 
   const handleWatchlistClick = async () => {
-    const newStatus = await toggleWatchlist(media?.id, media?.mediaType);
-    setIsInWatchList(newStatus);
+    setIsWatchlistLoading(true);
+    try {
+      const newStatus = await toggleWatchlist(media?.id, media?.mediaType);
+      setIsInWatchList(newStatus);
+    } finally {
+      setIsWatchlistLoading(false);
+    }
   };
 
   if (!media) {
@@ -163,35 +174,37 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
                   <h1 style={{ paddingTop: '0px' }} className="mb-0">{media.title}</h1>
                   <div className="d-flex align-items-center gap-3">
                     <Tooltip title={isFavorite ? "Remove from favourites" : "Add to favourites"}>
-                      <HeartIcon
-                        className={`heartIcon ${isFavorite ? 'text-danger' : ''}`}
-                        style={{
-                          cursor: "pointer",
-                          fill: isFavorite ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
-                          stroke: "#FFD580",
-                          transition: "all 0.2s ease-in-out"
-                        }}
-                        size={36}
-                        onClick={() => handleFavoriteClick()}
-                        onMouseEnter={() => setIsHeartHovered(true)}
-                        onMouseLeave={() => setIsHeartHovered(false)}
-                      />
+                      <div style={{ opacity: isFavouriteLoading ? 0.5 : 1, pointerEvents: isFavouriteLoading ? 'none' : 'auto' }}>
+                        <HeartIcon
+                          size={36}
+                          style={{
+                            cursor: "pointer",
+                            fill: isFavorite || isFavouriteLoading ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
+                            stroke: "#FFD580",
+                            transition: "all 0.2s ease-in-out"
+                          }}
+                          onClick={handleFavoriteClick}
+                          onMouseEnter={() => setIsHeartHovered(true)}
+                          onMouseLeave={() => setIsHeartHovered(false)}
+                        />
+                      </div>
                     </Tooltip>
 
                     <Tooltip title={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}>
-                      <BookmarkIcon
-                        className="watchlistIcon"
-                        style={{
-                          cursor: "pointer",
-                          fill: isInWatchList ? isBookmarkIconHovered ? "none" : "#00BFFF" : isBookmarkIconHovered ? "#00BFFF" : "none",
-                          stroke: "#87CEFA",
-                          transition: "all 0.2s ease-in-out"
-                        }}
-                        size={36}
-                        onClick={() => handleWatchlistClick()}
-                        onMouseEnter={() => setIsBookmarkIconHovered(true)}
-                        onMouseLeave={() => setIsBookmarkIconHovered(false)}
-                      />
+                      <div style={{ opacity: isWatchlistLoading ? 0.5 : 1, pointerEvents: isWatchlistLoading ? 'none' : 'auto' }}>
+                        <BookmarkIcon
+                          size={36}
+                          style={{
+                            cursor: "pointer",
+                            fill: isInWatchList || isWatchlistLoading ? isBookmarkIconHovered ? "none" : "#00BFFF" : isBookmarkIconHovered ? "#00BFFF" : "none",
+                            stroke: "#87CEFA",
+                            transition: "all 0.2s ease-in-out",
+                          }}
+                          onClick={handleWatchlistClick}
+                          onMouseEnter={() => setIsBookmarkIconHovered(true)}
+                          onMouseLeave={() => setIsBookmarkIconHovered(false)}
+                        />
+                      </div>
                     </Tooltip>
                   </div>
                 </div>

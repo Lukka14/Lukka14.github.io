@@ -25,6 +25,8 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
   const [isInWatchList, setIsInWatchList] = useState(isWatch);
   const [isHeartHovered, setIsHeartHovered] = useState(false);
   const [isBookmarkHovered, setIsBookmarkHovered] = useState(false);
+  const [isFavouriteLoading, setIsFavouriteLoading] = useState(false);
+  const [isWatchlistLoading, setIsWatchlistLoading] = useState(false);
 
   useEffect(() => {
     setIsFavorite(isFav);
@@ -79,17 +81,25 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
   const handleFavoriteClick = async (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const newStatus = await toggleFavorite(mediaInfo.id, mediaInfo.mediaType);
-    setIsFavorite(newStatus);
+    setIsFavouriteLoading(true);
+    try {
+      const newStatus = await toggleFavorite(mediaInfo.id, mediaInfo.mediaType);
+      setIsFavorite(newStatus);
+    } finally {
+      setIsFavouriteLoading(false);
+    }
   };
 
   const handleWatchlistClick = async (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const newStatus = await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType);
-    setIsInWatchList(newStatus);
+    setIsWatchlistLoading(true);
+    try {
+      const newStatus = await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType);
+      setIsInWatchList(newStatus);
+    } finally {
+      setIsWatchlistLoading(false);
+    }
   };
 
   return (
@@ -134,18 +144,20 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
                 justifyContent: "center"
               }}>
                 <Tooltip title={isFavorite ? "Remove from favourites" : "Add to favourites"}>
-                  <HeartIcon
-                    size={26}
-                    style={{
-                      cursor: "pointer",
-                      fill: isFavorite ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
-                      stroke: "#FFD580",
-                      transition: "all 0.2s ease-in-out"
-                    }}
-                    onClick={handleFavoriteClick}
-                    onMouseEnter={() => setIsHeartHovered(true)}
-                    onMouseLeave={() => setIsHeartHovered(false)}
-                  />
+                  <div style={{ opacity: isFavouriteLoading ? 0.5 : 1, pointerEvents: isFavouriteLoading ? 'none' : 'auto' }}>
+                    <HeartIcon
+                      size={26}
+                      style={{
+                        cursor: "pointer",
+                        fill: isFavorite || isFavouriteLoading ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
+                        stroke: "#FFD580",
+                        transition: "all 0.2s ease-in-out"
+                      }}
+                      onClick={handleFavoriteClick}
+                      onMouseEnter={() => setIsHeartHovered(true)}
+                      onMouseLeave={() => setIsHeartHovered(false)}
+                    />
+                  </div>
                 </Tooltip>
               </div>
 
@@ -162,18 +174,20 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
                 justifyContent: "center"
               }}>
                 <Tooltip title={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}>
-                  <BookmarkIcon
-                    size={26}
-                    style={{
-                      cursor: "pointer",
-                      fill: isInWatchList ? isBookmarkHovered ? "none" : "#00BFFF" : isBookmarkHovered ? "#00BFFF" : "none",
-                      stroke: "#87CEFA",
-                      transition: "all 0.2s ease-in-out",
-                    }}
-                    onClick={handleWatchlistClick}
-                    onMouseEnter={() => setIsBookmarkHovered(true)}
-                    onMouseLeave={() => setIsBookmarkHovered(false)}
-                  />
+                  <div style={{ opacity: isWatchlistLoading ? 0.5 : 1, pointerEvents: isWatchlistLoading ? 'none' : 'auto' }}>
+                    <BookmarkIcon
+                      size={26}
+                      style={{
+                        cursor: "pointer",
+                        fill: isInWatchList || isWatchlistLoading ? isBookmarkHovered ? "none" : "#00BFFF" : isBookmarkHovered ? "#00BFFF" : "none",
+                        stroke: "#87CEFA",
+                        transition: "all 0.2s ease-in-out",
+                      }}
+                      onClick={handleWatchlistClick}
+                      onMouseEnter={() => setIsBookmarkHovered(true)}
+                      onMouseLeave={() => setIsBookmarkHovered(false)}
+                    />
+                  </div>
                 </Tooltip>
               </div>
             </div>
@@ -191,18 +205,20 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
                 justifyContent: "center"
               }}>
                 <Tooltip title={isFavorite ? "Remove from favourites" : "Add to favourites"}>
-                  <HeartIcon
-                    size={26}
-                    style={{
-                      cursor: "pointer",
-                      fill: isFavorite ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
-                      stroke: "#FFD580",
-                      transition: "all 0.2s ease-in-out"
-                    }}
-                    onClick={handleFavoriteClick}
-                    onMouseEnter={() => setIsHeartHovered(true)}
-                    onMouseLeave={() => setIsHeartHovered(false)}
-                  />
+                  <div style={{ opacity: isFavouriteLoading ? 0.5 : 1, pointerEvents: isFavouriteLoading ? 'none' : 'auto' }}>
+                    <HeartIcon
+                      size={26}
+                      style={{
+                        cursor: "pointer",
+                        fill: isFavorite || isFavouriteLoading ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
+                        stroke: "#FFD580",
+                        transition: "all 0.2s ease-in-out"
+                      }}
+                      onClick={handleFavoriteClick}
+                      onMouseEnter={() => setIsHeartHovered(true)}
+                      onMouseLeave={() => setIsHeartHovered(false)}
+                    />
+                  </div>
                 </Tooltip>
               </div>
 
@@ -218,18 +234,20 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
                 justifyContent: "center"
               }}>
                 <Tooltip title={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}>
-                  <BookmarkIcon
-                    size={26}
-                    style={{
-                      cursor: "pointer",
-                      fill: isInWatchList ? isBookmarkHovered ? "none" : "#00BFFF" : isBookmarkHovered ? "#00BFFF" : "none",
-                      stroke: "#87CEFA",
-                      transition: "all 0.2s ease-in-out"
-                    }}
-                    onClick={handleWatchlistClick}
-                    onMouseEnter={() => setIsBookmarkHovered(true)}
-                    onMouseLeave={() => setIsBookmarkHovered(false)}
-                  />
+                  <div style={{ opacity: isWatchlistLoading ? 0.5 : 1, pointerEvents: isWatchlistLoading ? 'none' : 'auto' }}>
+                    <BookmarkIcon
+                      size={26}
+                      style={{
+                        cursor: "pointer",
+                        fill: isInWatchList || isWatchlistLoading ? isBookmarkHovered ? "none" : "#00BFFF" : isBookmarkHovered ? "#00BFFF" : "none",
+                        stroke: "#87CEFA",
+                        transition: "all 0.2s ease-in-out",
+                      }}
+                      onClick={handleWatchlistClick}
+                      onMouseEnter={() => setIsBookmarkHovered(true)}
+                      onMouseLeave={() => setIsBookmarkHovered(false)}
+                    />
+                  </div>
                 </Tooltip>
               </div>
 
