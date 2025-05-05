@@ -11,6 +11,7 @@ const carouselStyles = `
   .similar-movies-container {
     width: 100%;
     position: relative;
+    overflow: hidden;
     }
 
   .similar-movies-header {
@@ -57,7 +58,7 @@ const carouselStyles = `
   }
 
   .similar-movies-track-container {
-    overflow: hidden;
+overflow: visible;
   }
 
   .similar-movies-track {
