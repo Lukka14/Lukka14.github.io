@@ -10,10 +10,10 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "Added functionalities to add and remove movies from favourites and wishlist",
-            "You can now see statistics on your profile page (watched movies, favourites, wishlist amount)",
+            "Added functionalities to add and remove movies and TV shows from favourites and watchlist",
+            "You can now see statistics on your profile page (watched movies, favourites, watchlist amount)",
             "Watched movies now appear on the profile page",
-            "Movies are added to watched list if you watch at least 50% of them"
+            "Movie is now added to watched list if you watch at least 50% of it"
         ]
     }
 ];

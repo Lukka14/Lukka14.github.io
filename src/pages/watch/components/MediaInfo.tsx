@@ -9,7 +9,8 @@ import { Endpoints } from "../../../config/Config";
 import Cookies from "js-cookie";
 import { fetchMe, refreshAccessToken } from "../../../services/MediaService";
 import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardService";
-import { Tooltip } from "@mui/material";
+import { Snackbar, SnackbarCloseReason, Tooltip } from "@mui/material";
+import { CustomToast } from "../../shared/Toast";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -30,11 +31,10 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   const [isHeartHovered, setIsHeartHovered] = useState(false);
   const [isBookmarkIconHovered, setIsBookmarkIconHovered] = useState(false);
   const [isInWatchList, setIsInWatchList] = useState(false);
+  const [toastOpen, setToastOpen] = useState(false);
   const queryParams = new URLSearchParams(window.location.hash.split("?")[1]); // Use `window.location.hash` for HashRouter
   const seasonFromQuery = Number(queryParams.get("s"));
   const episodeFromQuery = Number(queryParams.get("e"));
-  const [isFavouriteLoading, setIsFavouriteLoading] = useState(false);
-  const [isWatchlistLoading, setIsWatchlistLoading] = useState(false);
 
   useEffect(() => {
     if (media && media.mediaType === MediaType.TV_SERIES) {
@@ -87,22 +87,24 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   }, [media]);
 
   const handleFavoriteClick = async () => {
-    setIsFavouriteLoading(true);
     try {
+      setIsFavorite(!isFavorite);
       const newStatus = await toggleFavorite(media?.id, media?.mediaType);
       setIsFavorite(newStatus);
-    } finally {
-      setIsFavouriteLoading(false);
+    } catch (e) {
+      setIsFavorite(!isFavorite);
+      setToastOpen(true);
     }
   };
 
   const handleWatchlistClick = async () => {
-    setIsWatchlistLoading(true);
     try {
+      setIsInWatchList(!isInWatchList);
       const newStatus = await toggleWatchlist(media?.id, media?.mediaType);
       setIsInWatchList(newStatus);
-    } finally {
-      setIsWatchlistLoading(false);
+    } catch (e) {
+      setIsInWatchList(!isInWatchList);
+      setToastOpen(true);
     }
   };
 
@@ -141,6 +143,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
 
   return (
     <>
+      <CustomToast open={toastOpen} setOpen={setToastOpen} />
+
       <style>
         {styles}
       </style>
@@ -174,37 +178,33 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
                   <h1 style={{ paddingTop: '0px' }} className="mb-0">{media.title}</h1>
                   <div className="d-flex align-items-center gap-3">
                     <Tooltip title={isFavorite ? "Remove from favourites" : "Add to favourites"}>
-                      <div style={{ opacity: isFavouriteLoading ? 0.5 : 1, pointerEvents: isFavouriteLoading ? 'none' : 'auto' }}>
-                        <HeartIcon
-                          size={36}
-                          style={{
-                            cursor: "pointer",
-                            fill: isFavorite || isFavouriteLoading ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
-                            stroke: "#FFD580",
-                            transition: "all 0.2s ease-in-out"
-                          }}
-                          onClick={handleFavoriteClick}
-                          onMouseEnter={() => setIsHeartHovered(true)}
-                          onMouseLeave={() => setIsHeartHovered(false)}
-                        />
-                      </div>
+                      <HeartIcon
+                        size={36}
+                        style={{
+                          cursor: "pointer",
+                          fill: isFavorite ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
+                          stroke: "#FFD580",
+                          transition: "all 0.2s ease-in-out"
+                        }}
+                        onClick={handleFavoriteClick}
+                        onMouseEnter={() => setIsHeartHovered(true)}
+                        onMouseLeave={() => setIsHeartHovered(false)}
+                      />
                     </Tooltip>
 
                     <Tooltip title={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}>
-                      <div style={{ opacity: isWatchlistLoading ? 0.5 : 1, pointerEvents: isWatchlistLoading ? 'none' : 'auto' }}>
-                        <BookmarkIcon
-                          size={36}
-                          style={{
-                            cursor: "pointer",
-                            fill: isInWatchList || isWatchlistLoading ? isBookmarkIconHovered ? "none" : "#00BFFF" : isBookmarkIconHovered ? "#00BFFF" : "none",
-                            stroke: "#87CEFA",
-                            transition: "all 0.2s ease-in-out",
-                          }}
-                          onClick={handleWatchlistClick}
-                          onMouseEnter={() => setIsBookmarkIconHovered(true)}
-                          onMouseLeave={() => setIsBookmarkIconHovered(false)}
-                        />
-                      </div>
+                      <BookmarkIcon
+                        size={36}
+                        style={{
+                          cursor: "pointer",
+                          fill: isInWatchList ? isBookmarkIconHovered ? "none" : "#00BFFF" : isBookmarkIconHovered ? "#00BFFF" : "none",
+                          stroke: "#87CEFA",
+                          transition: "all 0.2s ease-in-out"
+                        }}
+                        onClick={handleWatchlistClick}
+                        onMouseEnter={() => setIsBookmarkIconHovered(true)}
+                        onMouseLeave={() => setIsBookmarkIconHovered(false)}
+                      />
                     </Tooltip>
                   </div>
                 </div>
