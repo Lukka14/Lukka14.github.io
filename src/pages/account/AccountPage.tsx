@@ -173,23 +173,22 @@ const AccountPage: React.FC = () => {
             }))
             .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
         );
-
-        setaccountStats([
-          { value: watched.length, label: "Films Watched" },
-          { value: favourites.length, label: "Favorites" },
-          { value: watchlist.length, label: "Watchlist" },
-          { value: "WiP", label: "Avg Rating" }
-        ]);
-
       } catch (error) {
         console.error(error);
       }
     };
 
     if (user.username) fetchData();
-  }, [user.username, accountStats]);
+  }, [user.username]);
 
-
+  useEffect(() => {
+    setaccountStats([
+      { value: watched.length, label: "Films Watched" },
+      { value: favourites.length, label: "Favorites" },
+      { value: watchlist.length, label: "Watchlist" },
+      { value: "WiP", label: "Avg Rating" }
+    ]);
+  }, [watched, favourites, watchlist])
 
   function removeFromFavorites(id: number): void {
     throw new Error("Function not implemented.");
