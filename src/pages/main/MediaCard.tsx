@@ -11,13 +11,14 @@ interface MediaCardProps {
   href: string;
   isFav: boolean;
   isWatch: boolean;
+  stateHandler?: (id: any, type: any) => void;
 }
 
 const WithBG = ({ text }: { text: string }): React.ReactElement => {
   return <div className="text-white-50 text-center forMb">{text}</div>;
 };
 
-export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, isWatch }) => {
+export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, isWatch, stateHandler }) => {
   const { title, posterUrl, rating, releaseYear, originalLanguage } = mediaInfo;
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -85,6 +86,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     try {
       setIsFavorite(!isFavorite);
       const newStatus = await toggleFavorite(mediaInfo.id, mediaInfo.mediaType);
+      if (stateHandler) stateHandler(mediaInfo.id, "favourite");
       setIsFavorite(newStatus);
     } catch (e) {
       setIsInWatchList(!isInWatchList);
@@ -98,6 +100,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     try {
       setIsInWatchList(!isInWatchList);
       const newStatus = await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType);
+      if (stateHandler) stateHandler(mediaInfo.id, "watchlist");
       setIsInWatchList(newStatus);
     } catch (e) {
       setIsInWatchList(!isInWatchList);
