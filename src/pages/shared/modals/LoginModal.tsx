@@ -35,7 +35,9 @@ export default function LoginModal() {
         setLoading(true);
         setErrorMessage("");
         try {
-            const res = await axios.post(Endpoints.LOGIN, data);
+            const res = await axios.post(Endpoints.LOGIN, data, {
+                withCredentials: true
+              });
             const { accessToken } = res.data;
 
             Cookies.set("accessToken", accessToken.token, {

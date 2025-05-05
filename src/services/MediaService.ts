@@ -119,7 +119,7 @@ export const fetchMovie = async (id: string): Promise<Movie> => {
 
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    const res = await axios.post(Endpoints.ACCESS_TOKEN);
+    const res = await axios.post(Endpoints.ACCESS_TOKEN, {}, { withCredentials: true });
 
     const accessToken = res.data.accessToken;
     Cookies.set("accessToken", accessToken);
