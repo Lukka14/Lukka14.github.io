@@ -34,8 +34,6 @@ const HelpPage: React.FC = () => {
 
       <PrimarySearchAppBar onClick={() => { }} displaySearch={false} />
 
-      <Breadcrumb />
-
       <CenteredH1>
         Don't know what to watch? Here's the Top 100 Most Popular/Rated Movies:
       </CenteredH1>

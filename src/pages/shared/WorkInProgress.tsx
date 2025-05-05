@@ -1,6 +1,12 @@
-import { AlertTriangle } from "lucide-react";
+export const WorkInProgress = ({
+    text,
+    subtext
+}: {
+    text?: string;
+    subtext?: string;
+}) => {
+    const isDefault = !text && !subtext;
 
-export const WorkInProgress = () => {
     return (
         <div
             className="d-flex align-items-center justify-content-center"
@@ -11,8 +17,21 @@ export const WorkInProgress = () => {
             }}
         >
             <div className="text-center">
-                <AlertTriangle size={32} className="text-warning mb-2" />
-                <h4 className="text-white">Work in Progress</h4>
+                {isDefault && (
+                    <>
+                        <h4 className="text-white mb-2">Work in Progress</h4>
+                    </>
+                )}
+                {!isDefault && (
+                    <>
+                        <h4 className="text-white mb-2">{text}</h4>
+                        {subtext && (
+                            <p className="text-secondary" style={{ fontSize: "0.9rem" }}>
+                                {subtext}
+                            </p>
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

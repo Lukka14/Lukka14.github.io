@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Media } from '../../../models/Movie';
+import { Media, MediaType } from '../../../models/Movie';
 import { MediaCard } from '../../main/MediaCard';
-import { generateHref } from '../../../utils/Utils';
+import { fetchAllPages, generateHref, normalizeType } from '../../../utils/Utils';
+import { WorkInProgress } from '../../shared/WorkInProgress';
+import Cookies from 'js-cookie';
+import { Endpoints } from '../../../config/Config';
+import axios from 'axios';
 
 const carouselStyles = `
   .similar-movies-container {
     width: 100%;
     position: relative;
+    overflow: hidden;
     }
 
   .similar-movies-header {
@@ -53,7 +58,7 @@ const carouselStyles = `
   }
 
   .similar-movies-track-container {
-    overflow: hidden;
+overflow: visible;
   }
 
   .similar-movies-track {
@@ -86,17 +91,24 @@ const carouselStyles = `
   }
 `;
 
+interface MediaWithType extends Media {
+  type?: MediaType;
+}
 interface SimilarMoviesCarouselProps {
-  similarMovies: Media[];
+  similarMovies: MediaWithType[];
   title?: string;
+  accountPage?: boolean;
 }
 
 const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
   similarMovies,
-  title = "Similar Movies"
+  title = "Similar Movies",
+  accountPage = false
 }) => {
   const [startIndex, setStartIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(5);
+  const [fav, setFav] = useState([]);
+  const [watch, setWatch] = useState([]);
   // const [textSize, setTextSize] = useState("fs-2")
 
   const updateCardsToShow = () => {
@@ -124,7 +136,69 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
     setStartIndex((prev) => Math.max(prev - 1, 0));
   };
 
-  if (!similarMovies || similarMovies.length === 0) return null;
+  const username = Cookies.get("username");
+  useEffect(() => {
+    async function getT() {
+      try {
+        const favEndpoint = `${Endpoints.FAVOURITES}?username=${username}`;
+        const watchEndpoint = `${Endpoints.WATCHLIST}?username=${username}`;
+
+        const [favouritesData, watchlistData] = await Promise.all([
+          fetchAllPages(favEndpoint),
+          fetchAllPages(watchEndpoint),
+        ]);
+
+        setFav(favouritesData as any);
+        setWatch(watchlistData as any);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    if (similarMovies && username) getT();
+  }, [similarMovies, username]);
+
+
+  if (!similarMovies || similarMovies.length === 0) return (
+    <>
+      <style>{carouselStyles}</style>
+      <div className="similar-movies-container">
+        <div className="similar-movies-header">
+          <h2 className="similar-movies-title">{title}</h2>
+          <div className="similar-movies-controls">
+            <button disabled={true} className="similar-movies-button">
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <button disabled={true} className="similar-movies-button">
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="similar-movies-track-container">
+          {title == "Favourites" && <WorkInProgress
+            text="No favourites yet."
+            subtext="Add movies and tv shows to favourites and they will appear here."
+          />
+          }
+          {title == "Watchlist" && <WorkInProgress
+            text="Your watchlist is empty."
+            subtext="Add movies and tv shows to watchlist and they will appear here"
+          />
+          }
+          {title == "Watched" && <WorkInProgress
+            text="Your watched list is empty."
+            subtext="Watch at least half of a movie and they will appear here"
+          />
+          }
+        </div>
+      </div>
+    </>
+  )
 
   return (
     <>
@@ -153,14 +227,20 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
               transform: `translateX(-${startIndex * (100 / cardsToShow)}%)`,
             }}
           >
-            {similarMovies.map((movie) => (
-              <div
+            {similarMovies.map((movie) => {
+              let isFav = fav.some((item: any) => item.tmdbId == movie?.id);
+              let isWatch = watch.some((item: any) => item.tmdbId == movie?.id);
+              let mediaTy = accountPage ? normalizeType(movie?.type) : movie?.mediaType;
+              let link = generateHref(movie, accountPage);
+              return <div
                 key={movie.id}
                 className="similar-movie-card"
                 style={{ width: `${100 / cardsToShow}%` }}
               >
                 <MediaCard
                   mediaInfo={{
+                    id: movie?.id,
+                    mediaType: mediaTy,
                     title: movie.title,
                     posterUrl: movie.posterUrl,
                     rating: movie.rating,
@@ -169,10 +249,9 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
                     originalLanguage: movie.originalLanguage,
                     genreList: movie.genreList
                   }}
-                  href={generateHref(movie)}
-                />
+                  href={link} isFav={isFav} isWatch={isWatch} />
               </div>
-            ))}
+            })}
           </div>
         </div>
       </div>

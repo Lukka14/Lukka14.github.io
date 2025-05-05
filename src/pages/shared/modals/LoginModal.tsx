@@ -51,7 +51,11 @@ export default function LoginModal() {
             });
 
             reset();
-            window.location.href = "/#/profile/" + data.username;
+            if (window.location.href.includes("watch")) {
+                window.location.href = window.location.href.toString();
+            } else {
+                window.location.href = "/#/profile/" + data.username;
+            }
 
             if (closeButtonRef.current) {
                 closeButtonRef.current.click();

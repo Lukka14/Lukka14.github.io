@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Background } from "./components/Background";
 import VideoPlayer from "./components/VideoPlayer";
-import { MediaType, ImdbMedia, TvSeries, Media } from "../../models/Movie";
+import { MediaType, ImdbMedia, TvSeries, Media, Movie } from "../../models/Movie";
 import { fetchMovie, fetchTvSeries } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/TopNavBar";
 import MediaInfo from "./components/MediaInfo";
@@ -106,7 +106,7 @@ const WatchPage: React.FC = () => {
   return (
     <>
       <Background url={bgUrl} />
-      <PrimarySearchAppBar onClick={() => {}} displaySearch={false} />
+      <PrimarySearchAppBar onClick={() => { }} displaySearch={false} />
       {/* <MovieList mediaList={medias} /> */}
       <VideoPlayer
         id={id}

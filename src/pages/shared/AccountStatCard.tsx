@@ -10,7 +10,7 @@ export default function AccountStatCard({
     label
 }: AccountStatCard) {
     return <div className="text-center">
-        <p className="h6 text-white">WiP</p>
+        <p className="h6 text-white">{value}</p>
         <p className="small text-muted">{firstToUppercase(label)}</p>
     </div>
 }
