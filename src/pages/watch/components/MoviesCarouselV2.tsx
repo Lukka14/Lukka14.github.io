@@ -98,12 +98,14 @@ interface SimilarMoviesCarouselProps {
   similarMovies: MediaWithType[];
   title?: string;
   accountPage?: boolean;
+  stateHandler?: (id: any, type: any) => void;
 }
 
 const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
   similarMovies,
   title = "Similar Movies",
-  accountPage = false
+  accountPage = false,
+  stateHandler
 }) => {
   const [startIndex, setStartIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(5);
@@ -249,7 +251,7 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
                     originalLanguage: movie.originalLanguage,
                     genreList: movie.genreList
                   }}
-                  href={link} isFav={isFav} isWatch={isWatch} />
+                  href={link} isFav={isFav} isWatch={isWatch} stateHandler={stateHandler} />
               </div>
             })}
           </div>

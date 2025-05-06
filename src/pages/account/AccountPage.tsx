@@ -7,13 +7,13 @@ import {
   fetchMedia,
   fetchUserByUsername,
 } from "../../services/MediaService";
-import { getCurrentUser, getUsername } from "../../services/UserService";
 import { fetchAllPages } from "../../utils/Utils";
 import { Background } from "../main/Background";
 import AccountStatCard from "../shared/AccountStatCard";
 import NotFoundPage from "../shared/NotFoundPage";
 import PrimarySearchAppBar from "../shared/TopNavBar";
 import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
+import { getCurrentUser, getUsername } from "../../services/UserService";
 
 const accountPageStyle = `
   .similar-movies-controls {
@@ -59,6 +59,14 @@ const AccountPage: React.FC = () => {
     avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
     createdAt: new Date("2023-01-01"),
   });
+
+  function stateHandler(id: any, type: any) {
+    if (type === "watchlist") {
+      setWatchlist(prev => prev.filter((item: any) => item.id !== id));
+    } else {
+      setFavourites(prev => prev.filter((item: any) => item.id !== id));
+    }
+  }
 
   useEffect(() => {
     const newAvatarUrl = `${Endpoints.IMG_VIEW}/${username}.webp`;
@@ -292,6 +300,7 @@ const AccountPage: React.FC = () => {
               similarMovies={favourites ?? []}
               title="Favourites"
               accountPage={true}
+              stateHandler={stateHandler}
             />
           </div>
         </div>
@@ -312,6 +321,7 @@ const AccountPage: React.FC = () => {
               similarMovies={watchlist ?? []}
               title="Watchlist"
               accountPage={true}
+              stateHandler={stateHandler}
             />
           </div>
 
@@ -332,6 +342,7 @@ const AccountPage: React.FC = () => {
               similarMovies={watched ?? []}
               title="Watched"
               accountPage={true}
+              stateHandler={stateHandler}
             />
           </div>
         </div>
