@@ -51,6 +51,7 @@ const AccountPage: React.FC = () => {
   const [avatarVersion, setAvatarVersion] = useState(Date.now());
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const cookieUsername = getUsername();
+  const [is404, setIs404] = useState(false);
   const [accountStats, setaccountStats] = useState<any>([]);
 
   // change to loading screen instead of showing this data
@@ -76,6 +77,7 @@ const AccountPage: React.FC = () => {
   }, [username, avatarVersion]);
 
   useEffect(() => {
+    setIs404(false);
     setUser({
       username: username,
       avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
@@ -101,7 +103,7 @@ const AccountPage: React.FC = () => {
         setAvatarUrl(userByUsername?.avatarUrl);
         window.history.replaceState({}, '', `/#/profile/` + userByUsername.username);
       } else {
-        setUser(null);
+        setIs404(true);
       }
     }
 
@@ -197,7 +199,7 @@ const AccountPage: React.FC = () => {
     ]);
   }, [watched, favourites, watchlist])
 
-  if (user == null) {
+  if (is404) {
     return <NotFoundPage />;
   }
 
