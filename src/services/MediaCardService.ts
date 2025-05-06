@@ -1,9 +1,9 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Endpoints } from "../config/Config";
-import { fetchMe, refreshAccessToken } from "./MediaService";
 import { MediaType } from "../models/Movie";
 import { fetchAllPages } from "../utils/Utils";
+import { getCurrentUser } from "./UserService";
 
 export const showLoginModal = (type: "fav" | "watch", mediaType: any): void => {
     const button = document.createElement("button");
@@ -22,18 +22,18 @@ export const showLoginModal = (type: "fav" | "watch", mediaType: any): void => {
 
 export const toggleFavorite = async (mediaId: any, mediaType: any): Promise<boolean> => {
     try {
-        const me: any = await fetchMe();
+        const me: any = await getCurrentUser();
         if (!me?.username) {
             showLoginModal("fav", mediaType);
             return false;
         }
 
-        await refreshAccessToken();
+        // await refreshAccessToken();
         const token = Cookies.get("accessToken");
-        if (!token) {
-            showLoginModal("fav", mediaType);
-            return false;
-        }
+        // if (!token) {
+        //     showLoginModal("fav", mediaType);
+        //     return false;
+        // }
 
         const favoritesResp = await fetchAllPages(`${Endpoints.FAVOURITES}?username=${me.username}`);
         const mediaIdStr = String(mediaId);
@@ -61,18 +61,18 @@ export const toggleFavorite = async (mediaId: any, mediaType: any): Promise<bool
 
 export const toggleWatchlist = async (mediaId: any, mediaType: any): Promise<boolean> => {
     try {
-        const me: any = await fetchMe();
+        const me: any = await getCurrentUser();
         if (!me?.username) {
             showLoginModal("watch", mediaType);
             return false;
         }
 
-        await refreshAccessToken();
+        // await refreshAccessToken();
         const token = Cookies.get("accessToken");
-        if (!token) {
-            showLoginModal("watch", mediaType);
-            return false;
-        }
+        // if (!token) {
+        //     showLoginModal("watch", mediaType);
+        //     return false;
+        // }
 
         const watchlistResp = await fetchAllPages(`${Endpoints.WATCHLIST}?username=${me.username}`);
         const mediaIdStr = String(mediaId);
@@ -100,7 +100,7 @@ export const toggleWatchlist = async (mediaId: any, mediaType: any): Promise<boo
 
 export const checkIsFavorite = async (mediaId: any): Promise<boolean> => {
     try {
-        const me: any = await fetchMe();
+        const me: any = await getCurrentUser();
         if (!me?.username) return false;
 
         const favoritesResp = await fetchAllPages(`${Endpoints.FAVOURITES}?username=${me.username}`);
@@ -114,7 +114,7 @@ export const checkIsFavorite = async (mediaId: any): Promise<boolean> => {
 
 export const checkIsInWatchlist = async (mediaId: any): Promise<boolean> => {
     try {
-        const me: any = await fetchMe();
+        const me: any = await getCurrentUser();
         if (!me?.username) return false;
 
         const watchlistResp = await fetchAllPages(`${Endpoints.WATCHLIST}?username=${me.username}`)

@@ -1,23 +1,19 @@
+import { Edit, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Background } from "../main/Background";
-import { Edit, Trash2 } from "lucide-react";
+import { Endpoints } from "../../config/Config";
+import { Media } from "../../models/Movie";
 import {
-  fetchMe,
   fetchMedia,
   fetchUserByUsername,
 } from "../../services/MediaService";
-import { Media, Movie } from "../../models/Movie";
-import PrimarySearchAppBar from "../shared/TopNavBar";
-import { getRecentlyWatched } from "../shared/RecentlyWatchService";
-import AccountStatCard from "../shared/AccountStatCard";
-import { Endpoints } from "../../config/Config";
-import Cookies from "js-cookie";
-import NotFoundPage from "../shared/NotFoundPage";
-import { WorkInProgress } from "../shared/WorkInProgress";
-import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
-import axios from "axios";
+import { getCurrentUser, getUsername } from "../../services/UserService";
 import { fetchAllPages } from "../../utils/Utils";
+import { Background } from "../main/Background";
+import AccountStatCard from "../shared/AccountStatCard";
+import NotFoundPage from "../shared/NotFoundPage";
+import PrimarySearchAppBar from "../shared/TopNavBar";
+import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
 
 const accountPageStyle = `
   .similar-movies-controls {
@@ -51,11 +47,13 @@ const accountPageStyle = `
 const AccountPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
   const { username } = useParams<{ username: string }>();
-  const [authed, setAuthed] = useState(false);
+  const [isCurrentUserProfile, setIsCurrentUserProfile] = useState(false);
   const [avatarVersion, setAvatarVersion] = useState(Date.now());
   const [avatarUrl, setAvatarUrl] = useState<string>("");
-  const cookieUsername = Cookies.get("username");
+  const cookieUsername = getUsername();
   const [accountStats, setaccountStats] = useState<any>([]);
+
+  // change to loading screen instead of showing this data
   const [user, setUser] = useState<any>({
     username: username,
     avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
@@ -65,8 +63,8 @@ const AccountPage: React.FC = () => {
   useEffect(() => {
     const newAvatarUrl = `${Endpoints.IMG_VIEW}/${username}.webp`;
     setAvatarUrl(newAvatarUrl);
-    if (username === cookieUsername) setAuthed(true)
-    else setAuthed(false);
+    if (username === cookieUsername) setIsCurrentUserProfile(true)
+    else setIsCurrentUserProfile(false);
   }, [username, avatarVersion]);
 
   useEffect(() => {
@@ -76,11 +74,12 @@ const AccountPage: React.FC = () => {
       createdAt: new Date("2023-01-01"),
     });
     async function fetchUser() {
-      const me = await fetchMe();
+      // const me = await fetchMe();
+      const me = await getCurrentUser();
       if (me?.username && me?.username?.toLowerCase() === username?.toLowerCase()) {
         setUser((prev: any) => {
           const updated = { ...prev, ...me };
-          setAuthed(true);
+          setIsCurrentUserProfile(true);
           setAvatarUrl(me?.avatarUrl);
           return updated;
         });
@@ -190,14 +189,6 @@ const AccountPage: React.FC = () => {
     ]);
   }, [watched, favourites, watchlist])
 
-  function removeFromFavorites(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function removeFromWatchlist(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
   if (user == null) {
     return <NotFoundPage />;
   }
@@ -251,7 +242,7 @@ const AccountPage: React.FC = () => {
             </div>
           </div>
 
-          {authed && (
+          {isCurrentUserProfile && (
             <div className="mt-4 d-flex gap-2 justify-content-center">
               <button
                 className="btn btn-outline-primary px-4 py-2 d-flex align-items-center gap-2"

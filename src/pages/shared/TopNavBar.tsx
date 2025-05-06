@@ -12,10 +12,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import { User2Icon } from "lucide-react";
-import Cookies from "js-cookie";
-import { fetchMe } from "../../services/MediaService";
-import { ExitToApp, LogoutOutlined } from "@mui/icons-material";
+import { ExitToApp, LogoutOutlined, Refresh } from "@mui/icons-material";
 import { Endpoints } from "../../config/Config";
+import { getCurrentUser, logout } from "../../services/UserService";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -70,6 +69,8 @@ export interface User {
   username: string;
   password: string;
   email: string;
+  avatarUrl: string;
+  createdAt: Date;
   enabled: boolean;
   authorities: Authority[];
   accountNonExpired: boolean;
@@ -95,23 +96,22 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
 
   React.useEffect(() => {
     async function fetchUser() {
-      const user = await fetchMe();
+      const user = await getCurrentUser();
       if (user?.username) setUser(user);
     }
     fetchUser();
   }, []);
 
   const handleLogout = () => {
-    Cookies.remove("accessToken");
-    // Cookies.remove("refreshToken");
-    Cookies.remove("username");
+    logout()
     setUser(null);
     navigate("/");
+    // window.location.reload();
   };
 
   const handleUserBtn = () => {
     async function fetchUser() {
-      const user = await fetchMe();
+      const user = await getCurrentUser();
       if (user?.username) {
         setUser(user);
         navigate(`/profile/${user?.username}`);

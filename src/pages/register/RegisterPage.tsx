@@ -3,10 +3,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import Cookies from "js-cookie";
 import {
   fetchDiscoverMovies,
-  fetchMe,
   fetchOnlyMovies,
 } from "../../services/MediaService";
 import { Media } from "../../models/Movie";
@@ -16,6 +14,7 @@ import "./RegisterPage.css";
 import { Endpoints } from "../../config/Config";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import { getCurrentUser } from "../../services/UserService";
 
 const schema = z
   .object({
@@ -65,7 +64,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     async function fetchUser() {
-      const user = await fetchMe();
+      const user = await getCurrentUser();
       if (user?.username) navigate("/");
     }
     fetchUser();
@@ -88,12 +87,6 @@ export default function RegisterPage() {
         username: data.username,
         email: data.email,
         password: data.password,
-      });
-
-      Cookies.set("username", data.username, {
-        expires: 7,
-        secure: true,
-        sameSite: "Strict",
       });
 
       const button = document.createElement("button");
