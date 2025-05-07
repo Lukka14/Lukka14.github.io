@@ -51,8 +51,11 @@ const AccountPage: React.FC = () => {
   const [avatarVersion, setAvatarVersion] = useState(Date.now());
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const cookieUsername = getUsername();
-  const [is404, setIs404] = useState(false);
+  const [is404, setIs404] = useState<boolean>(false);
   const [accountStats, setaccountStats] = useState<any>([]);
+  const [favourites, setFavourites] = useState<any>([]);
+  const [watchlist, setWatchlist] = useState<any>([]);
+  const [watched, setWatched] = useState<any>([]);
 
   // change to loading screen instead of showing this data
   const [user, setUser] = useState<any>({
@@ -61,11 +64,68 @@ const AccountPage: React.FC = () => {
     createdAt: new Date("2023-01-01"),
   });
 
-  function stateHandler(id: any, type: any) {
+  function stateHandler(id: any, type: any, action: 'add' | 'remove' = 'remove') {
+    const updateItemStatus = (item: any, key: 'watchlist' | 'favourite', value: boolean) => ({
+      ...item,
+      [key]: value,
+    });
+
     if (type === "watchlist") {
-      setWatchlist(prev => prev.filter((item: any) => item.id !== id));
-    } else {
-      setFavourites(prev => prev.filter((item: any) => item.id !== id));
+      if (action === 'remove') {
+        setWatchlist((prev: any) => prev.filter((item: any) => item.id !== id));
+        setFavourites((prev: any) =>
+          prev.map((item: any) =>
+            item.id === id ? updateItemStatus(item, 'watchlist', false) : item
+          )
+        );
+      } else {
+        const itemExists = watchlist.some((item: any) => item.id === id);
+        if (!itemExists) {
+          const baseItem = favourites.find((item: any) => item.id === id);
+          const newItem = baseItem
+            ? updateItemStatus(baseItem, 'watchlist', true)
+            : {
+              id,
+              tmdbId: id,
+              watchlist: true,
+              favourite: false,
+            };
+          setWatchlist((prev: any) => [newItem, ...prev]);
+          setFavourites((prev: any) =>
+            prev.map((item: any) =>
+              item.id === id ? updateItemStatus(item, 'watchlist', true) : item
+            )
+          );
+        }
+      }
+    } else if (type === "favourites") {
+      if (action === 'remove') {
+        setFavourites((prev: any) => prev.filter((item: any) => item.id !== id));
+        setWatchlist((prev: any) =>
+          prev.map((item: any) =>
+            item.id === id ? updateItemStatus(item, 'favourite', false) : item
+          )
+        );
+      } else {
+        const itemExists = favourites.some((item: any) => item.id === id);
+        if (!itemExists) {
+          const baseItem = watchlist.find((item: any) => item.id === id);
+          const newItem = baseItem
+            ? updateItemStatus(baseItem, 'favourite', true)
+            : {
+              id,
+              tmdbId: id,
+              watchlist: false,
+              favourite: true,
+            };
+          setFavourites((prev: any) => [newItem, ...prev]);
+          setWatchlist((prev: any) =>
+            prev.map((item: any) =>
+              item.id === id ? updateItemStatus(item, 'favourite', true) : item
+            )
+          );
+        }
+      }
     }
   }
 
@@ -138,10 +198,6 @@ const AccountPage: React.FC = () => {
       .then(setMedias)
       .catch((err) => console.error(err));
   };
-
-  const [favourites, setFavourites] = useState([]);
-  const [watchlist, setWatchlist] = useState([]);
-  const [watched, setWatched] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {

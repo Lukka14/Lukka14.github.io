@@ -98,7 +98,7 @@ interface SimilarMoviesCarouselProps {
   similarMovies: MediaWithType[];
   title?: string;
   accountPage?: boolean;
-  stateHandler?: (id: any, type: any) => void;
+  stateHandler?: (id: any, type: any, action?: 'add' | 'remove') => void;
 }
 
 const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
