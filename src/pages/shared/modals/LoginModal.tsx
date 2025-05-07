@@ -56,7 +56,7 @@ export default function LoginModal() {
             if (window.location.href.includes("watch")) {
                 window.location.href = window.location.href.toString();
             } else {
-                window.location.href = "/profile/" + data.username;
+                window.location.href = "/#/profile/" + data.username;
             }
 
             if (closeButtonRef.current) {
@@ -120,7 +120,7 @@ export default function LoginModal() {
                             <div className="d-flex justify-content-end mt-4">
                                 <div>
                                     <span style={{ color: "#c2c2c2" }}>Don't have an account? </span>
-                                    <a href="/register/" onClick={() => {
+                                    <a href="/#/register/" onClick={() => {
                                         if (closeButtonRef.current) {
                                             closeButtonRef.current.click();
                                         }

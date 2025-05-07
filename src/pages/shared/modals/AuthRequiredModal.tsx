@@ -19,7 +19,7 @@ export default function AuthRequiredModal() {
             document.body.removeChild(button);
         } else {
             closeButtonRef?.current?.click();
-            window.location.href = "/register";
+            window.location.href = "/#/register";
         }
     }
 

@@ -1,9 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/main/MainPage";
 import WatchPage from "./pages/watch/WatchPage";
 import AccountPage from "./pages/account/AccountPage";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import MoviePage from "./pages/movie/MoviePage";
 import TvSeriesPage from "./pages/movie/TvSeriesPage";
 import MultiSearchPage from "./pages/movie/MultiSearchPage";
