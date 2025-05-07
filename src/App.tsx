@@ -12,8 +12,18 @@ import RegisterPage from "./pages/register/RegisterPage";
 import DevelopmentFooter from "./pages/shared/development-footer/DevelopmentFooter";
 import UpdateNotifier from "./pages/shared/update-banner/UpdateNotifier";
 import VerifyEmailPage from "./pages/verify-email/VerifyEmailPage";
+import NotFoundPage from "./pages/shared/NotFoundPage";
+import { useEffect } from "react";
 
 const App: React.FC = () => {
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    const hash = window.location.hash;
+
+    if (pathname.length > 1 && (!hash || !hash.startsWith("#/"))) {
+      window.location.href = "/#/404";
+    }
+  }, []);
   return (
     <Router>
       <Routes>
@@ -26,6 +36,7 @@ const App: React.FC = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile/:username" element={<AccountPage />} />
         <Route path="/verify/:token" element={<VerifyEmailPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
       {/* <DevelopmentFooter /> */}

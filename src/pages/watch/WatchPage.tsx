@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { saveRecentlyWatched } from "../shared/RecentlyWatchService";
 import MoviesCarouselV2 from "./components/MoviesCarouselV2";
+import NotFoundPage from "../shared/NotFoundPage";
 
 export class SeasonEpisode {
   season: number = 1;
@@ -28,6 +29,8 @@ const WatchPage: React.FC = () => {
   const season = queryParams.get("s");
   const episode = Number(queryParams.get("e"));
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
+  const [loadingFinished, setLoadingFinished] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const [state, setState] = useState<{
     media: ImdbMedia | TvSeries | null;
@@ -50,18 +53,26 @@ const WatchPage: React.FC = () => {
           data = await fetchTvSeries(id);
         }
 
-        const finalBgUrl =
-          data?.backDropUrl ||
-          "https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true";
+        if (!data) {
+          setNotFound(true);
+        } else {
+          const finalBgUrl =
+            data.backDropUrl ||
+            "https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true";
 
-        setState({ media: data, bgUrl: finalBgUrl });
+          setState({ media: data, bgUrl: finalBgUrl });
+        }
       } catch (err) {
         console.error(err);
+        setNotFound(true);
+      } finally {
+        setLoadingFinished(true);
       }
     };
 
     fetchData();
   }, [id, mediaType]);
+
 
   const { media, bgUrl } = state;
 
@@ -102,6 +113,8 @@ const WatchPage: React.FC = () => {
   ) {
     saveRecentlyWatched(media!);
   }
+
+  if (loadingFinished && notFound) return <NotFoundPage />;
 
   return (
     <>
