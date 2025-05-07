@@ -11,7 +11,7 @@ interface MediaCardProps {
   href: string;
   isFav: boolean;
   isWatch: boolean;
-  stateHandler?: (id: any, type: any) => void;
+  stateHandler?: (id: any, type: any, action?: 'add' | 'remove') => void;
 }
 
 const WithBG = ({ text }: { text: string }): React.ReactElement => {
@@ -84,29 +84,38 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     e.stopPropagation();
 
     try {
-      setIsFavorite(!isFavorite);
-      const newStatus = await toggleFavorite(mediaInfo.id, mediaInfo.mediaType);
-      if (stateHandler) stateHandler(mediaInfo.id, "favourite");
+      const newStatus = !isFavorite;
       setIsFavorite(newStatus);
+      await toggleFavorite(mediaInfo.id, mediaInfo.mediaType);
+
+      if (stateHandler) {
+        stateHandler(mediaInfo.id, "favourites", newStatus ? 'add' : 'remove');
+      }
+    } catch (e) {
+      setIsFavorite(!isFavorite);
+      setToastOpen(true);
+    }
+  };
+
+
+  const handleWatchlistClick = async (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      const newStatus = !isInWatchList;
+      setIsInWatchList(newStatus);
+      await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType);
+
+      if (stateHandler) {
+        stateHandler(mediaInfo.id, "watchlist", newStatus ? 'add' : 'remove');
+      }
     } catch (e) {
       setIsInWatchList(!isInWatchList);
       setToastOpen(true);
     }
   };
 
-  const handleWatchlistClick = async (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      setIsInWatchList(!isInWatchList);
-      const newStatus = await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType);
-      if (stateHandler) stateHandler(mediaInfo.id, "watchlist");
-      setIsInWatchList(newStatus);
-    } catch (e) {
-      setIsInWatchList(!isInWatchList);
-      setToastOpen(true);
-    }
-  };
 
   return (
     <>

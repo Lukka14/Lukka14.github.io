@@ -8,6 +8,9 @@ import axios from "axios";
 import { Endpoints } from "../../../config/Config";
 import Cookies from "js-cookie";
 import { getAccessToken, getCurrentUser } from "../../../services/UserService";
+import 'croppie/croppie.css';
+import Croppie from "croppie";
+import CroppingModal from "./CroppingModal";
 
 const profileSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters").max(50, "Username cannot exceed 50 characters"),
@@ -22,6 +25,7 @@ export default function EditProfileModal() {
     const closeButtonRef = useRef<HTMLButtonElement>(null);
     const username = Cookies.get("username");
     const [isLoading, setIsLoading] = useState(true);
+    const [showCropper, setShowCropper] = useState(false);
 
     const [user, setUser] = useState({
         username,
@@ -68,15 +72,16 @@ export default function EditProfileModal() {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setProfileImage(file);
-
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
+                setShowCropper(true);
             };
             reader.readAsDataURL(file);
         }
+        e.target.value = "";
     };
+
 
     const onSubmit = async (data: ProfileFormData) => {
         let accessToken: string | undefined = await getAccessToken();
@@ -130,13 +135,18 @@ export default function EditProfileModal() {
         }
     };
 
+    const closeEditModal = () => {
+        setImagePreview(null);
+        setProfileImage(null);
+    }
+
     return (
         <div className="modal fade" id="editProfileModal" tabIndex={-1} aria-labelledby="editProfileModalLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content" style={{
                     backgroundColor: "#1c2231"
                 }}>
-                    <ModalHeader title="Edit Profile" />
+                    <ModalHeader title="Edit Profile" closeModal={closeEditModal} />
                     <div className="modal-body">
                         {isLoading ? (
                             <div className="text-center">
@@ -179,6 +189,21 @@ export default function EditProfileModal() {
                                             />
                                         )}
                                     </div>
+                                    {showCropper && imagePreview && (
+                                        <CroppingModal
+                                            imageSrc={imagePreview}
+                                            onCrop={(base64, file) => {
+                                                setImagePreview(base64);
+                                                setProfileImage(file);
+                                                setShowCropper(false);
+                                            }}
+                                            onClose={(isCropped) => {
+                                                setShowCropper(false);
+                                                if (!isCropped) setImagePreview(null);
+                                                if (!isCropped) setProfileImage(null);
+                                            }}
+                                        />
+                                    )}
 
                                     <div className="mb-3">
                                         <label htmlFor="profileImage" className="btn btn-outline-primary btn-sm">
@@ -232,6 +257,7 @@ export default function EditProfileModal() {
                         primaryBtnText="Save changes"
                         onPrimaryClick={handleSubmit(onSubmit)}
                         closeButtonRef={closeButtonRef}
+                        closeModal={closeEditModal}
                     />
                 </div>
             </div>

@@ -10,8 +10,9 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "You can now add your favorite movies and TV shows to your Favorites and Watchlist which will appear on your profile!",
-            "Movies will appear in your Watched list on your profile once you've watched more than 50% of their total runtime!"
+            "You can now crop your profile picture when uploading it, making it easier to get the perfect look.",
+            "We've fixed an issue that was affecting the ability to add or remove movies and TV shows from your Favourites and Watchlist on your Profile page.",
+        "Fixed an issue where incorrect user information was displayed when viewing other users' profiles."
         ]
     }
 ];
