@@ -200,7 +200,7 @@ export default function EditProfileModal() {
                                             onClose={(isCropped) => {
                                                 setShowCropper(false);
                                                 if (!isCropped) setImagePreview(null);
-                                                setProfileImage(null);
+                                                if (!isCropped) setProfileImage(null);
                                             }}
                                         />
                                     )}
