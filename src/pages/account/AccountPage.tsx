@@ -359,6 +359,8 @@ const AccountPage: React.FC = () => {
               title="Favourites"
               accountPage={true}
               stateHandler={stateHandler}
+              isCurrentUserProfile={isCurrentUserProfile}
+              username={username}
             />
           </div>
         </div>
@@ -380,6 +382,8 @@ const AccountPage: React.FC = () => {
               title="Watchlist"
               accountPage={true}
               stateHandler={stateHandler}
+              isCurrentUserProfile={isCurrentUserProfile}
+              username={username}
             />
           </div>
 
@@ -401,6 +405,8 @@ const AccountPage: React.FC = () => {
               title="Watched"
               accountPage={true}
               stateHandler={stateHandler}
+              isCurrentUserProfile={isCurrentUserProfile}
+              username={username}
             />
           </div>
         </div>

@@ -99,13 +99,17 @@ interface SimilarMoviesCarouselProps {
   title?: string;
   accountPage?: boolean;
   stateHandler?: (id: any, type: any, action?: 'add' | 'remove') => void;
+  isCurrentUserProfile?: boolean;
+  username?: string;
 }
 
 const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
   similarMovies,
   title = "Similar Movies",
   accountPage = false,
-  stateHandler
+  stateHandler,
+  isCurrentUserProfile,
+  username: ParamsUsername
 }) => {
   const [startIndex, setStartIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(5);
@@ -184,17 +188,17 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
         <div className="similar-movies-track-container">
           {title == "Favourites" && <WorkInProgress
             text="No favourites yet."
-            subtext="Add movies and tv shows to favourites and they will appear here."
+            subtext={!isCurrentUserProfile && ParamsUsername ? `${ParamsUsername} currently has no movies or TV shows added to favourites` : `Add movies and tv shows to favourites and they will appear here.`}
           />
           }
           {title == "Watchlist" && <WorkInProgress
-            text="Your watchlist is empty."
-            subtext="Add movies and tv shows to watchlist and they will appear here"
+            text={!isCurrentUserProfile && ParamsUsername ? `${ParamsUsername}'s watchlist is empty` : `Your watchlist is empty.`}
+            subtext={!isCurrentUserProfile && ParamsUsername ? `${ParamsUsername} currently has no movies or TV shows added to watchlist` : `Add movies and tv shows to watchlist and they will appear here.`}
           />
           }
           {title == "Watched" && <WorkInProgress
-            text="Your watched list is empty."
-            subtext="Watch at least half of a movie and they will appear here"
+            text={!isCurrentUserProfile && ParamsUsername ? `${ParamsUsername}'s watched is empty` : `Your watchlist is empty.`}
+            subtext={!isCurrentUserProfile && ParamsUsername ? `${ParamsUsername} currently has not watched any movie` : `Watch at least half of a movie and they will appear here`}
           />
           }
         </div>
