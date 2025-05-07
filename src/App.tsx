@@ -1,9 +1,9 @@
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/main/MainPage";
 import WatchPage from "./pages/watch/WatchPage";
 import AccountPage from "./pages/account/AccountPage";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
+// import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import MoviePage from "./pages/movie/MoviePage";
 import TvSeriesPage from "./pages/movie/TvSeriesPage";
 import MultiSearchPage from "./pages/movie/MultiSearchPage";
@@ -13,17 +13,8 @@ import DevelopmentFooter from "./pages/shared/development-footer/DevelopmentFoot
 import UpdateNotifier from "./pages/shared/update-banner/UpdateNotifier";
 import VerifyEmailPage from "./pages/verify-email/VerifyEmailPage";
 import NotFoundPage from "./pages/shared/NotFoundPage";
-import { useEffect } from "react";
 
 const App: React.FC = () => {
-  useEffect(() => {
-    const pathname = window.location.pathname;
-    const hash = window.location.hash;
-
-    if (pathname.length > 1 && (!hash || !hash.startsWith("#/"))) {
-      window.location.href = "/#/404";
-    }
-  }, []);
   return (
     <Router>
       <Routes>

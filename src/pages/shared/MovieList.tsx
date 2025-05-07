@@ -22,8 +22,7 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
 
     }
 
-    // For hash routing, ensure the correct URL structure
-    return `#${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
+    return `${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
   };
 
   const username = Cookies.get("username");

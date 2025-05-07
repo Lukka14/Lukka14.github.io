@@ -29,7 +29,7 @@ export const generateHref = (media: MediaWithType, acc: boolean = false): string
 
   }
 
-  return `#${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
+  return `${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
 };
 
 export const convertMinutes = (totalMinutes: number): { hours: number, minutes: number } => {

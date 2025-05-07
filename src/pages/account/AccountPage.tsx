@@ -161,7 +161,7 @@ const AccountPage: React.FC = () => {
       if (userByUsername) {
         setUser((prev: any) => ({ ...prev, ...userByUsername }));
         setAvatarUrl(userByUsername?.avatarUrl);
-        window.history.replaceState({}, '', `/#/profile/` + userByUsername.username);
+        window.history.replaceState({}, '', `/profile/` + userByUsername.username);
       } else {
         setIs404(true);
       }
