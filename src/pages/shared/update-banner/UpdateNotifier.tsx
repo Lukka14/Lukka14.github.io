@@ -12,6 +12,7 @@ const updateInfo = [
         items: [
             "You can now crop your profile picture during upload.",
             "Resolved an issue with adding and removing movies and TV shows from Favourites and Watchlist on the Profile page."
+        "Fixed an issue where incorrect user information was displayed when viewing other users' profiles"
         ]
     }
 ];
