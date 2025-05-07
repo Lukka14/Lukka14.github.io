@@ -102,6 +102,7 @@ export default function NotFoundPage() {
                       navigate(
                         "/" +
                         generateHref(randomMedia as Media)
+                          .split("#")[1]
                           .split("/")[1]
                       )
                     }

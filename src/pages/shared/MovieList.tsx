@@ -22,7 +22,7 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
 
     }
 
-    return `${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
+    return `#${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
   };
 
   const username = Cookies.get("username");
