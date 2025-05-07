@@ -10,7 +10,7 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "You can now crop your profile picture during upload.",
+            "You can now crop your profile picture when uploading it, making it easier to get the perfect look.",
             "Resolved an issue with adding and removing movies and TV shows from Favourites and Watchlist on the Profile page."
         "Fixed an issue where incorrect user information was displayed when viewing other users' profiles"
         ]
