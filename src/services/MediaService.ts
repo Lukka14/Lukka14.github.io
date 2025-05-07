@@ -1,6 +1,5 @@
 import { ImdbMedia, Media, Movie, TvSeries } from "../models/Movie";
 import { Endpoints } from "../config/Config";
-import Cookies from "js-cookie";
 import axios from "axios";
 
 
@@ -117,49 +116,52 @@ export const fetchMovie = async (id: string): Promise<Movie> => {
   }
 };
 
-export const refreshAccessToken = async (): Promise<string | null> => {
-  try {
-    const res = await axios.post(Endpoints.ACCESS_TOKEN, {}, { withCredentials: true });
+// export const refreshAccessToken = async (): Promise<string | null> => {
+//   try {
+//     const res = await axios.post(Endpoints.ACCESS_TOKEN, {}, { withCredentials: true });
 
-    const accessToken = res.data.accessToken;
-    Cookies.set("accessToken", accessToken);
-    return accessToken;
-  } catch (error) {
-    return null;
-  }
-};
+//     const accessToken = res.data.token;
 
-export const fetchMe = async (): Promise<any> => {
-  let accessToken = Cookies.get("accessToken");
+//     console.log("Access token refreshed:", res.data);
 
-  try {
-    const res = await axios.get(Endpoints.ME, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+//     Cookies.set("accessToken", accessToken);
+//     return accessToken;
+//   } catch (error) {
+//     return null;
+//   }
+// };
 
-    return res.data;
-  } catch (error: any) {
-    if (error.response?.status === 401) {
-      const newAccessToken = await refreshAccessToken();
-      if (!newAccessToken) return null;
+// export const fetchMe = async (): Promise<any> => {
+//   let accessToken = Cookies.get("accessToken");
 
-      try {
-        const retryRes = await axios.get(Endpoints.ME, {
-          headers: {
-            Authorization: `Bearer ${newAccessToken}`,
-          },
-        });
+//   try {
+//     const res = await axios.get(Endpoints.ME, {
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//     });
 
-        return retryRes.data;
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  }
-};
+//     return res.data;
+//   } catch (error: any) {
+//     if (error.response?.status === 401) {
+//       const newAccessToken = await refreshAccessToken();
+//       if (!newAccessToken) return null;
+
+//       try {
+//         const retryRes = await axios.get(Endpoints.ME, {
+//           headers: {
+//             Authorization: `Bearer ${newAccessToken}`,
+//           },
+//         });
+
+//         return retryRes.data;
+//       } catch {
+//         return null;
+//       }
+//     }
+//     return null;
+//   }
+// };
 
 export const fetchTvSeries = (id: string): Promise<TvSeries> => {
   // const URL = "http://localhost:8080/search/multi";

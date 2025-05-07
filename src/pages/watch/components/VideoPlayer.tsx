@@ -2,10 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import { MDBContainer } from "mdb-react-ui-kit";
 import { VideoPlayerProps } from "../../../models/VidePlayerProps";
 import Cookies from "js-cookie";
-import { fetchMe, fetchMovie, refreshAccessToken } from "../../../services/MediaService";
+import {  fetchMovie } from "../../../services/MediaService";
 import { Endpoints } from "../../../config/Config";
 import axios from "axios";
 import { MediaType } from "../../../models/Movie";
+import { getCurrentUser } from "../../../services/UserService";
 
 interface WatchedList {
   [key: string]: any;
@@ -50,7 +51,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     async function fetchUserData() {
       if (user.username) {
         try {
-          const me = await fetchMe();
+          const me = await getCurrentUser();
           if (me?.username === user?.username) {
             setUser((prev) => ({ ...prev, isAuthed: true }));
 
@@ -116,7 +117,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     addingToWatchedRef.current = true;
 
     try {
-      await refreshAccessToken();
+      // await refreshAccessToken();
       const token = Cookies.get("accessToken");
       if (!token) return;
 

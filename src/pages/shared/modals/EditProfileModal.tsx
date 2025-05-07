@@ -7,7 +7,7 @@ import ModalHeader from "./ModalHeader";
 import axios from "axios";
 import { Endpoints } from "../../../config/Config";
 import Cookies from "js-cookie";
-import { fetchMe, refreshAccessToken } from "../../../services/MediaService";
+import { getAccessToken, getCurrentUser } from "../../../services/UserService";
 
 const profileSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters").max(50, "Username cannot exceed 50 characters"),
@@ -47,7 +47,7 @@ export default function EditProfileModal() {
         async function fetchUser() {
             setIsLoading(true);
             try {
-                const me = await fetchMe();
+                const me = await getCurrentUser();
                 if (me?.username && me?.username === username) {
                     setUser((prev) => ({ ...prev, ...me }));
                     reset({
@@ -79,14 +79,14 @@ export default function EditProfileModal() {
     };
 
     const onSubmit = async (data: ProfileFormData) => {
-        let accessToken: string | null | undefined = Cookies.get("accessToken");
+        let accessToken: string | undefined = await getAccessToken();
 
         const isValidAccessToken = (token: string | undefined) => {
             return token && token !== "expired";
         };
 
         if (!isValidAccessToken(accessToken)) {
-            accessToken = await refreshAccessToken();
+            accessToken = await getAccessToken();
             if (!accessToken) {
                 return;
             }

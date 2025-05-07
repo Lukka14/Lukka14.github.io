@@ -7,7 +7,6 @@ import { BookmarkIcon, HeartIcon } from "lucide-react";
 import axios from "axios";
 import { Endpoints } from "../../../config/Config";
 import Cookies from "js-cookie";
-import { fetchMe, refreshAccessToken } from "../../../services/MediaService";
 import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardService";
 import { Snackbar, SnackbarCloseReason, Tooltip } from "@mui/material";
 import { CustomToast } from "../../shared/Toast";
