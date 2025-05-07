@@ -56,7 +56,7 @@ export default function VerifyEmailPage() {
                 countdownInterval = setInterval(() => {
                     setCountdown((prev) => {
                         if (prev <= 1) {
-                            window.location.href = `/#/profile/${username}`;
+                            window.location.href = `/profile/${username}`;
                             return 0;
                         }
                         return prev - 1;
