@@ -6,6 +6,7 @@ interface ModalFooterInterface {
     closeButtonRef?: React.Ref<HTMLButtonElement>;
     primaryBtnClass?: string;
     loading?: boolean;
+    closeModal?: () => void;
 }
 
 export default function ModalFooter({
@@ -13,7 +14,8 @@ export default function ModalFooter({
     onPrimaryClick,
     closeButtonRef,
     loading,
-    primaryBtnClass = "btn-outline-primary"
+    primaryBtnClass = "btn-outline-primary",
+    closeModal,
 }: ModalFooterInterface) {
     return (
         <div className="modal-footer">
@@ -23,6 +25,7 @@ export default function ModalFooter({
                 style={{ color: "#f5f5f5" }}
                 data-bs-dismiss="modal"
                 ref={closeButtonRef}
+                onClick={closeModal}
             >
                 Close
             </button>
