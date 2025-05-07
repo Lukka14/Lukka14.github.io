@@ -10,8 +10,9 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "You can now crop your profile picture during upload.",
-            "Resolved an issue with adding and removing movies and TV shows from Favourites and Watchlist on the Profile page."
+            "You can now crop your profile picture when uploading it, making it easier to get the perfect look.",
+            "We've fixed an issue that was affecting the ability to add or remove movies and TV shows from your Favourites and Watchlist on your Profile page.",
+        "Fixed an issue where incorrect user information was displayed when viewing other users' profiles."
         ]
     }
 ];
