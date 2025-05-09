@@ -105,7 +105,8 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
   const handleLogout = () => {
     logout()
     setUser(null);
-    navigate("/");
+    window.location.hash = "/";
+    // navigate("/");
     // window.location.reload();
   };
 
