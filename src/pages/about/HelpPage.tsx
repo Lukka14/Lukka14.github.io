@@ -6,6 +6,7 @@ import Breadcrumb from "./BreadCrumb";
 import { Media } from "../../models/Movie";
 import { fetchTopRatedMovies } from "../../services/MediaService";
 import CenteredH1 from "../shared/CenteredText";
+import { Footer } from "../shared/Footer";
 
 const HelpPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
@@ -57,6 +58,7 @@ const HelpPage: React.FC = () => {
           Notify Me
         </button>
       </div>
+      <Footer />
     </>
   );
 };
