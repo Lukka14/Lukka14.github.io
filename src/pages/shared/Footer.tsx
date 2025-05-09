@@ -18,7 +18,7 @@ export function Footer() {
                                 <p className="mb-2 d-flex flex-column flex-md-row align-items-center justify-content-center">
                                     We appreciate your feedback! If you've encountered a bug or have a suggestion, please let us know at:
                                     <a
-                                        href="mailto:team@movieplus.live"
+                                        href={`mailto:${SUPPORT_EMAIL}`}
                                         className="d-flex align-items-center ms-md-2 mt-2 mt-md-0"
                                     >
                                         <EmailOutlined style={{ marginRight: "5px", fontSize: "16px" }} />
