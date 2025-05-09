@@ -7,6 +7,7 @@ export function Footer() {
     const currentPath = window.location.hash;
     const isHelpPage = currentPath.includes('/help');
 
+    const SUPPORT_EMAIL = "mailto:team@movieplus.live"
     return (
         <footer className="footer-dark text-light py-3 mt-4">
             <div className="container">
@@ -52,7 +53,7 @@ export function Footer() {
                         </div>
 
                         <div className="col d-flex flex-column align-items-center align-items-md-end">
-                            <a href="mailto:team@movieplus.live" className="d-flex align-items-center justify-content-center justify-content-md-end mb-1">
+                            <a href={`mailto:${SUPPORT_EMAIL}`} className="d-flex align-items-center justify-content-center justify-content-md-end mb-1">
                                 <EmailOutlined style={{ marginRight: "5px", fontSize: "16px" }} />
                                 <span className="small">team@movieplus.live</span>
                             </a>
