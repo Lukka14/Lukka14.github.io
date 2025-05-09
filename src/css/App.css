@@ -123,6 +123,7 @@
    color: #dcdcdc;
  }
 
+
  .footer-dark a {
    color: #dcdcdc;
    transition: color 0.3s ease;
@@ -139,7 +140,11 @@
  }
 
  @media screen and (max-width: 767px) {
-   .footer-logo {
-     height: 60px !important;
+   .footer-dark .footer-logo {
+     height: 60px;
    }
+ }
+
+ .dropdown-item:hover {
+   background-color: #0f1e45 !important;
  }

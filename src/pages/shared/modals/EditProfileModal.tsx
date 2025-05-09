@@ -208,7 +208,7 @@ export default function EditProfileModal() {
                                     <div className="mb-3">
                                         <label htmlFor="profileImage" className="btn btn-outline-primary btn-sm">
                                             <i className="bi bi-upload me-1"></i>
-                                            Change Profile Picture
+                                            Upload New Image
                                         </label>
                                         <input
                                             type="file"

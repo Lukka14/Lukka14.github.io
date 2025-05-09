@@ -178,21 +178,6 @@ const AccountPage: React.FC = () => {
     }
   }, [username]);
 
-  useEffect(() => {
-    const handleProfileUpdated = (event: Event) => {
-      setAvatarVersion((currentEvent) => {
-        const customEvent = event as CustomEvent;
-        return customEvent.detail?.timestamp || Date.now();
-      });
-    };
-
-    window.addEventListener("profile-updated", handleProfileUpdated);
-
-    return () => {
-      window.removeEventListener("profile-updated", handleProfileUpdated);
-    };
-  }, []);
-
   const handleSearch = (query: string) => {
     fetchMedia(query)
       .then(setMedias)
@@ -307,27 +292,6 @@ const AccountPage: React.FC = () => {
               </p>
             </div>
           </div>
-
-          {isCurrentUserProfile && (
-            <div className="mt-4 d-flex gap-2 justify-content-center">
-              <button
-                className="btn btn-outline-primary px-4 py-2 d-flex align-items-center gap-2"
-                data-bs-toggle="modal"
-                data-bs-target="#editProfileModal"
-              >
-                <Edit size={16} />
-                Edit Profile
-              </button>
-              <button
-                className="btn btn-outline-danger px-4 py-2 d-flex align-items-center gap-2"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteAccountModal"
-              >
-                <Trash2 size={16} />
-                Delete Account
-              </button>
-            </div>
-          )}
 
           <div
             className="mt-4 d-flex justify-content-between"

@@ -1,3 +1,5 @@
+import { WarningSharp } from "@mui/icons-material";
+
 export const WorkInProgress = ({
     text,
     subtext
@@ -19,7 +21,7 @@ export const WorkInProgress = ({
             <div className="text-center">
                 {isDefault && (
                     <>
-                        <h4 className="text-white mb-2">Work in Progress</h4>
+                        <h4 className="text-white mb-2">Work in Progress <WarningSharp /></h4>
                     </>
                 )}
                 {!isDefault && (
