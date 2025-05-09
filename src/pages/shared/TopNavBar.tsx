@@ -81,6 +81,7 @@ export interface User {
 export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [refresh, setRefresh] = React.useState("");
   const [user, setUser] = React.useState<User | null>(null);
   const handleSearch = () => {
     const searchInput = document.querySelector(
@@ -131,6 +132,18 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
     }
     fetchUser();
   }
+
+  React.useEffect(() => {
+    const handleProfileUpdated = (event: Event) => {
+      setRefresh((_) => {
+        const customEvent = event as CustomEvent;
+        return customEvent.detail?.timestamp || Date.now();
+      });
+    };
+
+    window.addEventListener("profile-updated", handleProfileUpdated);
+    return () => window.removeEventListener("profile-updated", handleProfileUpdated);
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -198,7 +211,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
                   </span>
                   <div className="header-profile-image-container">
                     <img
-                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp?ver=${refresh}`}
                       alt="pfp"
                       onError={(e) => {
                         e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
@@ -281,7 +294,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
                   </span>
                   <div className="header-profile-image-container">
                     <img
-                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp?ver=${refresh}`}
                       alt="pfp"
                       onError={(e) => {
                         e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
