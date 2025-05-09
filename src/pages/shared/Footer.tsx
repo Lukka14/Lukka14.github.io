@@ -10,23 +10,25 @@ export function Footer() {
     return (
         <footer className="footer-dark text-light py-3 mt-4">
             <div className="container">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="p-3 rounded-lg text-center">
-                            <h5 className="mb-2 text-primary">Found an issue?</h5>
-                            <p className="mb-2 d-flex flex-column flex-md-row align-items-center justify-content-center">
-                                We appreciate your feedback! If you've encountered a bug or have a suggestion, please let us know at:
-                                <a
-                                    href="mailto:team@movieplus.live"
-                                    className="d-flex align-items-center ms-md-2 mt-2 mt-md-0"
-                                >
-                                    <EmailOutlined style={{ marginRight: "5px", fontSize: "16px" }} />
-                                    <span className="small">team@movieplus.live</span>
-                                </a>
-                            </p>
+                {isHelpPage && (
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="p-3 rounded-lg text-center">
+                                <h5 className="mb-2 text-primary">Found an issue?</h5>
+                                <p className="mb-2 d-flex flex-column flex-md-row align-items-center justify-content-center">
+                                    We appreciate your feedback! If you've encountered a bug or have a suggestion, please let us know at:
+                                    <a
+                                        href="mailto:team@movieplus.live"
+                                        className="d-flex align-items-center ms-md-2 mt-2 mt-md-0"
+                                    >
+                                        <EmailOutlined style={{ marginRight: "5px", fontSize: "16px" }} />
+                                        <span className="small">team@movieplus.live</span>
+                                    </a>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
                 {!isHelpPage && (
                     <div className="row gy-3 align-items-center justify-content-between text-center text-md-start flex-column flex-md-row">
                         <div className="col d-flex flex-column flex-md-row align-items-center justify-content-center justify-content-md-start">
