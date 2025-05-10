@@ -8,6 +8,7 @@ import PrimarySearchAppBar from "../shared/TopNavBar";
 import Carousel from "./MovieCarousel";
 import { getRecentlyWatched } from "../shared/RecentlyWatchService";
 import { LoadingSpinner } from "./LoadingSpinner";
+import { Footer } from "../shared/Footer";
 
 let page = 1;
 
@@ -89,7 +90,7 @@ const MainPage: React.FC = () => {
     <>
       <Background
         url="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true"
-        // url="https://gcdnb.pbrd.co/images/ZvEZBJu1sgOG.png?o=1"
+      // url="https://gcdnb.pbrd.co/images/ZvEZBJu1sgOG.png?o=1"
       />
 
       <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
@@ -109,6 +110,7 @@ const MainPage: React.FC = () => {
           {isLoading && <LoadingSpinner />}
         </>
       )}
+      {/* <Footer /> */}
       {/* <WIP></WIP> */}
       {/* <Signature /> */}
     </>

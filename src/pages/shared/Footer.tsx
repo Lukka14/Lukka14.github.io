@@ -15,17 +15,16 @@ export function Footer() {
                     <div className="row">
                         <div className="col-12">
                             <div className="p-3 rounded-lg text-center">
-                                <h5 className="mb-2 text-primary">Found an issue?</h5>
-                                <p className="mb-2 d-flex flex-column flex-md-row align-items-center justify-content-center">
-                                    We appreciate your feedback! If you've encountered a bug or have a suggestion, please let us know at:
+                                <h6 className="mb-0 d-flex justify-content-center align-items-center flex-wrap gap-2">
+                                    Have questions, feedback, or need support? Feel free to reach out to us at:
                                     <a
                                         href={`mailto:${SUPPORT_EMAIL}`}
-                                        className="d-flex align-items-center ms-md-2 mt-2 mt-md-0"
+                                        className="d-inline-flex align-items-center text-decoration-none"
                                     >
                                         <EmailOutlined style={{ marginRight: "5px", fontSize: "16px" }} />
                                         <span className="small">team@movieplus.live</span>
                                     </a>
-                                </p>
+                                </h6>
                             </div>
                         </div>
                     </div>
