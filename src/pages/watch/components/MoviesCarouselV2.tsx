@@ -197,7 +197,7 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
           />
           }
           {title == "Watched" && <WorkInProgress
-            text={!isCurrentUserProfile && ParamsUsername ? `${ParamsUsername}'s watched is empty` : `Your watchlist is empty.`}
+            text={!isCurrentUserProfile && ParamsUsername ? `${ParamsUsername}'s watched list is empty` : `Your watched list is empty.`}
             subtext={!isCurrentUserProfile && ParamsUsername ? `${ParamsUsername} currently has not watched any movie` : `Watch at least half of a movie and they will appear here`}
           />
           }

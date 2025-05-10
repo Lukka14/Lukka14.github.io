@@ -6,6 +6,7 @@ import Breadcrumb from "./BreadCrumb";
 import { Media } from "../../models/Movie";
 import { fetchTopRatedMovies } from "../../services/MediaService";
 import CenteredH1 from "../shared/CenteredText";
+import { Footer } from "../shared/Footer";
 
 const HelpPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
@@ -40,7 +41,7 @@ const HelpPage: React.FC = () => {
 
       <DataTable mediaList={medias} />
 
-      <div style={{ marginTop: "30px" }}>
+      {/* <div style={{ marginTop: "30px" }}>
         <CenteredH1>
           Could not find what you were searching for? <br></br>
           Want to get notfied when the new movies are added? Click the button
@@ -56,7 +57,8 @@ const HelpPage: React.FC = () => {
         >
           Notify Me
         </button>
-      </div>
+      </div> */}
+      <Footer />
     </>
   );
 };

@@ -81,6 +81,7 @@ export interface User {
 export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [refresh, setRefresh] = React.useState("");
   const [user, setUser] = React.useState<User | null>(null);
   const handleSearch = () => {
     const searchInput = document.querySelector(
@@ -105,7 +106,8 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
   const handleLogout = () => {
     logout()
     setUser(null);
-    navigate("/");
+    window.location.hash = "/";
+    // navigate("/");
     // window.location.reload();
   };
 
@@ -130,6 +132,18 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
     }
     fetchUser();
   }
+
+  React.useEffect(() => {
+    const handleProfileUpdated = (event: Event) => {
+      setRefresh((_) => {
+        const customEvent = event as CustomEvent;
+        return customEvent.detail?.timestamp || Date.now();
+      });
+    };
+
+    window.addEventListener("profile-updated", handleProfileUpdated);
+    return () => window.removeEventListener("profile-updated", handleProfileUpdated);
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -197,7 +211,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
                   </span>
                   <div className="header-profile-image-container">
                     <img
-                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp?ver=${refresh}`}
                       alt="pfp"
                       onError={(e) => {
                         e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
@@ -258,61 +272,90 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             </Button>
 
             {user?.username ? (
-              <Button
-                sx={{
-                  color: "white",
-                  fontSize: "1.2rem",
-                  p: "2px 18px",
-                  minWidth: "auto",
-                  display: "flex",
-                  alignItems: "center",
-                  borderLeft: "1px solid white",
-                  borderTopLeftRadius: "0px",
-                  borderBottomLeftRadius: "0px",
-                  textTransform: "none",
-                }}
-                onClick={() => navigate(`/profile/${user?.username}`)}
-              >
-                <div className="d-flex align-items-center gap-2">
+              <div className="dropdown">
+                <button
+                  className="btn d-flex align-items-center gap-2"
+                  type="button"
+                  id="userDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style={{
+                    color: "white",
+                    fontSize: "1.2rem",
+                    padding: "2px 18px",
+                    borderLeft: "1px solid white",
+                    borderTopLeftRadius: "0px",
+                    borderBottomLeftRadius: "0px",
+                    textTransform: "none"
+                  }}
+                >
                   <span className="h6 mb-0">
                     {user?.username}
                   </span>
                   <div className="header-profile-image-container">
                     <img
-                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp`}
+                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp?ver=${refresh}`}
                       alt="pfp"
                       onError={(e) => {
                         e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
                       }}
                     />
                   </div>
-                </div>
-              </Button>
+                </button>
+                <ul
+                  className="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="userDropdown"
+                  style={{
+                    backgroundColor: "#061337",
+                    border: "1px solid #0c2052",
+                    boxShadow: "0 0 10px rgba(0,0,0,0.2)"
+                  }}
+                >
+                  <li>
+                    <a
+                      className="dropdown-item d-flex align-items-center gap-2"
+                      href={`/#/profile/${user?.username}`}
+                      style={{ color: "#f5f5f5" }}
+                    >
+                      <i className="bi bi-person-circle"></i> Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="dropdown-item d-flex align-items-center gap-2"
+                      href="/#/settings"
+                      style={{ color: "#f5f5f5" }}
+                    >
+                      <i className="bi bi-gear-fill"></i> Settings
+                    </a>
+                  </li>
+                  <li><hr className="dropdown-divider" style={{ borderColor: "#0c2052" }} /></li>
+                  <li>
+                    <a
+                      className="dropdown-item d-flex align-items-center gap-2"
+                      href="#"
+                      onClick={handleLogout}
+                      style={{ color: "#f5f5f5" }}
+                    >
+                      <ExitToApp /> Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
             ) : (
-              <Button
-                sx={{
+              <button
+                className="btn"
+                type="button"
+                onClick={() => handleUserBtn()}
+                style={{
                   color: "white",
                   fontSize: "1.2rem",
-                  p: "4px 18px",
-                  minWidth: "auto",
+                  padding: "4px 18px",
+                  minWidth: "auto"
                 }}
-                onClick={() => handleUserBtn()}
               >
                 <User2Icon />
-              </Button>
-            )}
-            {user?.username && (
-              <Button
-                sx={{
-                  color: "#FF4C4C",
-                  fontSize: "1.2rem",
-                  p: "4px 8px",
-                  minWidth: "auto",
-                }}
-                onClick={handleLogout}
-              >
-                <ExitToApp />
-              </Button>
+              </button>
             )}
           </Box>
         </Toolbar>
@@ -372,6 +415,12 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             onClick={() => navigate("/help")}
           >
             Help
+          </Button>
+          <Button
+            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
+            onClick={() => navigate("/settings")}
+          >
+            Settings
           </Button>
           {user?.username && (
             <Button

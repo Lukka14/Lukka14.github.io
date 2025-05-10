@@ -23,6 +23,7 @@ export const Endpoints = {
   ACCESS_TOKEN: `${API_URL}/auth/accessToken`,
   GET_USER: `${API_URL}/auth/user`,
   VERIFY_EMAIL: `${API_URL}/auth/verify`,
+  CHANGE_PASSWORD: `${API_URL}/auth/password`,
 
   // 👤 User Data
   WATCHED: `${API_URL}/user/watched`,

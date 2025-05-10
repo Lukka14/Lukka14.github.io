@@ -116,3 +116,35 @@
    opacity: 1;
    /* Text appears on hover */
  }
+
+
+ .footer-dark {
+   background-color: #061337b2;
+   color: #dcdcdc;
+ }
+
+
+ .footer-dark a {
+   color: #dcdcdc;
+   transition: color 0.3s ease;
+   text-decoration: none;
+ }
+
+ .footer-dark a:hover {
+   color: #ffffff;
+   text-decoration: underline;
+ }
+
+ .footer-dark img:hover {
+   transform: scale(1.05);
+ }
+
+ @media screen and (max-width: 767px) {
+   .footer-dark .footer-logo {
+     height: 60px;
+   }
+ }
+
+ .dropdown-item:hover {
+   background-color: #0f1e45 !important;
+ }
