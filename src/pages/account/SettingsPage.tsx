@@ -8,8 +8,9 @@ import PrimarySearchAppBar from "../shared/TopNavBar";
 import { fetchMedia } from "../../services/MediaService";
 import { Media } from "../../models/Movie";
 import { Edit } from "lucide-react";
-import { getCurrentUser, getUsername } from "../../services/UserService";
+import { getCurrentUser, getUsername, getAccessToken } from "../../services/UserService";
 import { Endpoints } from "../../config/Config";
+import axios from "axios";
 
 const passwordSchema = z
     .object({
@@ -33,6 +34,8 @@ export default function SettingsPage() {
     const username = getUsername();
     const [avatarVersion, setAvatarVersion] = useState(Date.now());
     const [avatarUrl, setAvatarUrl] = useState<string>("");
+    const [loading, setLoading] = useState(false);
+    const [passwordMessage, setPasswordMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
     const [user, setUser] = useState<any>({
         username: username,
         avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
@@ -90,17 +93,60 @@ export default function SettingsPage() {
             .catch((err) => console.error(err));
     };
 
-    function handleUsernameSubmit(event: FormEvent<HTMLFormElement>): void {
-        throw new Error("Function not implemented.");
-    }
+    const onPasswordSubmit = async (data: PasswordFormData) => {
+        setLoading(true);
+        setPasswordMessage(null);
 
-    function handleAvatarChange(event: ChangeEvent<HTMLInputElement>): void {
-        throw new Error("Function not implemented.");
-    }
+        try {
+            const accessToken = await getAccessToken();
 
-    const onPasswordSubmit = (data: PasswordFormData) => {
-        // TODO: call password change API
-        reset();
+            if (!accessToken) {
+                setPasswordMessage({
+                    text: "Not authenticated. Please log in again.",
+                    type: 'error'
+                });
+                return;
+            }
+
+            const response = await axios.post(
+                `${Endpoints.CHANGE_PASSWORD}`,
+                {
+                    oldPassword: data.currentPassword,
+                    newPassword: data.newPassword
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                }
+            );
+
+            setPasswordMessage({
+                text: response.data.detail || "Password changed successfully!",
+                type: 'success'
+            });
+            reset();
+
+        } catch (error: any) {
+            console.error(error);
+
+            let errorMessage = "Failed to change password. Please try again later.";
+
+            if (error.response) {
+                if (error.response.data && error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                } else if (error.response.status === 401) {
+                    errorMessage = "Current password is incorrect.";
+                }
+            }
+
+            setPasswordMessage({
+                text: errorMessage,
+                type: 'error'
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -151,15 +197,25 @@ export default function SettingsPage() {
                         <h5 className="font-weight-bold">Change Password</h5>
                     </div>
                     <div className="card-body">
+                        {passwordMessage && (
+                            <div
+                                className={`alert ${passwordMessage.type === 'success' ? 'alert-success' : 'alert-danger'} mb-4`}
+                                role="alert"
+                            >
+                                {passwordMessage.text}
+                            </div>
+                        )}
+
                         <form onSubmit={handleSubmit(onPasswordSubmit)}>
                             <div className="mb-3">
                                 <label className="small mb-1" htmlFor="currentPassword">Current Password</label>
                                 <input
-                                    className="form-control"
+                                    className={`form-control ${errors.currentPassword ? 'is-invalid' : ''}`}
                                     id="currentPassword"
                                     type="password"
                                     placeholder="Enter current password"
                                     {...register("currentPassword")}
+                                    disabled={loading}
                                 />
                                 {errors.currentPassword && (
                                     <div className="small text-danger">{errors.currentPassword.message}</div>
@@ -169,11 +225,12 @@ export default function SettingsPage() {
                             <div className="mb-3">
                                 <label className="small mb-1" htmlFor="newPassword">New Password</label>
                                 <input
-                                    className="form-control"
+                                    className={`form-control ${errors.newPassword ? 'is-invalid' : ''}`}
                                     id="newPassword"
                                     type="password"
                                     placeholder="Enter new password"
                                     {...register("newPassword")}
+                                    disabled={loading}
                                 />
                                 {errors.newPassword && (
                                     <div className="small text-danger">{errors.newPassword.message}</div>
@@ -183,11 +240,12 @@ export default function SettingsPage() {
                             <div className="mb-3">
                                 <label className="small mb-1" htmlFor="confirmPassword">Confirm Password</label>
                                 <input
-                                    className="form-control"
+                                    className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
                                     id="confirmPassword"
                                     type="password"
                                     placeholder="Confirm new password"
                                     {...register("confirmPassword")}
+                                    disabled={loading}
                                 />
                                 {errors.confirmPassword && (
                                     <div className="small text-danger">{errors.confirmPassword.message}</div>
@@ -197,9 +255,16 @@ export default function SettingsPage() {
                             <button
                                 className="btn btn-outline-primary"
                                 type="submit"
-                                disabled={!isValid}
+                                disabled={!isValid || loading}
                             >
-                                Change Password
+                                {loading ? (
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Changing Password...
+                                    </>
+                                ) : (
+                                    "Change Password"
+                                )}
                             </button>
                         </form>
                     </div>
