@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { MDBContainer } from "mdb-react-ui-kit";
-import { VideoPlayerProps } from "../../../models/VidePlayerProps";
+import { VideoPlayerProps } from "../../../../models/VidePlayerProps";
 import Cookies from "js-cookie";
-import {  fetchMovie } from "../../../services/MediaService";
-import { Endpoints } from "../../../config/Config";
+import { fetchMovie } from "../../../../services/MediaService";
+import { Endpoints } from "../../../../config/Config";
 import axios from "axios";
-import { MediaType } from "../../../models/Movie";
-import { getCurrentUser } from "../../../services/UserService";
+import { MediaType } from "../../../../models/Movie";
+import { getCurrentUser } from "../../../../services/UserService";
+import "./VideoPlayer.css";
 
 interface WatchedList {
   [key: string]: any;
@@ -19,9 +20,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   season,
   episode,
   posterURL,
+  isPlaying,
+  setIsPlaying
 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [runtime, setRuntime] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (mediaType == MediaType.MOVIE) {
@@ -87,7 +90,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const handlePlay = () => {
     setIsPlaying(true);
+    setIsLoading(true);
   };
+
 
   const startWatchTracker = () => {
     if (!rntime || !user.isAuthed || alreadyAddedToWatched) {
@@ -203,13 +208,34 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           </div>
         ) : (
-          <iframe
-            sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
-            src={mediaURL}
-            title="Video Player"
-            allowFullScreen
-            style={{ border: 0, width: "100%", height: "100%" }}
-          ></iframe>
+          <>
+            {isLoading && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "linear-gradient(90deg, #2c2c2c 25%, #3c3c3c 50%, #2c2c2c 75%)",
+                  backgroundSize: "200% 100%",
+                  animation: "skeleton-loading 1.5s infinite",
+                  zIndex: 10,
+                }}
+              />
+            )}
+
+            <iframe
+              sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
+              src={mediaURL}
+              title="Video Player"
+              allowFullScreen
+              onLoad={() => setIsLoading(false)}
+              style={{ border: 0, width: "100%", height: "100%" }}
+            ></iframe>
+          </>
+
+
         )}
       </div>
     </MDBContainer>

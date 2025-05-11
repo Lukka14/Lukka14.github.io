@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Background } from "./components/Background";
-import VideoPlayer from "./components/VideoPlayer";
+import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
 import { MediaType, ImdbMedia, TvSeries, Media, Movie } from "../../models/Movie";
 import { fetchMovie, fetchTvSeries } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/TopNavBar";
@@ -10,7 +10,7 @@ import { Server } from "./models/Server";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { saveRecentlyWatched } from "../shared/RecentlyWatchService";
-import MoviesCarouselV2 from "./components/MoviesCarouselV2";
+import MoviesCarouselV2 from "./components/MovieCarouselV2/MoviesCarouselV2";
 import NotFoundPage from "../shared/NotFoundPage";
 
 export class SeasonEpisode {
@@ -31,6 +31,7 @@ const WatchPage: React.FC = () => {
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
   const [loadingFinished, setLoadingFinished] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const [state, setState] = useState<{
     media: ImdbMedia | TvSeries | null;
@@ -128,12 +129,16 @@ const WatchPage: React.FC = () => {
         season={seasonEpisode?.season ?? null} // Keep the actual value
         episode={seasonEpisode?.episode ?? null}
         posterURL={state.bgUrl}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
       />
       <StreamingServerSelector
         selectServer={selectServer}
       ></StreamingServerSelector>
       <MediaInfo
         media={media!}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
         setSeasonEpisode={updateSeasonEpisode}
       ></MediaInfo>
 

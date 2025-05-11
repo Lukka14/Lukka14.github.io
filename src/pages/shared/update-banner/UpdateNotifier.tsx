@@ -10,9 +10,8 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "You can now crop your profile picture when uploading it, making it easier to get the perfect look.",
-            "We've fixed an issue that was affecting the ability to add or remove movies and TV shows from your Favourites and Watchlist on your Profile page.",
-        "Fixed an issue where incorrect user information was displayed when viewing other users' profiles."
+            "We've updated the episode layout! Now, episodes are displayed with their title and an image.",
+            "A Settings page has been added where you can change your password and profile picture."
         ]
     }
 ];

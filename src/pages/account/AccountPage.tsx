@@ -12,7 +12,7 @@ import { Background } from "../main/Background";
 import AccountStatCard from "../shared/AccountStatCard";
 import NotFoundPage from "../shared/NotFoundPage";
 import PrimarySearchAppBar from "../shared/TopNavBar";
-import MoviesCarouselV2 from "../watch/components/MoviesCarouselV2";
+import MoviesCarouselV2 from "../watch/components/MovieCarouselV2/MoviesCarouselV2";
 import { getCurrentUser, getUsername } from "../../services/UserService";
 
 const accountPageStyle = `

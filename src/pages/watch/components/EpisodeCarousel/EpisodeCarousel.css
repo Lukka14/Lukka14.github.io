@@ -1,0 +1,141 @@
+.custom-dropdown {
+    position: relative !important;
+    display: inline-block !important;
+}
+
+.custom-dropdown-button {
+    background-color: transparent !important;
+    border: 2px solid #f5f5f5 !important;
+    color: white !important;
+    padding-left: 36px !important;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 0.8rem !important;
+    width: 100% !important;
+    text-align: left !important;
+    position: relative !important;
+    padding: 7px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.custom-dropdown-button:hover,
+.custom-dropdown-button:focus,
+.custom-dropdown-button:active,
+.show>.custom-dropdown-button {
+    background-color: transparent !important;
+    border: 2px solid #f5f5f5 !important;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+.custom-dropdown .icon-left {
+    position: absolute !important;
+    left: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+}
+
+.custom-dropdown-menu {
+    background-color: #1a1a1a !important;
+    min-width: 100% !important;
+    border: none !important;
+    border-radius: 0 0 6px 6px !important;
+    padding: 0 !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+}
+
+
+.custom-dropdown-menu .dropdown-item {
+    color: #f5f5f5 !important;
+    font-size: 0.9rem !important;
+    padding: 8px 16px !important;
+}
+
+.custom-dropdown-menu .dropdown-item:hover {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+.icon-left,
+.icon-right {
+    position: absolute;
+    pointer-events: none;
+    width: 16px;
+    height: 16px;
+    fill: #f5f5f5;
+}
+
+.icon-left {
+    left: 10px;
+}
+
+.icon-right {
+    right: 10px;
+}
+
+.episodes-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.episodes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.episodes-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+}
+
+.episodes-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.episodes-button {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color:  rgba(23, 162, 184, 0.4);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: #fff;
+}
+
+.episodes-button:hover:not(:disabled) {
+    background-color:   rgba(23, 162, 184, 0.6);
+}
+
+.episodes-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.episodes-track-container {
+    overflow: visible;
+}
+
+.episodes-track {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.episode-card {
+    flex: 0 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
