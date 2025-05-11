@@ -135,11 +135,11 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
   const maxIndex = Math.max(0, similarMovies.length - cardsToShow);
 
   const handleNext = () => {
-    setStartIndex((prev) => Math.min(prev + 1, maxIndex));
+    setStartIndex((prev) => Math.min(prev + cardsToShow, maxIndex));
   };
 
   const handlePrev = () => {
-    setStartIndex((prev) => Math.max(prev - 1, 0));
+    setStartIndex((prev) => Math.max(prev - cardsToShow, 0));
   };
 
   const username = Cookies.get("username");

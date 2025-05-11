@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ImdbMedia, TvSeries, MediaType, Season, Movie } from "../../../models/Movie";
 import { SeasonEpisode } from "../WatchPage";
-import { ClassNames } from "@emotion/react";
 import { convertMinutes, fetchAllPages, formatMoney } from "../../../utils/Utils";
 import { BookmarkIcon, HeartIcon } from "lucide-react";
 import axios from "axios";
@@ -10,44 +9,51 @@ import Cookies from "js-cookie";
 import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardService";
 import { Snackbar, SnackbarCloseReason, Tooltip } from "@mui/material";
 import { CustomToast } from "../../shared/Toast";
+import EpisodeCarousel from "./EpisodeCarousel";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
   setSeasonEpisode: (seasonEpisode: SeasonEpisode) => void;
 }
 
-const styles = `
-@media (max-width: 767.98px) {
-  .resHeader {
-    margin-top: 1.5rem;
-  }
-}`
+interface Episode {
+  id: number;
+  tvSeriesId: number;
+  name: string;
+  airDate: string;
+  overview: string;
+  stillPath: string;
+  runtime: number;
+  seasonNumber: number;
+  episodeNumber: number;
+}
 
 const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHeartHovered, setIsHeartHovered] = useState(false);
   const [isBookmarkIconHovered, setIsBookmarkIconHovered] = useState(false);
   const [isInWatchList, setIsInWatchList] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const queryParams = new URLSearchParams(window.location.hash.split("?")[1]);
   const seasonFromQuery = Number(queryParams.get("s"));
   const episodeFromQuery = Number(queryParams.get("e"));
 
   useEffect(() => {
     if (media && media.mediaType === MediaType.TV_SERIES) {
-
       const tvSeason = (media as TvSeries).seasonList?.find(
         (season) => season.seasonNumber === seasonFromQuery
       );
       if (tvSeason) {
         setSelectedSeason(tvSeason);
         // Set the first episode of season 1 as default
-        setSelectedEpisode(1);
+        setSelectedEpisode(episodeFromQuery || 1);
         if (tvSeason.seasonNumber !== undefined) {
           setSeasonEpisode(new SeasonEpisode(tvSeason.seasonNumber, episodeFromQuery || 1));
-          setSelectedEpisode(episodeFromQuery);
+          loadEpisodes(media.id, tvSeason.seasonNumber);
         }
       }
     }
@@ -84,6 +90,24 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
 
     if (username && media) getT();
   }, [media]);
+
+  const loadEpisodes = async (seriesId?: number | null, seasonNumber?: number) => {
+    if (!seriesId || seasonNumber === undefined) return;
+
+    setLoading(true);
+    try {
+      const response = await axios.get(`${Endpoints.EPISODES}?id=${seriesId}&seasonNumber=${seasonNumber}`);
+      if (response.data) {
+        setEpisodes(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+
+    console.log(episodes);
+  };
 
   const handleFavoriteClick = async () => {
     try {
@@ -123,6 +147,9 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   const handleSeasonClick = (season: Season) => {
     setSelectedSeason(season);
     setSelectedEpisode(null); // Reset the episode selection when season is clicked
+    if (season.seasonNumber !== undefined && media.id) {
+      loadEpisodes(media.id, season.seasonNumber);
+    }
   };
 
   const handleEpisodeClick = (seasonNumber: number, episodeNumber: number) => {
@@ -144,9 +171,6 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
     <>
       <CustomToast open={toastOpen} setOpen={setToastOpen} />
 
-      <style>
-        {styles}
-      </style>
       <div className="container-xl" style={{ fontFamily: "Roboto" }}>
         <div
           className="card shadow-lg"
@@ -212,17 +236,16 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
                   ({media.originalLanguage?.toUpperCase()})
                 </p>
 
-                <p>
-                  <span className={textClass}>Description:</span> <br />
-
+                <div>
+                  <span className={textClass}>Description:</span>
                   <p className="text-light">
                     {media.overview}
                   </p>
-                </p>
+                </div>
                 <p>
                   <strong className={textClass}>Genres:</strong> {genres}
                 </p>
-                <p >
+                <p>
                   <strong className={textClass}>Release Year:</strong> {media.releaseYear ? new Date(media.releaseYear).getFullYear() : "N/A"}
                 </p>
                 {media.imdbId && (
@@ -241,60 +264,13 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
                 {isTvSeries && (
                   <>
                     <p>
-                      <strong>Number of Seasons:</strong>{" "}
+                      <strong className={textClass}>Number of Seasons:</strong>{" "}
                       {(media as TvSeries).numberOfSeasons}
                     </p>
                     <p>
-                      <strong>Number of Episodes:</strong>{" "}
+                      <strong className={textClass}>Number of Episodes:</strong>{" "}
                       {(media as TvSeries).numberOfEpisodes}
                     </p>
-                    <div className="mt-4">
-                      <h5>Seasons:</h5>
-                      <div className="d-flex flex-wrap gap-3">
-                        {(media as TvSeries).seasonList?.map((season) =>
-                          season.episodeCount == undefined || season.episodeCount > 0 ? (
-                            <button
-                              key={season.id}
-                              className={`btn btn-outline-warning ${selectedSeason?.id === season.id ? "active" : ""
-                                }`}
-                              onClick={() => handleSeasonClick(season)}
-                              style={{
-                                border: selectedSeason?.id === season.id ? "2px solid orange" : "2px solid rgba(255, 165, 0, 0.5)", // Orange border when unselected
-                                backgroundColor: selectedSeason?.id === season.id ? "orange" : "transparent",
-                                color: selectedSeason?.id === season.id ? "black" : "",
-                              }}
-                            >
-                              {season.name}
-                            </button>
-                          ) : null
-                        )}
-                      </div>
-                    </div>
-                    {selectedSeason && (
-                      <div className="mt-4">
-                        <h5>Episodes in {selectedSeason.name}</h5>
-                        <div className="d-flex flex-wrap gap-2">
-                          {Array.from(
-                            { length: selectedSeason.episodeCount || 0 },
-                            (_, index) => (
-                              <button
-                                key={index}
-                                className={`btn btn-outline-info ${selectedEpisode === index + 1 ? "active" : ""
-                                  }`}
-                                onClick={() => selectedSeason?.seasonNumber && handleEpisodeClick(selectedSeason.seasonNumber, index + 1)}
-                                style={{
-                                  border: selectedEpisode === index + 1 ? "2px solid #17a2b8" : "2px solid rgba(23, 162, 184, 0.5)", // Cyan border when unselected
-                                  backgroundColor: selectedEpisode === index + 1 ? "#17a2b8" : "transparent",
-                                  color: selectedEpisode === index + 1 ? "black" : "",
-                                }}
-                              >
-                                {index + 1}
-                              </button>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )}
                   </>
                 )}
                 {!isTvSeries && (
@@ -317,9 +293,34 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
                 )}
               </div>
             </div>
+            {selectedSeason && (
+              <div className="mt-4">
+                {episodes.length > 0 ? (
+                  <EpisodeCarousel
+                    episodes={episodes}
+                    selectedEpisode={selectedEpisode}
+                    onEpisodeClick={handleEpisodeClick}
+                    seasonNumber={selectedSeason.seasonNumber}
+                    seasonName={selectedSeason.name}
+                    media={media}
+                    selectedSeason={selectedSeason}
+                    handleSeasonClick={handleSeasonClick}
+                    loading={loading}
+                  />
+
+                ) : (
+                  <div className="alert alert-info">
+                    No episode data available for this season.
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+
         </div>
+
       </div>
+
     </>
   );
 };
