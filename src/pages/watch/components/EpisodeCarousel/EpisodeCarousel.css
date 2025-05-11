@@ -139,20 +139,3 @@
     box-sizing: border-box;
 }
 
-@media (max-width: 992px) {
-    .episode-card {
-        width: 33.33%;
-    }
-}
-
-@media (max-width: 768px) {
-    .episode-card {
-        width: 50%;
-    }
-}
-
-@media (max-width: 576px) {
-    .episode-card {
-        width: 100%;
-    }
-}
