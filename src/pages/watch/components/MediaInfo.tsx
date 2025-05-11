@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardService";
 import { Snackbar, SnackbarCloseReason, Tooltip } from "@mui/material";
 import { CustomToast } from "../../shared/Toast";
-import EpisodeCarousel from "./EpisodeCarousel";
+import EpisodeCarousel from "./EpisodeCarousel/EpisodeCarousel";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -105,8 +105,6 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
     } finally {
       setLoading(false);
     }
-
-    console.log(episodes);
   };
 
   const handleFavoriteClick = async () => {
