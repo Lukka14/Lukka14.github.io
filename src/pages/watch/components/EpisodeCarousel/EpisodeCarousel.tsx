@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch } from "react";
 import { ImdbMedia, Media, Season, TvSeries } from "../../../../models/Movie";
 import { ListOrdered } from "lucide-react";
-import './EpisodeCarousel.css'
+import { EpisodeCard } from "../EpisodeCard/EpisodeCard";
+import './EpisodeCarousel.css';
 
 interface Episode {
   id: number;
@@ -36,18 +37,18 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
   media,
   selectedSeason,
   handleSeasonClick,
-  loading
+  loading,
 }) => {
   const [startIndex, setStartIndex] = useState(0);
-  const [cardsPerView, setCardsPerView] = useState(4);
+  const [cardsToShow, setCardsToShow] = useState(4);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 411) setCardsPerView(1);
-      else if (window.innerWidth < 668) setCardsPerView(2);
-      else if (window.innerWidth < 992) setCardsPerView(3);
-      else if (window.innerWidth < 1200) setCardsPerView(4);
-      else setCardsPerView(5);
+      if (window.innerWidth < 411) setCardsToShow(1);
+      else if (window.innerWidth < 668) setCardsToShow(2);
+      else if (window.innerWidth < 992) setCardsToShow(3);
+      else if (window.innerWidth < 1200) setCardsToShow(4);
+      else setCardsToShow(5);
     };
 
     handleResize();
@@ -55,33 +56,35 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const maxIndex = episodes.length - cardsPerView;
+  const maxIndex = episodes.length - cardsToShow;
 
   const handlePrev = () => {
-    setStartIndex(prev => Math.max(0, prev - cardsPerView));
+    setStartIndex(prev => Math.max(0, prev - cardsToShow));
   };
 
   const handleNext = () => {
-    setStartIndex(prev => Math.min(maxIndex, prev + cardsPerView));
+    setStartIndex(prev => Math.min(maxIndex, prev + cardsToShow));
   };
 
   useEffect(() => {
     if (selectedEpisode !== null) {
       const selectedIndex = episodes.findIndex(ep => ep.episodeNumber === selectedEpisode);
       if (selectedIndex !== -1) {
-        if (selectedIndex < startIndex || selectedIndex >= startIndex + cardsPerView) {
-          let newStartIndex = selectedIndex - Math.floor(cardsPerView / 2);
+        if (selectedIndex < startIndex || selectedIndex >= startIndex + cardsToShow) {
+          let newStartIndex = selectedIndex - Math.floor(cardsToShow / 2);
           newStartIndex = Math.max(0, Math.min(maxIndex, newStartIndex));
           setStartIndex(newStartIndex);
         }
       }
     }
-  }, [selectedEpisode, episodes, cardsPerView]);
+  }, [selectedEpisode, episodes, cardsToShow]);
+
+
 
   return (
     <>
-      <div className="episodes-carousel-container">
-        <div className="episodes-carousel-header">
+      <div className="episodes-container">
+        <div className="episodes-header">
           <div className="dropdown custom-dropdown">
             <button
               className="btn dropdown-toggle custom-dropdown-button"
@@ -114,32 +117,21 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
                 ))}
             </ul>
           </div>
-
-
-          <div className="episodes-carousel-controls">
-            <button
-              onClick={handlePrev}
-              disabled={startIndex === 0}
-              className="episodes-carousel-button"
-              aria-label="Previous episodes"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
+          <div className="episodes-controls">
+            <button onClick={handlePrev} disabled={startIndex === 0} className="episodes-button">
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
-            <button
-              onClick={handleNext}
-              disabled={startIndex >= maxIndex || maxIndex <= 0}
-              className="episodes-carousel-button"
-              aria-label="Next episodes"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
+            <button onClick={handleNext} disabled={startIndex >= maxIndex} className="episodes-button">
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
           </div>
         </div>
-        <div className="episodes-carousel-track-container" style={{
+
+        <div className="episodes-track-container" style={{
           position: "relative"
         }}>
           {loading && (
@@ -157,37 +149,23 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
               </div>
             </div>
           )}
-
           <div
-            className="episodes-carousel-track"
+            className="episodes-track"
             style={{
-              transform: `translateX(-${startIndex * (100 / cardsPerView)}%)`,
-              opacity: loading ? 0.5 : 1
+              transform: `translateX(-${startIndex * (100 / cardsToShow)}%)`
+
             }}
           >
-            {episodes.map((episode) => (
-              <div key={episode.id} className="episode-card">
-                <div
-                  className={`episode-card-inner ${selectedEpisode === episode.episodeNumber ? 'selected' : ''}`}
-                  onClick={() => seasonNumber !== undefined && onEpisodeClick(seasonNumber, episode.episodeNumber)}
-                >
-                  <span className="episode-number">EP {episode.episodeNumber}</span>
-                  <span className="episode-runtime">{episode.runtime} min</span>
-                  <img
-                    src={episode.stillPath || "https://via.placeholder.com/300x170?text=No+Image"}
-                    alt={`Episode ${episode.episodeNumber}`}
-                    className="episode-image"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "https://via.placeholder.com/300x170?text=No+Image";
-                    }}
-                  />
-                  <p className="episode-title" title={episode.name}>
-                    {episode.name}
-                  </p>
-                </div>
+
+            {episodes.map((episode) => {
+              return <div
+                key={episode.id}
+                className="episode-card"
+                style={{ width: `${100 / cardsToShow}%` }}
+              >
+                <EpisodeCard episode={episode} isSelected={episode.episodeNumber == selectedEpisode} onClick={onEpisodeClick} />
               </div>
-            ))}
+            })}
           </div>
         </div>
       </div>

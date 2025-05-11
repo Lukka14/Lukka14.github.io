@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { ImdbMedia, TvSeries, MediaType, Season, Movie } from "../../../models/Movie";
 import { SeasonEpisode } from "../WatchPage";
 import { convertMinutes, fetchAllPages, formatMoney } from "../../../utils/Utils";
@@ -14,6 +14,8 @@ import EpisodeCarousel from "./EpisodeCarousel/EpisodeCarousel";
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
   setSeasonEpisode: (seasonEpisode: SeasonEpisode) => void;
+  isPlaying: boolean,
+  setIsPlaying: Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Episode {
@@ -28,7 +30,7 @@ interface Episode {
   episodeNumber: number;
 }
 
-const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
+const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlaying, setIsPlaying }) => {
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
@@ -153,6 +155,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode }) => {
   const handleEpisodeClick = (seasonNumber: number, episodeNumber: number) => {
     setSelectedEpisode(episodeNumber); // Set the selected episode
     setSeasonEpisode(new SeasonEpisode(seasonNumber, episodeNumber)); // Notify parent component about the selected episode
+    window.scrollTo(0, 0);
+    setIsPlaying(true)
   };
 
   const textClass = "text-light fw-bold";

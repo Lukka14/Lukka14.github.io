@@ -1,3 +1,4 @@
+import { Dispatch } from "react";
 import { MediaType } from "./Movie";
 
 export interface VideoPlayerProps {
@@ -6,5 +7,7 @@ export interface VideoPlayerProps {
   mediaType: MediaType;
   season: number;
   episode: number;
-  posterURL : string;
+  posterURL: string;
+  isPlaying: boolean,
+  setIsPlaying: Dispatch<React.SetStateAction<boolean>>;
 }

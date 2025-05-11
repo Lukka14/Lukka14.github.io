@@ -1,95 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Media, MediaType } from '../../../models/Movie';
-import { MediaCard } from '../../main/MediaCard';
-import { fetchAllPages, generateHref, normalizeType } from '../../../utils/Utils';
-import { WorkInProgress } from '../../shared/WorkInProgress';
+import { Media, MediaType } from '../../../../models/Movie';
+import { MediaCard } from '../../../main/MediaCard';
+import { fetchAllPages, generateHref, normalizeType } from '../../../../utils/Utils';
+import { WorkInProgress } from '../../../shared/WorkInProgress';
 import Cookies from 'js-cookie';
-import { Endpoints } from '../../../config/Config';
+import { Endpoints } from '../../../../config/Config';
 import axios from 'axios';
+import './MovieCarouselV2.css'
 
-const carouselStyles = `
-  .similar-movies-container {
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    }
-
-  .similar-movies-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .similar-movies-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-    color: white;
-    font-family: 'Roboto', sans-serif;
-  }
-
-  .similar-movies-controls {
-    display: flex;
-    gap: 10px;
-  }
-
-  .similar-movies-button {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.2);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    color: #fff;
-  }
-
-  .similar-movies-button:hover:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .similar-movies-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .similar-movies-track-container {
-overflow: visible;
-  }
-
-  .similar-movies-track {
-    display: flex;
-    transition: transform 0.5s ease;
-  }
-
-  .similar-movie-card {
-    flex: 0 0 auto;
-    padding: 0 10px;
-    box-sizing: border-box;
-  }
-
-  @media (max-width: 992px) {
-    .similar-movie-card {
-      width: 33.33%;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .similar-movie-card {
-      width: 50%;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .similar-movie-card {
-      width: 100%;
-    }
-  }
-`;
 
 interface MediaWithType extends Media {
   type?: MediaType;
@@ -167,7 +85,6 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
 
   if (!similarMovies || similarMovies.length === 0) return (
     <>
-      <style>{carouselStyles}</style>
       <div className="similar-movies-container">
         <div className="similar-movies-header">
           <h2 className="similar-movies-title">{title}</h2>
@@ -208,7 +125,6 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
 
   return (
     <>
-      <style>{carouselStyles}</style>
       <div className="similar-movies-container">
         <div className="similar-movies-header">
           <h2 className="similar-movies-title">{title}</h2>
