@@ -79,6 +79,11 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
     }
   }, [selectedEpisode, episodes, cardsToShow]);
 
+  const handleSeasonClickWrapper = (season: any) => {
+    setStartIndex(0);
+    handleSeasonClick?.(season);
+  }
+
   return (
     <>
       <div className="episodes-container">
@@ -107,7 +112,7 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
                   <li key={season.id}>
                     <button
                       className="dropdown-item"
-                      onClick={() => handleSeasonClick?.(season)}
+                      onClick={() => handleSeasonClickWrapper?.(season)}
                     >
                       Season {index + 1}
                     </button>
