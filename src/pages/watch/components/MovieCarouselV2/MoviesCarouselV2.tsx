@@ -6,7 +6,7 @@ import { WorkInProgress } from '../../../shared/WorkInProgress';
 import Cookies from 'js-cookie';
 import { Endpoints } from '../../../../config/Config';
 import axios from 'axios';
-import './MovieCarouselV2.css'
+import './MoviesCarouselV2.css'
 
 
 interface MediaWithType extends Media {
@@ -128,7 +128,15 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
       <div className="similar-movies-container">
         <div className="similar-movies-header">
           <h2 className="similar-movies-title">{title}</h2>
-          <div className="similar-movies-controls">
+          <div className="similar-movies-controls d-flex align-items-center">
+            {accountPage && (
+              <span className="page-indicator h5 mb-0" style={{
+                color: "#f5f5f5",
+                marginRight: "10px"
+              }}>
+                {Math.floor(startIndex / cardsToShow) + 1} / {Math.ceil(similarMovies.length / cardsToShow)}
+              </span>
+            )}
             <button onClick={handlePrev} disabled={startIndex === 0} className="similar-movies-button">
               <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />

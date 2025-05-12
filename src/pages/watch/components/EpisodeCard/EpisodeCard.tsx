@@ -28,7 +28,9 @@ export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, isSelected, o
                     onClick={() => SelectEpisode(episode.seasonNumber, episode.episodeNumber)}
                 >
                     <span className="episode-number">EP {episode.episodeNumber}</span>
-                    <span className="episode-runtime">{episode.runtime} min</span>
+                    {episode.runtime && (
+                        <span className="episode-runtime">{episode.runtime} min</span>
+                    )}
                     <img
                         src={episode.stillPath || "https://via.placeholder.com/300x170?text=No+Image"}
                         alt={`Episode ${episode.episodeNumber}`}
