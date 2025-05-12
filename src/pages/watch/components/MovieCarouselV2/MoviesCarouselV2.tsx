@@ -50,7 +50,7 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
     return () => window.removeEventListener('resize', updateCardsToShow);
   }, []);
 
-  const maxIndex = Math.max(0, similarMovies.length - cardsToShow);
+  const maxIndex = (Math.ceil(similarMovies.length / cardsToShow) - 1) * cardsToShow;
 
   const handleNext = () => {
     setStartIndex((prev) => Math.min(prev + cardsToShow, maxIndex));
@@ -79,8 +79,11 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
       }
     }
 
-    if (similarMovies && username) getT();
-  }, [similarMovies, username]);
+    if (similarMovies && username) {
+      getT();
+      setStartIndex(0);
+    }
+  }, [similarMovies, username, ParamsUsername]);
 
 
   if (!similarMovies || similarMovies.length === 0) return (
