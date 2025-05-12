@@ -56,7 +56,7 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const maxIndex = episodes.length - cardsToShow;
+  const maxIndex = (Math.ceil(episodes.length / cardsToShow) - 1) * cardsToShow;
 
   const handlePrev = () => {
     setStartIndex(prev => Math.max(0, prev - cardsToShow));
@@ -78,8 +78,6 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
       }
     }
   }, [selectedEpisode, episodes, cardsToShow]);
-
-
 
   return (
     <>
@@ -117,7 +115,13 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
                 ))}
             </ul>
           </div>
-          <div className="episodes-controls">
+          <div className="episodes-controls d-flex align-items-center">
+            <span className="page-indicator h5 mb-0" style={{
+              color: "#f5f5f5",
+              marginRight: "10px"
+            }}>
+              {Math.floor(startIndex / cardsToShow) + 1} / {Math.ceil(episodes.length / cardsToShow)}
+            </span>
             <button onClick={handlePrev} disabled={startIndex === 0} className="episodes-button">
               <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
