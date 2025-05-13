@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Media, MediaType } from "../../models/Movie";
+import { Media } from "../../models/Movie";
 import { HeartIcon, BookmarkIcon } from "lucide-react";
-import { checkIsFavorite, checkIsInWatchlist, toggleFavorite, toggleWatchlist } from "../../services/MediaCardService";
+import { toggleFavorite, toggleWatchlist } from "../../services/MediaCardService";
 import "./MediaCard.css";
-import { Snackbar, SnackbarCloseReason, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { CustomToast } from "../shared/Toast";
 
 interface MediaCardProps {
@@ -15,7 +15,7 @@ interface MediaCardProps {
 }
 
 const WithBG = ({ text }: { text: string }): React.ReactElement => {
-  return <div className="text-white-50 text-center forMb">{text}</div>;
+  return <div className="text-white-50 text-center">{text}</div>;
 };
 
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, isWatch, stateHandler }) => {
@@ -28,6 +28,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
   const [isHeartHovered, setIsHeartHovered] = useState(false);
   const [isBookmarkHovered, setIsBookmarkHovered] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
+  const [imageAspectRatio, setImageAspectRatio] = useState(0);
 
   useEffect(() => {
     setIsFavorite(isFav);
@@ -57,6 +58,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     const img = new Image();
     img.onload = () => {
       setImageUrl(posterUrl);
+      setImageAspectRatio(img.width / img.height);
       setImageLoaded(true);
     };
     img.onerror = () => {
@@ -97,7 +99,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     }
   };
 
-
   const handleWatchlistClick = async (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -116,12 +117,11 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     }
   };
 
-
   return (
     <>
       <CustomToast open={toastOpen} setOpen={setToastOpen} />
       <a href={href} className="text-decoration-none media-card-link">
-        <div className={`card h-100 border-0 shadow-lg position-relative media-card ${!imageLoaded ? 'skeleton-card' : ''}`}
+        <div className={`card border-0 shadow-lg position-relative media-card ${!imageLoaded ? 'skeleton-card' : ''}`}
           style={{
             background: "black"
           }}>
@@ -142,12 +142,41 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
             </>
           ) : (
             <>
-              <div
-                className="image-container fade-in"
-                style={{
-                  backgroundImage: `url(${imageUrl})`
-                }}
-              >
+              <div className="image-container fade-in" style={{ position: "relative", overflow: "hidden" }}>
+                <div
+                  style={{
+                    background: `url(${mediaInfo.posterUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    filter: "blur(8px)",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 0,
+                  }}
+                ></div>
+
+                <img
+                  src={imageUrl}
+                  alt={title}
+                  className="media-poster"
+                  style={{
+                    position: "relative",
+                    zIndex: 1,
+                    ...(Math.abs(imageAspectRatio - 2 / 3) > 0.003
+                      ? {
+                        maskImage:
+                          "linear-gradient(to bottom, transparent 0%, white 6%, white 94%, transparent 100%)",
+                        WebkitMaskImage:
+                          "linear-gradient(to bottom, transparent 0%, white 6%, white 94%, transparent 100%)",
+                      }
+                      : {}),
+                  }}
+                />
+
+
                 <div style={{
                   position: "absolute",
                   top: "10px",
@@ -273,7 +302,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
                 <WithBG text={originalLanguage?.toUpperCase() || "N/A"} />
               </div>
 
-              <div className="card-footer text-white d-flex justify-content-between align-items-center">
+              <div className="card-footer text-white d-flex justify-content-between align-items-center" style={{
+                zIndex: 1
+              }}>
                 <div className="rating-badge">
                   <span className="imdb-star">⭐</span> {rating ? rating.toFixed(1) : "N/A"}
                 </div>
@@ -284,7 +315,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
             </>
           )}
         </div>
-      </a>
+      </a >
     </>
   );
 };
