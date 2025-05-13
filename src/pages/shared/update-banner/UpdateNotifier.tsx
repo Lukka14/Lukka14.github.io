@@ -10,8 +10,7 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "We've updated the episode layout! Now, episodes are displayed with their title and an image.",
-            "A Settings page has been added where you can change your password and profile picture."
+            "Improved Movie Card Visuals"
         ]
     }
 ];

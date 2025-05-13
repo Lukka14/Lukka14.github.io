@@ -28,7 +28,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
   const [isHeartHovered, setIsHeartHovered] = useState(false);
   const [isBookmarkHovered, setIsBookmarkHovered] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
-  // const [imageAspectRatio, setImageAspectRatio] = useState("");
+  const [imageAspectRatio, setImageAspectRatio] = useState(0);
 
   useEffect(() => {
     setIsFavorite(isFav);
@@ -58,8 +58,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     const img = new Image();
     img.onload = () => {
       setImageUrl(posterUrl);
-      // setImageAspectRatio(img.width / img.height);
-      // setImageAspectRatio("2/3");
+      setImageAspectRatio(img.width / img.height);
       setImageLoaded(true);
     };
     img.onerror = () => {
@@ -163,8 +162,20 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
                   src={imageUrl}
                   alt={title}
                   className="media-poster"
-                  style={{ position: "relative", zIndex: 1 }}
+                  style={{
+                    position: "relative",
+                    zIndex: 1,
+                    ...(Math.abs(imageAspectRatio - 2 / 3) > 0.003
+                      ? {
+                        maskImage:
+                          "linear-gradient(to bottom, transparent 0%, white 6%, white 94%, transparent 100%)",
+                        WebkitMaskImage:
+                          "linear-gradient(to bottom, transparent 0%, white 6%, white 94%, transparent 100%)",
+                      }
+                      : {}),
+                  }}
                 />
+
 
                 <div style={{
                   position: "absolute",
