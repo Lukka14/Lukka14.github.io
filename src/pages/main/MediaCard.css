@@ -28,16 +28,6 @@
     width: auto;
     height: auto;
     object-fit: contain;
-    mask-image: linear-gradient(to bottom,
-            transparent 0%,
-            white 6%,
-            white 94%,
-            transparent 100%);
-    mask-image: linear-gradient(to bottom,
-            transparent 0%,
-            white 6%,
-            white 94%,
-            transparent 100%);
 }
 
 .overlay-text {
