@@ -10,7 +10,8 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "Improved Movie and Episode Cards Visuals"
+            "Improved Episode Selector Image Visuals",
+            "Improved Movie Card Visuals"
         ]
     }
 ];
