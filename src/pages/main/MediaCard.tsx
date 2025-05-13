@@ -28,7 +28,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
   const [isHeartHovered, setIsHeartHovered] = useState(false);
   const [isBookmarkHovered, setIsBookmarkHovered] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
-  const [imageAspectRatio, setImageAspectRatio] = useState(0);
+  // const [imageAspectRatio, setImageAspectRatio] = useState("");
 
   useEffect(() => {
     setIsFavorite(isFav);
@@ -58,7 +58,8 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     const img = new Image();
     img.onload = () => {
       setImageUrl(posterUrl);
-      setImageAspectRatio(img.width / img.height);
+      // setImageAspectRatio(img.width / img.height);
+      // setImageAspectRatio("2/3");
       setImageLoaded(true);
     };
     img.onerror = () => {
@@ -142,13 +143,27 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
             </>
           ) : (
             <>
-              <div className="image-container fade-in" style={{
-                aspectRatio: imageAspectRatio
-              }}>
+              <div className="image-container fade-in" style={{ position: "relative", overflow: "hidden" }}>
+                <div
+                  style={{
+                    background: `url(${mediaInfo.posterUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    filter: "blur(8px)",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 0,
+                  }}
+                ></div>
+
                 <img
                   src={imageUrl}
                   alt={title}
                   className="media-poster"
+                  style={{ position: "relative", zIndex: 1 }}
                 />
 
                 <div style={{
@@ -276,7 +291,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
                 <WithBG text={originalLanguage?.toUpperCase() || "N/A"} />
               </div>
 
-              <div className="card-footer text-white d-flex justify-content-between align-items-center">
+              <div className="card-footer text-white d-flex justify-content-between align-items-center" style={{
+                zIndex: 1
+              }}>
                 <div className="rating-badge">
                   <span className="imdb-star">⭐</span> {rating ? rating.toFixed(1) : "N/A"}
                 </div>
@@ -287,7 +304,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
             </>
           )}
         </div>
-      </a>
+      </a >
     </>
   );
 };
