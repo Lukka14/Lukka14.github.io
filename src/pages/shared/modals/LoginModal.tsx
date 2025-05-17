@@ -37,7 +37,7 @@ export default function LoginModal() {
         try {
             const res = await axios.post(Endpoints.LOGIN, data, {
                 withCredentials: true
-              });
+            });
             const { accessToken } = res.data;
 
             Cookies.set("accessToken", accessToken.token, {
@@ -53,8 +53,8 @@ export default function LoginModal() {
             });
 
             reset();
-            if (window.location.href.includes("watch")) {
-                window.location.href = window.location.href.toString();
+            if (window.location.href.includes("watch") || window.location.hash == "#/profile/" + data.username) {
+                window.location.reload();
             } else {
                 window.location.href = "/#/profile/" + data.username;
             }
