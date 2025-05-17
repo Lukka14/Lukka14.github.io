@@ -49,7 +49,7 @@ const ListSearch: React.FC = () => {
                 return {
                     icon: <BookmarkIcon className="text-primary me-2" style={{
                         cursor: "pointer",
-                        fill: "none",
+                        fill: "#00BFFF",
                         stroke: "#87CEFA",
                     }} size={22} />,
                     title: "Watchlist",
@@ -77,7 +77,7 @@ const ListSearch: React.FC = () => {
                 return {
                     icon: <HeartIcon className="me-2" style={{
                         cursor: "pointer",
-                        fill: "none",
+                        fill: "orange",
                         stroke: "#FFD580",
                     }} size={22} />,
                     title: "favourites",
@@ -268,7 +268,7 @@ const ListSearch: React.FC = () => {
             <Background url="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true" />
             <PrimarySearchAppBar onClick={() => { }} displaySearch={false} />
 
-            <div className="container-xl px-4 pt-4 pb-5">
+            <div className="container-xl pt-4 pb-0 pb-sm-5 px-0 px-sm-4">
 
                 <div
                     className="rounded shadow-lg p-4 mb-4"
@@ -277,54 +277,52 @@ const ListSearch: React.FC = () => {
                         backdropFilter: "blur(8px)",
                     }}
                 >
-                    {/* <button
-                        onClick={() => navigate(-1)}
-                        className="btn btn-outline-primary"
-                        style={{
-                            marginRight: "20px"
-                        }}
-                    >
-                        ← Go Back
-                    </button> */}
-                    <div className="row align-items-center mb-4">
-                        <div className="col-md-6 mb-3 mb-md-0">
-
-                            <div className="d-flex align-items-center">
-
-                                {icon}
-                                <h1 className="fs-3 fw-bold text-white mb-0">
-                                    {
-                                        username == cookieUsername ? "Your favourites" : `${username}'s ${title}`
-                                    }
-                                </h1>
-                            </div>
+                    <div className="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
+                        <div className="d-flex align-items-center">
+                            {icon}
+                            <h1 className="fs-3 fw-bold text-white mb-0 ms-2">
+                                {username === cookieUsername ? `Your ${title}` : `${username}'s ${title}`}
+                            </h1>
                         </div>
 
-                        <div className="col-md-6">
-                            <div className="position-relative">
-                                <input
-                                    type="text"
-                                    placeholder={`Search ${title.toLowerCase()}...`}
-                                    value={searchQuery}
-                                    onChange={(e) => handleSearch(e.target.value)}
-                                    className="form-control bg-dark text-white rounded-pill"
-                                    style={{ paddingLeft: "40px" }}
-                                />
-                                <Search className="position-absolute text-secondary"
-                                    style={{ left: "15px", top: "10px" }}
-                                    size={18} />
-                                {searchQuery && (
-                                    <button
-                                        onClick={() => handleSearch("")}
-                                        className="btn position-absolute p-0"
-                                        style={{ right: "15px", top: "8px" }}
-                                    >
-                                        <X size={18} className="text-secondary" />
-                                    </button>
-                                )}
-                            </div>
+                        <div className="position-relative col-md-4">
+                            <input
+                                type="text"
+                                placeholder={`Search ${title.toLowerCase()}...`}
+                                value={searchQuery}
+                                onChange={(e) => handleSearch(e.target.value)}
+                                className="form-control bg-dark text-white rounded-pill"
+                                style={{ paddingLeft: "40px" }}
+                            />
+                            <Search className="position-absolute text-secondary"
+                                style={{ left: "15px", top: "10px" }}
+                                size={18} />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => handleSearch("")}
+                                    className="btn position-absolute p-0"
+                                    style={{ right: "15px", top: "8px" }}
+                                >
+                                    <X size={18} className="text-secondary" />
+                                </button>
+                            )}
                         </div>
+
+
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="btn btn-outline-primary d-flex items-align-center goBackBtn"
+                            style={{ marginRight: "20px", color: "#f5f5f5", border: "none" }}
+                        >
+                            <span>←</span>
+                            <span style={{
+                                borderBottom: "1px solid #f5f5f5",
+                                borderRadius: "5px",
+                                marginLeft: "5px"
+                            }}>GO BACK</span>
+                        </button>
                     </div>
+
 
                     {filteredList && filteredList.length > 0 ? (
                         <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 mt-3">
