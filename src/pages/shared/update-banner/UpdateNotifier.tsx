@@ -10,8 +10,9 @@ const updateInfo = [
     {
         title: `🚀 Big Updates Arrived!`,
         items: [
-            "Improved Episode Selector Image Visuals",
-            "Improved Movie Card Visuals"
+            "You can now view and search through yours and others favourites, watched list and watchlist at once!",
+            "Navbar now updates when logged in while being at Profile page.",
+            "Your username and email now will be displayed at Settings page."
         ]
     }
 ];

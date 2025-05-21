@@ -1,4 +1,4 @@
-import { Search, Clock, X, HeartIcon, BookmarkIcon } from "lucide-react";
+import { Search, Clock, X, HeartIcon, BookmarkIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Endpoints } from "../../../config/Config";
@@ -16,12 +16,28 @@ import './ListSearch.css';
 import { WorkInProgress } from "../../shared/WorkInProgress";
 import { LoadingSpinner } from "../../main/LoadingSpinner";
 
+const fetchPageData = async (endpoint: any, page = 0) => {
+    try {
+        const response = await fetch(`${endpoint}&page=${page}`);
+        if (!response.ok) {
+            throw new Error('Something went wrong!');
+        }
+        return await response.json();
+    } catch (error) {
+        return null;
+    }
+};
+
 const ListSearch: React.FC = () => {
     const [medias, setMedias] = useState<Media[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredList, setFilteredList] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [is404, setIs404] = useState<boolean>(false);
+
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
 
     const { username, "list-type": listType } = useParams<{
         username: string;
@@ -135,6 +151,48 @@ const ListSearch: React.FC = () => {
         setFilteredList(filtered);
     };
 
+    const handlePageChange = async (newPage: any) => {
+        if (newPage < 0 || newPage >= totalPages) return;
+
+        setIsLoading(true);
+        setCurrentPage(newPage);
+
+        let endpoint = '';
+        let setListFn = setFavourites;
+
+        switch (listType) {
+            case 'watchlist':
+                endpoint = `${Endpoints.WATCHLIST}?username=${user.username}`;
+                setListFn = setWatchlist;
+                break;
+            case 'watched':
+                endpoint = `${Endpoints.WATCHED}?username=${user.username}`;
+                setListFn = setWatched;
+                break;
+            default:
+                endpoint = `${Endpoints.FAVOURITES}?username=${user.username}`;
+                setListFn = setFavourites;
+        }
+
+        const result = await fetchPageData(endpoint, newPage);
+
+        if (result) {
+            const processed = result.content
+                .map((item: any) => ({
+                    ...item,
+                    id: item.tmdbId
+                }))
+                .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
+
+            setFilteredList(processed);
+            setListFn((prev) => [...prev, ...processed]);
+            setTotalPages(result.page.totalPages);
+            setPageSize(result.page.size);
+        }
+
+        setIsLoading(false);
+    };
+
     useEffect(() => {
         setIs404(false);
         setUser({
@@ -199,17 +257,21 @@ const ListSearch: React.FC = () => {
                         setListFn = setFavourites;
                 }
 
-                const data = await fetchAllPages(endpoint);
+                const result = await fetchPageData(endpoint, currentPage);
 
-                const processed = (data as any)
-                    .map((item: { [key: string]: any }) => ({
-                        ...item,
-                        id: item.tmdbId
-                    }))
-                    .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
+                if (result) {
+                    const processed = result.content
+                        .map((item: any) => ({
+                            ...item,
+                            id: item.tmdbId
+                        }))
+                        .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
 
-                setFilteredList(processed);
-                setListFn(processed);
+                    setFilteredList(processed);
+                    setListFn(processed);
+                    setTotalPages(result.page.totalPages);
+                    setPageSize(result.page.size);
+                }
 
             } catch (error) {
                 console.error(error);
@@ -244,6 +306,101 @@ const ListSearch: React.FC = () => {
             getT();
         }
     }, [username]);
+
+    const Pagination = () => {
+        if (totalPages <= 1) return null;
+
+        const pageNumbers = [];
+        const maxPageButtons = 5;
+        let startPage = Math.max(0, currentPage - Math.floor(maxPageButtons / 2));
+        let endPage = Math.min(totalPages - 1, startPage + maxPageButtons - 1);
+
+        if (endPage - startPage + 1 < maxPageButtons) {
+            startPage = Math.max(0, endPage - maxPageButtons + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(i);
+        }
+
+        return (
+            <div className="d-flex justify-content-center my-4">
+                <ul className="pagination">
+                    <li className={`page-item ${currentPage === 0 ? 'disabled' : ''}`}>
+                        <button
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 0}
+                            aria-label="Previous page"
+                        >
+                            <ChevronLeft size={16} />
+                        </button>
+                    </li>
+
+                    {startPage > 0 && (
+                        <>
+                            <li className="page-item">
+                                <button
+                                    className="page-link"
+                                    onClick={() => handlePageChange(0)}
+                                >
+                                    1
+                                </button>
+                            </li>
+                            {startPage > 1 && (
+                                <li className="page-item disabled">
+                                    <span className="page-link">...</span>
+                                </li>
+                            )}
+                        </>
+                    )}
+
+                    {pageNumbers.map(number => (
+                        <li
+                            key={number}
+                            className={`page-item ${currentPage === number ? 'active' : ''}`}
+                        >
+                            <button
+                                className="page-link"
+                                onClick={() => handlePageChange(number)}
+                            >
+                                {number + 1}
+                            </button>
+                        </li>
+                    ))}
+
+                    {endPage < totalPages - 1 && (
+                        <>
+                            {endPage < totalPages - 2 && (
+                                <li className="page-item disabled">
+                                    <span className="page-link">...</span>
+                                </li>
+                            )}
+                            <li className="page-item">
+                                <button
+                                    className="page-link"
+                                    onClick={() => handlePageChange(totalPages - 1)}
+                                >
+                                    {totalPages}
+                                </button>
+                            </li>
+                        </>
+                    )}
+
+                    <li className={`page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
+                        <button
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages - 1}
+                            aria-label="Next page"
+                        >
+                            <ChevronRight size={16} />
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        );
+    };
 
     if (is404) {
         return <NotFoundPage />;
@@ -325,36 +482,40 @@ const ListSearch: React.FC = () => {
 
 
                     {filteredList && filteredList.length > 0 ? (
-                        <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 mt-3">
-                            {filteredList.map((media: any) => {
-                                const isFav = fav.some((item: any) => item.tmdbId == media.id);
-                                const isWatch = watch.some((item: any) => item.tmdbId == media.id);
-                                const mediaType = normalizeType(media.type);
-                                const link = generateHref(media, true);
+                        <>
+                            <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 mt-3">
+                                {filteredList.map((media: any) => {
+                                    const isFav = fav.some((item: any) => item.tmdbId == media.id);
+                                    const isWatch = watch.some((item: any) => item.tmdbId == media.id);
+                                    const mediaType = normalizeType(media.type);
+                                    const link = generateHref(media, true);
 
-                                return (
-                                    <div key={media.id} className="col">
-                                        <MediaCard
-                                            mediaInfo={{
-                                                id: media.id,
-                                                mediaType: mediaType,
-                                                title: media.title,
-                                                posterUrl: media.posterUrl,
-                                                rating: media.rating,
-                                                releaseYear: media.releaseYear,
-                                                backDropUrl: media.backDropUrl,
-                                                originalLanguage: media.originalLanguage,
-                                                genreList: media.genreList
-                                            }}
-                                            href={link}
-                                            isFav={isFav}
-                                            isWatch={isWatch}
-                                            stateHandler={stateHandler}
-                                        />
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                    return (
+                                        <div key={media.id} className="col">
+                                            <MediaCard
+                                                mediaInfo={{
+                                                    id: media.id,
+                                                    mediaType: mediaType,
+                                                    title: media.title,
+                                                    posterUrl: media.posterUrl,
+                                                    rating: media.rating,
+                                                    releaseYear: media.releaseYear,
+                                                    backDropUrl: media.backDropUrl,
+                                                    originalLanguage: media.originalLanguage,
+                                                    genreList: media.genreList
+                                                }}
+                                                href={link}
+                                                isFav={isFav}
+                                                isWatch={isWatch}
+                                                stateHandler={stateHandler}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <Pagination />
+                        </>
                     ) : (
                         <div className="similar-movies-track-container">
                             {searchQuery ? (
