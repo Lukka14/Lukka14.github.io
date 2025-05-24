@@ -74,7 +74,7 @@
 }
 
 .genre-tag {
-    background-color: #21252c;
+    background: rgba(0, 0, 0, 0.6) !important;
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 0.25rem;
@@ -91,12 +91,99 @@
     }
 }
 
-@media (max-width: 576px) {
-    .movie-title {
-        font-size: 1.5rem;
-    }
-
+@media screen and (max-width: 576px) {
     .movie-content {
         padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: space-between;
+        padding: 2rem !important;
+        padding-right: 58px !important;
+    }
+
+    .movie-title {
+        font-size: 1.2rem !important;
+    }
+
+    .movie-description {
+        font-size: 0.8rem !important;
+    }
+
+    .movie-rating-mobile span {
+        font-size: 15px !important;
+    }
+
+
+    .movie-content-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .movie-rating-mobile {
+        transform: scale(0.91);
+        background: rgba(0, 0, 0, 0.6) !important;
+        padding: 3px 11px 2px 4.5px;
+        border-radius: 0.25rem;
+        color: yellow;
+        font-weight: bold;
+        font-size: 1rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        min-width: fit-content;
+    }
+
+
+    .movie-rating-mobile span:first-child {
+        font-size: 20px;
+        font-weight: bold;
+        padding: 0;
+    }
+
+    .rating-label-mobile {
+        color: #9ca3af;
+        font-size: 0.9rem;
+    }
+
+    .genres-mobile {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+
+    .genre-tag-mobile {
+        background: rgba(0, 0, 0, 0.6) !important;
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+    }
+
+    .movie-content-bottom {
+        text-align: center;
+    }
+
+    .movie-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .movie-description {
+        margin-bottom: 0;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    .movie-meta {
+        display: none;
+    }
+
+    .rating-mobile-label {
+        margin: 0px !important;
     }
 }

@@ -88,7 +88,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     try {
       const newStatus = !isFavorite;
       setIsFavorite(newStatus);
-      await toggleFavorite(mediaInfo.id, mediaInfo.mediaType);
+      await toggleFavorite(mediaInfo.id, mediaInfo.mediaType, setIsFavorite);
 
       if (stateHandler) {
         stateHandler(mediaInfo.id, "favourites", newStatus ? 'add' : 'remove');
@@ -106,7 +106,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     try {
       const newStatus = !isInWatchList;
       setIsInWatchList(newStatus);
-      await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType);
+      await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType, setIsInWatchList);
 
       if (stateHandler) {
         stateHandler(mediaInfo.id, "watchlist", newStatus ? 'add' : 'remove');

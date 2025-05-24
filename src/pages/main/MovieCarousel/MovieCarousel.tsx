@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Media, MediaType } from "../../../models/Movie";
 import { useNavigate } from "react-router-dom";
 
@@ -6,6 +6,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Cookies from "js-cookie";
 import './MovieCarousel.css';
+import { FaStar } from "react-icons/fa";
 
 interface MovieCarouselProps {
   mediaList: Media[];
@@ -13,23 +14,47 @@ interface MovieCarouselProps {
 
 const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
   const navigate = useNavigate();
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 576);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 576);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const getGenresToShow = (genreList: string[] | undefined) => {
+    if (!genreList) return [];
+
+    if (isSmallScreen) {
+      return genreList.slice(0, 2);
+    } else if (window.innerWidth <= 768) {
+      return genreList.slice(0, 2);
+    } else {
+      return genreList;
+    }
+  };
 
   return (
-    <div style={{ width: "95%", margin: "0 auto", marginTop: '10px', fontFamily: "Roboto" }}> {/* Centering the carousel */}
+    <div style={{ width: !isSmallScreen ? "95%" : "100%", margin: "0 auto", marginTop: '10px', fontFamily: "Roboto" }}>
       <Carousel
         dynamicHeight={true}
         centerMode={true}
         showStatus={false}
         infiniteLoop={true}
         autoFocus={true}
-        centerSlidePercentage={80}
+        centerSlidePercentage={!isSmallScreen ? 80 : 90}
         autoPlay={true}
       >
         {mediaList.map((media, index) => (
           <div
             className="slide"
             onClick={() => {
-
               let url = `/watch?id=${media.id}`;
 
               if (media.mediaType === MediaType.TV_SERIES) {
@@ -41,7 +66,6 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
                     url += `&s=${1}&e=${1}`;
                   }
                 }
-
               }
 
               navigate(url)
@@ -52,20 +76,45 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
             <div className="image-overlay"></div>
             <img alt="sample_file" src={media.backDropUrl} />
             <div className="movie-content">
-              <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
-              <p className="movie-description">{media.overview || 'No description available.'}</p>
-              <div className="movie-meta">
-                <div className="movie-rating">
-                  <span>{media.rating?.toFixed(1) || 'N/A'}</span>
-                  <span className="rating-label">Rating</span>
-                </div>
+              {isSmallScreen ? (
+                <>
+                  <div className="movie-content-top">
+                    <div className="movie-rating-mobile">
+                      <span className="rating-label-mobile">⭐</span>
+                      <span className="rating-mobile-label">{media.rating?.toFixed(1) || 'N/A'}</span>
+                    </div>
 
-                {media.genreList?.map((genre, index) => (
-                  <span key={index} className="genre-tag">
-                    {genre}
-                  </span>
-                ))}
-              </div>
+                    <div className="genres-mobile">
+                      {getGenresToShow(media.genreList).map((genre, index) => (
+                        <span key={index} className="genre-tag-mobile">
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="movie-content-bottom">
+                    <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
+                    <p className="movie-description">{media.overview ? media.overview?.length > 120 ? media.overview?.substring(0, 120) + "..." : media.overview : 'No description available.'}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
+                  <p className="movie-description">{media.overview ? media.overview?.length > 200 ? media.overview?.substring(0, 200) + "..." : media.overview : 'No description available.'}</p>
+                  <div className="movie-meta">
+                    <div className="movie-rating">
+                      <span>{media.rating?.toFixed(1) || 'N/A'}</span>
+                      <span className="rating-label">Rating</span>
+                    </div>
+
+                    {getGenresToShow(media.genreList).map((genre, index) => (
+                      <span key={index} className="genre-tag">
+                        {genre}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ))}

@@ -20,11 +20,12 @@ export const showLoginModal = (type: "fav" | "watch", mediaType: any): void => {
     }
 };
 
-export const toggleFavorite = async (mediaId: any, mediaType: any): Promise<boolean> => {
+export const toggleFavorite = async (mediaId: any, mediaType: any, setIsFavorite: any): Promise<boolean> => {
     try {
         const me: any = await getCurrentUser();
         if (!me?.username) {
             showLoginModal("fav", mediaType);
+            setIsFavorite(false);
             return false;
         }
 
@@ -59,11 +60,12 @@ export const toggleFavorite = async (mediaId: any, mediaType: any): Promise<bool
     }
 };
 
-export const toggleWatchlist = async (mediaId: any, mediaType: any): Promise<boolean> => {
+export const toggleWatchlist = async (mediaId: any, mediaType: any, setIsInWatchList: any): Promise<boolean> => {
     try {
         const me: any = await getCurrentUser();
         if (!me?.username) {
             showLoginModal("watch", mediaType);
+            setIsInWatchList(false)
             return false;
         }
 
