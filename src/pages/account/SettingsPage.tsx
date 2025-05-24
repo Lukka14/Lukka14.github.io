@@ -189,6 +189,32 @@ export default function SettingsPage() {
                                 </button>
                             </div>
                         </div>
+                        <div className="mb-3">
+                            <label className="small mb-1" htmlFor="newPassword">Username</label>
+                            <input
+                                className={`form-control`}
+                                id="username"
+                                type="text"
+                                value={user.username}
+                                disabled={true}
+                                style={{
+                                    cursor: "not-allowed"
+                                }}
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label className="small mb-1" htmlFor="newPassword">Email</label>
+                            <input
+                                className={`form-control`}
+                                id="email"
+                                type="email"
+                                value={user.email}
+                                disabled={true}
+                                style={{
+                                    cursor: "not-allowed"
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
 
