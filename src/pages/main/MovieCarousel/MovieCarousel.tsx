@@ -6,7 +6,6 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Cookies from "js-cookie";
 import './MovieCarousel.css';
-import { FaStar } from "react-icons/fa";
 
 interface MovieCarouselProps {
   mediaList: Media[];
@@ -14,11 +13,11 @@ interface MovieCarouselProps {
 
 const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
   const navigate = useNavigate();
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 576);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 700);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 576);
+      setIsSmallScreen(window.innerWidth <= 700);
     };
 
     window.addEventListener('resize', handleResize);
@@ -100,7 +99,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
               ) : (
                 <>
                   <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
-                  <p className="movie-description">{media.overview ? media.overview?.length > 200 ? media.overview?.substring(0, 200) + "..." : media.overview : 'No description available.'}</p>
+                  <p className="movie-description">{media.overview ? media.overview?.length > 170 ? media.overview?.substring(0, 170) + "..." : media.overview : 'No description available.'}</p>
                   <div className="movie-meta">
                     <div className="movie-rating">
                       <span>{media.rating?.toFixed(1) || 'N/A'}</span>

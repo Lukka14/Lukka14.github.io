@@ -12,13 +12,14 @@ interface MediaCardProps {
   isFav: boolean;
   isWatch: boolean;
   stateHandler?: (id: any, type: any, action?: 'add' | 'remove') => void;
+  isLoggedIn?: boolean;
 }
 
 const WithBG = ({ text }: { text: string }): React.ReactElement => {
   return <div className="text-white-50 text-center">{text}</div>;
 };
 
-export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, isWatch, stateHandler }) => {
+export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, isWatch, stateHandler, isLoggedIn }) => {
   const { title, posterUrl, rating, releaseYear, originalLanguage } = mediaInfo;
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -86,12 +87,14 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     e.stopPropagation();
 
     try {
-      const newStatus = !isFavorite;
-      setIsFavorite(newStatus);
-      await toggleFavorite(mediaInfo.id, mediaInfo.mediaType, setIsFavorite);
+      if (isLoggedIn) {
+        setIsFavorite(!isFavorite);
+      }
 
-      if (stateHandler) {
-        stateHandler(mediaInfo.id, "favourites", newStatus ? 'add' : 'remove');
+      let res = await toggleFavorite(mediaInfo.id, mediaInfo.mediaType, setIsFavorite);
+
+      if (stateHandler && isLoggedIn) {
+        stateHandler(mediaInfo.id, "favourites", res ? 'add' : 'remove');
       }
     } catch (e) {
       setIsFavorite(!isFavorite);
@@ -104,12 +107,14 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     e.stopPropagation();
 
     try {
-      const newStatus = !isInWatchList;
-      setIsInWatchList(newStatus);
-      await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType, setIsInWatchList);
+      if (isLoggedIn) {
+        setIsInWatchList(!isInWatchList);
+      }
 
-      if (stateHandler) {
-        stateHandler(mediaInfo.id, "watchlist", newStatus ? 'add' : 'remove');
+      let res = await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType, setIsInWatchList);
+
+      if (stateHandler && isLoggedIn) {
+        stateHandler(mediaInfo.id, "watchlist", res ? 'add' : 'remove');
       }
     } catch (e) {
       setIsInWatchList(!isInWatchList);

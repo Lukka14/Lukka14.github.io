@@ -1,6 +1,6 @@
 import { Search, Clock, X, HeartIcon, BookmarkIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useAsyncError, useNavigate, useParams } from "react-router-dom";
 import { Endpoints } from "../../../config/Config";
 import { Media } from "../../../models/Movie";
 import {
@@ -58,6 +58,7 @@ const ListSearch: React.FC = () => {
     const [fav, setFav] = useState([])
     const [watch, setWatch] = useState([])
     const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
     const getListInfo = () => {
         switch (listType) {
@@ -209,6 +210,7 @@ const ListSearch: React.FC = () => {
                     setIsCurrentUserProfile(true);
                     return updated;
                 });
+                setIsLoggedIn(true);
             }
         }
 
@@ -234,7 +236,7 @@ const ListSearch: React.FC = () => {
             setIsCurrentUserProfile(false);
             fetchUserByUsrname();
         }
-    }, [username]);
+    }, [username, isLoggedIn]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -508,6 +510,7 @@ const ListSearch: React.FC = () => {
                                                 isFav={isFav}
                                                 isWatch={isWatch}
                                                 stateHandler={stateHandler}
+                                                isLoggedIn={isLoggedIn}
                                             />
                                         </div>
                                     );

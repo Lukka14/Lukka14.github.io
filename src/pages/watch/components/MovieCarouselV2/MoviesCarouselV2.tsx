@@ -8,6 +8,7 @@ import { Endpoints } from '../../../../config/Config';
 import axios from 'axios';
 import './MoviesCarouselV2.css'
 import { Link } from 'react-router-dom';
+import { getCurrentUser } from '../../../../services/UserService';
 
 
 interface MediaWithType extends Media {
@@ -35,6 +36,13 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
   const [fav, setFav] = useState([]);
   const [watch, setWatch] = useState([]);
   // const [textSize, setTextSize] = useState("fs-2")
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  useEffect(() => {
+    async function userFetch() {
+      setIsLoggedIn(!!(await getCurrentUser())?.username);
+    }
+    userFetch();
+  }, [isLoggedIn])
 
   const updateCardsToShow = () => {
     const width = window.innerWidth;
@@ -194,7 +202,7 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
                     originalLanguage: movie.originalLanguage,
                     genreList: movie.genreList
                   }}
-                  href={link} isFav={isFav} isWatch={isWatch} stateHandler={stateHandler} />
+                  href={link} isFav={isFav} isWatch={isWatch} stateHandler={stateHandler} isLoggedIn={isLoggedIn} />
               </div>
             })}
           </div>
