@@ -7,6 +7,8 @@ import Cookies from 'js-cookie';
 import { Endpoints } from '../../../../config/Config';
 import axios from 'axios';
 import './MoviesCarouselV2.css'
+import { Link } from 'react-router-dom';
+import { getCurrentUser } from '../../../../services/UserService';
 
 
 interface MediaWithType extends Media {
@@ -34,6 +36,13 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
   const [fav, setFav] = useState([]);
   const [watch, setWatch] = useState([]);
   // const [textSize, setTextSize] = useState("fs-2")
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  useEffect(() => {
+    async function userFetch() {
+      setIsLoggedIn(!!(await getCurrentUser())?.username);
+    }
+    userFetch();
+  }, [isLoggedIn])
 
   const updateCardsToShow = () => {
     const width = window.innerWidth;
@@ -126,11 +135,24 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
     </>
   )
 
+
   return (
     <>
       <div className="similar-movies-container">
         <div className="similar-movies-header">
-          <h2 className="similar-movies-title">{title}</h2>
+          <div className='d-flex align-items-center justify-content-center'>
+            <h2 className="similar-movies-title">{title}</h2>
+            {accountPage && <Link
+              to={`/profile/${ParamsUsername}/${title.toLowerCase()}`}
+              style={{
+                marginLeft: "15px",
+                borderLeft: "1px solid #f5f5f5",
+                paddingLeft: "10px"
+              }}
+            >
+              View at once <i className="fas fa-arrow-right"></i>
+            </Link>}
+          </div>
           <div className="similar-movies-controls d-flex align-items-center">
             <span className="page-indicator h5 mb-0" style={{
               color: "#f5f5f5",
@@ -180,7 +202,7 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
                     originalLanguage: movie.originalLanguage,
                     genreList: movie.genreList
                   }}
-                  href={link} isFav={isFav} isWatch={isWatch} stateHandler={stateHandler} />
+                  href={link} isFav={isFav} isWatch={isWatch} stateHandler={stateHandler} isLoggedIn={isLoggedIn} />
               </div>
             })}
           </div>

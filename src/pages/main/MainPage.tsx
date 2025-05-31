@@ -5,7 +5,7 @@ import { MovieList } from "../shared/MovieList";
 import CenteredH1 from "../shared/CenteredText";
 import { Background } from "./Background";
 import PrimarySearchAppBar from "../shared/TopNavBar";
-import Carousel from "./MovieCarousel";
+import Carousel from "./MovieCarousel/MovieCarousel";
 import { getRecentlyWatched } from "../shared/RecentlyWatchService";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { Footer } from "../shared/Footer";

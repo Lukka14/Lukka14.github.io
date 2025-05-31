@@ -5,11 +5,18 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { fetchAllPages } from "../../utils/Utils";
+import { getCurrentUser } from "../../services/UserService";
 
 export const MovieList = ({ mediaList }: MediaListProps) => {
   const [fav, setFav] = useState([]);
   const [watch, setWatch] = useState([]);
-
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  useEffect(() => {
+    async function userFetch() {
+      setIsLoggedIn(!!(await getCurrentUser())?.username);
+    }
+    userFetch();
+  }, [isLoggedIn])
   const generateHref = (media: Media): string => {
     let seriesSuffix = "";
     if (media.mediaType === MediaType.TV_SERIES) {
@@ -50,7 +57,7 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
           let isFav = fav.some((item: any) => item.tmdbId == media?.id);
           let isWatch = watch.some((item: any) => item.tmdbId == media?.id);
           return <div key={media.id || media.title} className="col">
-            <MediaCard mediaInfo={media} href={generateHref(media)} isFav={isFav} isWatch={isWatch}
+            <MediaCard mediaInfo={media} href={generateHref(media)} isFav={isFav} isWatch={isWatch} isLoggedIn={isLoggedIn}
             />
           </div>
         })}
