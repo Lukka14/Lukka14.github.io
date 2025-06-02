@@ -97,7 +97,7 @@
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 0.25rem;
-    font-size: .9rem;
+    font-size: 1rem;
 }
 
 @media (max-width: 768px) {
