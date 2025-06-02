@@ -14,6 +14,7 @@ import UpdateNotifier from "./pages/shared/update-banner/UpdateNotifier";
 import VerifyEmailPage from "./pages/verify-email/VerifyEmailPage";
 import NotFoundPage from "./pages/shared/NotFoundPage";
 import SettingsPage from "./pages/account/SettingsPage";
+import ListSearch from "./pages/account/ListSearch/ListSearch";
 
 const App: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const App: React.FC = () => {
         <Route path="/help" element={<HelpPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile/:username" element={<AccountPage />} />
+        <Route path="/profile/:username/:list-type" element={<ListSearch />} />
         <Route path="/verify/:token" element={<VerifyEmailPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<NotFoundPage />} />

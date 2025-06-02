@@ -10,6 +10,7 @@ import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardServ
 import { Snackbar, SnackbarCloseReason, Tooltip } from "@mui/material";
 import { CustomToast } from "../../shared/Toast";
 import EpisodeCarousel from "./EpisodeCarousel/EpisodeCarousel";
+import { getCurrentUser } from "../../../services/UserService";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -43,6 +44,13 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
   const queryParams = new URLSearchParams(window.location.hash.split("?")[1]);
   const seasonFromQuery = Number(queryParams.get("s"));
   const episodeFromQuery = Number(queryParams.get("e"));
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  useEffect(() => {
+    async function userFetch() {
+      setIsLoggedIn(!!(await getCurrentUser())?.username);
+    }
+    userFetch();
+  }, [isLoggedIn])
 
   useEffect(() => {
     if (media && media.mediaType === MediaType.TV_SERIES) {
@@ -111,8 +119,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
 
   const handleFavoriteClick = async () => {
     try {
-      setIsFavorite(!isFavorite);
-      const newStatus = await toggleFavorite(media?.id, media?.mediaType);
+      if (isLoggedIn) setIsFavorite(!isFavorite);
+      const newStatus = await toggleFavorite(media?.id, media?.mediaType, setIsFavorite);
       setIsFavorite(newStatus);
     } catch (e) {
       setIsFavorite(!isFavorite);
@@ -122,8 +130,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
 
   const handleWatchlistClick = async () => {
     try {
-      setIsInWatchList(!isInWatchList);
-      const newStatus = await toggleWatchlist(media?.id, media?.mediaType);
+      if (isLoggedIn) setIsInWatchList(!isInWatchList);
+      const newStatus = await toggleWatchlist(media?.id, media?.mediaType, setIsInWatchList);
       setIsInWatchList(newStatus);
     } catch (e) {
       setIsInWatchList(!isInWatchList);
@@ -234,7 +242,9 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
                   </div>
                 </div>
 
-                <p className="text-muted">
+                <p style={{
+                  color: "#dcd8d8"
+                }}>
                   ({media.originalLanguage?.toUpperCase()})
                 </p>
 
