@@ -242,7 +242,9 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
                   </div>
                 </div>
 
-                <p className="text-muted">
+                <p style={{
+                  color: "#dcd8d8"
+                }}>
                   ({media.originalLanguage?.toUpperCase()})
                 </p>
 

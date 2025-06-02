@@ -42,6 +42,13 @@
     font-weight: 700;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
     margin-bottom: 10px;
+    width: 162px;
+}
+
+.genre-list {
+    width: 162px !important;
+    opacity: 85% !important;
+    color: white !important;
 }
 
 .card-rating {

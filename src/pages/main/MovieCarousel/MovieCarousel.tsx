@@ -48,7 +48,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
         infiniteLoop={true}
         autoFocus={true}
         centerSlidePercentage={!isSmallScreen ? 80 : 90}
-        autoPlay={true}
+        autoPlay={false}
       >
         {mediaList.map((media, index) => (
           <div
@@ -73,7 +73,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
             key={index}
           >
             <div className="image-overlay"></div>
-            <img alt="sample_file" src={media.backDropUrl} />
+            <img alt="sample_file" src={!isSmallScreen ? media.backDropUrl : media.posterUrl} />
             <div className="movie-content">
               {isSmallScreen ? (
                 <>
@@ -93,26 +93,26 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
                   </div>
                   <div className="movie-content-bottom">
                     <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
-                    <p className="movie-description">{media.overview ? media.overview?.length > 120 ? media.overview?.substring(0, 120) + "..." : media.overview : 'No description available.'}</p>
                   </div>
                 </>
               ) : (
-                <>
+                <div className="m-container">
                   <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
-                  <p className="movie-description">{media.overview ? media.overview?.length > 170 ? media.overview?.substring(0, 170) + "..." : media.overview : 'No description available.'}</p>
                   <div className="movie-meta">
                     <div className="movie-rating">
-                      <span>{media.rating?.toFixed(1) || 'N/A'}</span>
+                      <span>{media.rating?.toFixed(1) == "0.0" ? 'N/A' : media.rating?.toFixed(1)}</span>
                       <span className="rating-label">Rating</span>
                     </div>
 
-                    {getGenresToShow(media.genreList).map((genre, index) => (
-                      <span key={index} className="genre-tag">
-                        {genre}
-                      </span>
-                    ))}
+                    <div className="genre-container">
+                      {getGenresToShow(media.genreList).map((genre, index) => (
+                        <span key={index} className="genre-tag">
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </div>

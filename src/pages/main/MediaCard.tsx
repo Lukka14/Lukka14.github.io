@@ -15,10 +15,6 @@ interface MediaCardProps {
   isLoggedIn?: boolean;
 }
 
-const WithBG = ({ text }: { text: string }): React.ReactElement => {
-  return <div className="text-white-50 text-center">{text}</div>;
-};
-
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, isWatch, stateHandler, isLoggedIn }) => {
   const { title, posterUrl, rating, releaseYear, originalLanguage } = mediaInfo;
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -76,9 +72,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
 
     if (windowWidth <= 576) {
       const limitedGenres = mediaInfo.genreList.slice(0, 2);
-      return <WithBG text={limitedGenres.join(" | ")} />;
+      return <div className="text-center genre-list">{limitedGenres.join(" | ")}</div>
     } else {
-      return <WithBG text={mediaInfo.genreList.join(" | ")} />;
+      return <div className="text-center genre-list">{mediaInfo.genreList.join(" | ")}</div>
     }
   };
 
@@ -300,11 +296,8 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
                 <p className="card-rating text-white">
                   ⭐ {rating ? rating.toFixed(1) : "N/A"}
                 </p>
-                <p className="card-year text-white-50">
-                  {releaseYear ? releaseYear : "N/A"}
-                </p>
                 {getDisplayGenres()}
-                <WithBG text={originalLanguage?.toUpperCase() || "N/A"} />
+                <div className="text-white-50 text-center">{originalLanguage?.toUpperCase() || "N/A"}</div>
               </div>
 
               <div className="card-footer text-white d-flex justify-content-between align-items-center" style={{
