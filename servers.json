@@ -1,14 +1,14 @@
 [
   {
-    "name": "111movies",
-    "movie_url": "https://111movies.com/movie/{id}",
-    "series_url": "https://111movies.com/tv/{id}/{season}/{episode}",
-    "safe": true
-  },
-  {
     "name": "Autoembed",
     "movie_url": "https://player.autoembed.cc/embed/movie/{id}",
     "series_url": "https://player.autoembed.cc/embed/tv/{id}/{season}/{episode}",
+    "safe": true
+  },
+  {
+    "name": "111movies",
+    "movie_url": "https://111movies.com/movie/{id}",
+    "series_url": "https://111movies.com/tv/{id}/{season}/{episode}",
     "safe": true
   }
 ]
