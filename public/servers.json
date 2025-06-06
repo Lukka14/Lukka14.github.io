@@ -6,9 +6,9 @@
     "safe": true
   },
   {
-    "name": "111movies",
-    "movie_url": "https://111movies.com/movie/{id}",
-    "series_url": "https://111movies.com/tv/{id}/{season}/{episode}",
+    "name": "VidSrc",
+    "movie_url": "https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=true",
+    "series_url": "https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=true",
     "safe": true
   }
 ]
