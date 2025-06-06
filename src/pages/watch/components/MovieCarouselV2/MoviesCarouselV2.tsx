@@ -142,7 +142,7 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
         <div className="similar-movies-header">
           <div className='d-flex align-items-center justify-content-center'>
             <h2 className="similar-movies-title">{title}</h2>
-            {accountPage && <Link
+            {/* {accountPage && <Link
               to={`/profile/${ParamsUsername}/${title.toLowerCase()}`}
               style={{
                 marginLeft: "15px",
@@ -151,7 +151,7 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
               }}
             >
               View at once <i className="fas fa-arrow-right"></i>
-            </Link>}
+            </Link>} */}
           </div>
           <div className="similar-movies-controls d-flex align-items-center">
             <span className="page-indicator h5 mb-0" style={{
