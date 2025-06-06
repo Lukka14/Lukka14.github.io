@@ -31,7 +31,7 @@ const WatchPage: React.FC = () => {
   const mediaType = season == null ? MediaType.MOVIE : MediaType.TV_SERIES;
   const [loadingFinished, setLoadingFinished] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   const [state, setState] = useState<{
     media: ImdbMedia | TvSeries | null;
