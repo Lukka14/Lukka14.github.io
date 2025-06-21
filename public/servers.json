@@ -1,14 +1,14 @@
 [
   {
-    "name": "Autoembed",
-    "movie_url": "https://player.autoembed.cc/embed/movie/{id}",
-    "series_url": "https://player.autoembed.cc/embed/tv/{id}/{season}/{episode}",
-    "safe": true
-  },
-  {
     "name": "VidSrc",
     "movie_url": "https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=true",
     "series_url": "https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=true",
+    "safe": true
+  },
+  {
+    "name": "Vidjoy",
+    "movie_url": "https://vidjoy.pro/embed/movie/{id}?adFree=true&autoplay=true",
+    "series_url": "https://vidjoy.pro/embed/tv/{id}/{season}/{episode}?adFree=true&autoplay=true",
     "safe": true
   }
 ]
