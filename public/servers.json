@@ -1,14 +1,14 @@
 [
+   {
+    "name": "Vidjoy",
+    "movie_url": "https://vidjoy.pro/embed/movie/{id}?adFree=true&DefaultIcons=true&primary=ce0d0d&secondary=828282&icon=ffffff&autoplay=true&title=false&poster=true",
+    "series_url": "https://vidjoy.pro/embed/tv/{id}/{season}/{episode}?adFree=true&DefaultIcons=true&primary=ce0d0d&secondary=828282&icon=ffffff&autoplay=true&title=false&poster=true",
+    "safe": true
+  },
   {
     "name": "VidSrc",
     "movie_url": "https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=true",
     "series_url": "https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=true",
-    "safe": true
-  },
-  {
-    "name": "Vidjoy",
-    "movie_url": "https://vidjoy.pro/embed/movie/{id}?adFree=true&autoplay=true",
-    "series_url": "https://vidjoy.pro/embed/tv/{id}/{season}/{episode}?adFree=true&autoplay=true",
     "safe": true
   }
 ]
