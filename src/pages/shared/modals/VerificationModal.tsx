@@ -5,6 +5,10 @@ import ModalHeader from "./ModalHeader";
 export default function VerificationModal() {
     const closeButtonRef = useRef<HTMLButtonElement>(null);
 
+    const handleClick = () => {
+        window.location.href = "";
+    };
+
     return (
         <div
             className="modal fade"
@@ -35,7 +39,7 @@ export default function VerificationModal() {
                             .
                         </p>
                     </div>
-                    <ModalFooter closeButtonRef={closeButtonRef} />
+                    <ModalFooter closeButtonRef={closeButtonRef} closeModal={handleClick} />
                 </div>
             </div>
         </div>
