@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Media } from "../../models/Movie";
-import { fetchMedia, fetchTrendingMedia } from "../../services/MediaService";
+import { fetchMedia, fetchTrendingMedia, fetchTrendingMediaWithDetails } from "../../services/MediaService";
 import { MovieList } from "../shared/MovieList";
 import CenteredH1 from "../shared/CenteredText";
 import { Background } from "./Background";
@@ -70,15 +70,22 @@ const MainPage: React.FC = () => {
 
   React.useEffect(() => {
     setInitialLoading(true);
-    fetchTrendingMedia()
+    fetchTrendingMediaWithDetails()
       .then((media) => {
-        setMediaList(media);
         setMediaListCarousel(media);
         setInitialLoading(false);
       })
       .catch((err) => {
         console.error(err);
         setInitialLoading(false);
+      });
+    
+    fetchTrendingMedia()
+      .then((media) => {
+        setMediaList(media);
+      })
+      .catch((err) => {
+        console.error(err);
       });
   }, []);
 

@@ -24,7 +24,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   setIsPlaying
 }) => {
   const [runtime, setRuntime] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (mediaType == MediaType.MOVIE) {
@@ -166,6 +166,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       clearInterval(intervalRef.current);
     }
   }, [isPlaying]);
+
+  useEffect(() => {
+    setIsLoading(true);
+  }, [id, playerUrl]);
 
   return (
     <MDBContainer breakpoint="xl">

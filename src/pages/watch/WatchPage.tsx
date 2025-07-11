@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Background } from "./components/Background";
 import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
 import { MediaType, ImdbMedia, TvSeries, Media, Movie } from "../../models/Movie";
-import { fetchMovie, fetchTvSeries } from "../../services/MediaService";
+import { fetchMovie, fetchTvSeries, fetchFullMovieInfo } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/TopNavBar";
 import MediaInfo from "./components/MediaInfo";
 import StreamingServerSelector from "./components/StreamingServerSelector";
@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 import { saveRecentlyWatched } from "../shared/RecentlyWatchService";
 import MoviesCarouselV2 from "./components/MovieCarouselV2/MoviesCarouselV2";
 import NotFoundPage from "../shared/NotFoundPage";
+import "./css/watch.css";
 
 export class SeasonEpisode {
   season: number = 1;
@@ -32,6 +33,9 @@ const WatchPage: React.FC = () => {
   const [loadingFinished, setLoadingFinished] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isUpcoming, setIsUpcoming] = useState(false);
+  const [releaseDate, setReleaseDate] = useState<string | null>(null);
+  const [playerUrl, setPlayerUrl] = useState<string>("");
 
   const [state, setState] = useState<{
     media: ImdbMedia | TvSeries | null;
@@ -41,6 +45,20 @@ const WatchPage: React.FC = () => {
     bgUrl:
       "https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true",
   });
+
+  const checkIfUpcoming = (releaseDate: string): boolean => {
+    const release = new Date(releaseDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return release > today;
+  };
+
+  const getDaysUntilRelease = (releaseDate: string): number => {
+    const release = new Date(releaseDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return Math.ceil((release.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -62,6 +80,17 @@ const WatchPage: React.FC = () => {
             "https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true";
 
           setState({ media: data, bgUrl: finalBgUrl });
+
+          try {
+            const fullInfo = await fetchFullMovieInfo(id);
+            if (fullInfo?.release_date) {
+              setReleaseDate(fullInfo.release_date);
+              const upcoming = checkIfUpcoming(fullInfo.release_date);
+              setIsUpcoming(upcoming);
+            }
+          } catch (error) {
+            console.error(error);
+          }
         }
       } catch (err) {
         console.error(err);
@@ -73,7 +102,6 @@ const WatchPage: React.FC = () => {
 
     fetchData();
   }, [id, mediaType]);
-
 
   const { media, bgUrl } = state;
 
@@ -93,8 +121,6 @@ const WatchPage: React.FC = () => {
   const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(
     new SeasonEpisode(1, episode!)
   );
-
-  const [playerUrl, setPlayerUrl] = useState<string>("");
 
   const selectServer = (server: Server) => {
     let url;
@@ -117,21 +143,190 @@ const WatchPage: React.FC = () => {
 
   if (loadingFinished && notFound) return <NotFoundPage />;
 
+  const renderPlayerSkeleton = () => {
+    return (
+      <div className="container-xl">
+        <div
+          className="ratio ratio-16x9 player-skeleton"
+          style={{
+            backgroundImage: `url(${state.bgUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center"
+          }}
+        >
+          <div className="player-skeleton-overlay" />
+
+          <div className="player-skeleton-content">
+            <div className="spinner-border text-light" role="status" style={{ width: "4rem", height: "4rem" }}>
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p style={{ marginTop: "1rem", fontSize: "1.1rem", color: "rgba(255,255,255,0.8)" }}>
+              Loading Player...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderUpcomingBanner = () => {
+    const daysUntil = releaseDate ? getDaysUntilRelease(releaseDate) : 0;
+    const releaseFormatted = releaseDate ? new Date(releaseDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }) : '';
+
+    return (
+      <div className="container-xl">
+        <div
+          style={{
+            backdropFilter: "blur(8px)",
+            background: "rgba(0, 0, 0, 0.7)",
+            borderRadius: "0px 0px 16px 16px",
+            padding: "3rem 2rem",
+            textAlign: "center",
+            position: "relative",
+            overflow: "hidden",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            boxShadow: "0 20px 40px rgba(13, 26, 63, 0.3)"
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: "-50%",
+              left: "-50%",
+              width: "200%",
+              height: "200%",
+              background: "radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)",
+              backgroundSize: "30px 30px",
+              animation: "float 20s infinite linear"
+            }}
+          />
+
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <div
+              style={{
+                width: "100px",
+                height: "100px",
+                margin: "0 auto 2rem",
+                background: "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))",
+                borderRadius: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid rgba(255,255,255,0.2)"
+              }}
+            >
+              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                  fill="white"
+                  fillOpacity="0.9"
+                />
+              </svg>
+            </div>
+
+            <h1 style={{
+              fontSize: "2.5rem",
+              fontWeight: "700",
+              color: "white",
+              marginBottom: "1rem",
+              lineHeight: "1.2"
+            }}>
+              Coming Soon
+            </h1>
+
+            <h2 style={{
+              fontSize: "1.8rem",
+              fontWeight: "400",
+              color: "rgba(255,255,255,0.9)",
+              marginBottom: "2rem",
+              lineHeight: "1.3"
+            }}>
+              {media?.title}
+            </h2>
+
+            <div
+              style={{
+                background: "rgba(255, 255, 255, 0.1)",
+                borderRadius: "12px",
+                padding: "2rem",
+                marginBottom: "2rem",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,0.1)"
+              }}
+            >
+              <div style={{
+                fontSize: "1.2rem",
+                color: "rgba(255,255,255,0.8)",
+                marginBottom: "0.5rem"
+              }}>
+                Release Date
+              </div>
+
+              <div style={{
+                fontSize: "2rem",
+                fontWeight: "600",
+                color: "white",
+                marginBottom: "1rem"
+              }}>
+                {releaseFormatted}
+              </div>
+
+              {daysUntil > 0 && (
+                <div style={{
+                  display: "inline-block",
+                  background: "rgba(255,255,255,0.15)",
+                  padding: "0.5rem 1.5rem",
+                  borderRadius: "25px",
+                  fontSize: "1.1rem",
+                  color: "white",
+                  fontWeight: "500"
+                }}>
+                  {daysUntil} day{daysUntil !== 1 ? 's' : ''} to go
+                </div>
+              )}
+            </div>
+
+            <p style={{
+              fontSize: "1.1rem",
+              color: "rgba(255,255,255,0.7)",
+              margin: "0",
+              lineHeight: "1.6"
+            }}>
+              This {mediaType === MediaType.MOVIE ? 'movie' : 'series'} hasn't been released yet.<br />
+              Add it to your watchlist!
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Background url={bgUrl} />
       <PrimarySearchAppBar onClick={() => { }} displaySearch={false} />
-      {/* <MovieList mediaList={medias} /> */}
-      <VideoPlayer
-        id={id}
-        playerUrl={playerUrl}
-        mediaType={mediaType}
-        season={seasonEpisode?.season ?? null} // Keep the actual value
-        episode={seasonEpisode?.episode ?? null}
-        posterURL={state.bgUrl}
-        isPlaying={isPlaying}
-        setIsPlaying={setIsPlaying}
-      />
+
+      {!loadingFinished ? (
+        renderPlayerSkeleton()
+      ) : isUpcoming ? (
+        renderUpcomingBanner()
+      ) : (
+        <VideoPlayer
+          id={id}
+          playerUrl={playerUrl}
+          mediaType={mediaType}
+          season={seasonEpisode?.season ?? null}
+          episode={seasonEpisode?.episode ?? null}
+          posterURL={state.bgUrl}
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+        />
+      )}
+
       <StreamingServerSelector
         selectServer={selectServer}
       ></StreamingServerSelector>

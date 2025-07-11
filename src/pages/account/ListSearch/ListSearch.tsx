@@ -1,4 +1,4 @@
-import { Search, Clock, X, HeartIcon, BookmarkIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Clock, X, HeartIcon, BookmarkIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useAsyncError, useNavigate, useParams } from "react-router-dom";
 import { Endpoints } from "../../../config/Config";
@@ -12,6 +12,7 @@ import { MediaCard } from "../../main/MediaCard";
 import NotFoundPage from "../../shared/NotFoundPage";
 import PrimarySearchAppBar from "../../shared/TopNavBar";
 import { getCurrentUser, getUsername } from "../../../services/UserService";
+import { Pagination } from "../Pagination/Pagination";
 import './ListSearch.css';
 import { WorkInProgress } from "../../shared/WorkInProgress";
 import { LoadingSpinner } from "../../main/LoadingSpinner";
@@ -38,6 +39,11 @@ const ListSearch: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [pageSize, setPageSize] = useState(20);
+
+    const [searchCurrentPage, setSearchCurrentPage] = useState(0);
+    const [searchPageSize] = useState(20);
+
+    const [allData, setAllData] = useState<any[]>([]);
 
     const { username, "list-type": listType } = useParams<{
         username: string;
@@ -114,49 +120,71 @@ const ListSearch: React.FC = () => {
             if (action === 'remove') {
                 setWatchlist((prev) => {
                     const updated = prev.filter((item) => item.id !== id);
-                    if (listType === 'watchlist') {
-                        setFilteredList((currentFiltered) =>
-                            currentFiltered.filter((item) => item.id !== id)
-                        );
-                    }
                     return updated;
                 });
+                setAllData((prev) => prev.filter((item) => item.id !== id));
+                setFilteredList((prev) => prev.filter((item) => item.id !== id));
             }
         } else if (type === "favourites") {
             if (action === 'remove') {
                 setFavourites((prev) => {
                     const updated = prev.filter((item) => item.id !== id);
-                    if (listType === 'favourites' || !listType) {
-                        setFilteredList((currentFiltered) =>
-                            currentFiltered.filter((item) => item.id !== id)
-                        );
-                    }
                     return updated;
                 });
+                setAllData((prev) => prev.filter((item) => item.id !== id));
+                setFilteredList((prev) => prev.filter((item) => item.id !== id));
             }
         }
     }
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);
+        setSearchCurrentPage(0);
+
         if (!query.trim()) {
-            const { data } = getListInfo();
-            setFilteredList(data);
+            if (searchQuery) {
+                const startIndex = currentPage * pageSize;
+                const endIndex = startIndex + pageSize;
+                setFilteredList(allData.slice(startIndex, endIndex));
+            }
             return;
         }
 
-        const { data } = getListInfo();
-        const filtered = data.filter((item: any) =>
+        const filtered = allData.filter((item: any) =>
             item.title?.toLowerCase().includes(query.toLowerCase())
         );
-        setFilteredList(filtered);
+
+        const startIndex = searchCurrentPage * searchPageSize;
+        const endIndex = startIndex + searchPageSize;
+        setFilteredList(filtered.slice(startIndex, endIndex));
     };
 
-    const handlePageChange = async (newPage: any) => {
-        if (newPage < 0 || newPage >= totalPages) return;
+    const handlePageChange = async (newPage: number) => {
+        if (newPage < 0) return;
+
+        if (searchQuery.trim()) {
+            setSearchCurrentPage(newPage);
+            const filtered = allData.filter((item: any) =>
+                item.title?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            const startIndex = newPage * searchPageSize;
+            const endIndex = startIndex + searchPageSize;
+            setFilteredList(filtered.slice(startIndex, endIndex));
+            return;
+        }
+
+        if (newPage >= totalPages) return;
 
         setIsLoading(true);
         setCurrentPage(newPage);
+
+        if (allData.length > 0) {
+            const startIndex = newPage * pageSize;
+            const endIndex = startIndex + pageSize;
+            setFilteredList(allData.slice(startIndex, endIndex));
+            setIsLoading(false);
+            return;
+        }
 
         let endpoint = '';
         let setListFn = setFavourites;
@@ -186,7 +214,6 @@ const ListSearch: React.FC = () => {
                 .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
 
             setFilteredList(processed);
-            setListFn((prev) => [...prev, ...processed]);
             setTotalPages(result.page.totalPages);
             setPageSize(result.page.size);
         }
@@ -196,6 +223,22 @@ const ListSearch: React.FC = () => {
 
     useEffect(() => {
         setIs404(false);
+        setIsLoading(true);
+        setSearchQuery("");
+        setFilteredList([]);
+        setCurrentPage(0);
+        setSearchCurrentPage(0);
+        setTotalPages(1);
+        setPageSize(20);
+        setAllData([]);
+        setFavourites([]);
+        setWatchlist([]);
+        setWatched([]);
+        setFav([]);
+        setWatch([]);
+        setIsCurrentUserProfile(false);
+        setIsLoggedIn(false);
+
         setUser({
             username: username,
             avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
@@ -236,7 +279,7 @@ const ListSearch: React.FC = () => {
             setIsCurrentUserProfile(false);
             fetchUserByUsrname();
         }
-    }, [username, isLoggedIn]);
+    }, [username, listType]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -259,20 +302,38 @@ const ListSearch: React.FC = () => {
                         setListFn = setFavourites;
                 }
 
-                const result = await fetchPageData(endpoint, currentPage);
+                const allDataResult = await fetchAllPages(endpoint);
 
-                if (result) {
-                    const processed = result.content
+                if (allDataResult && allDataResult.length > 0) {
+                    const processedAll = allDataResult
                         .map((item: any) => ({
                             ...item,
                             id: item.tmdbId
                         }))
                         .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
 
-                    setFilteredList(processed);
-                    setListFn(processed);
-                    setTotalPages(result.page.totalPages);
-                    setPageSize(result.page.size);
+                    setAllData(processedAll);
+                    setListFn(processedAll);
+
+                    const firstPageData = processedAll.slice(0, pageSize);
+                    setFilteredList(firstPageData);
+                    setTotalPages(Math.ceil(processedAll.length / pageSize));
+                } else {
+                    const result = await fetchPageData(endpoint, currentPage);
+
+                    if (result) {
+                        const processed = result.content
+                            .map((item: any) => ({
+                                ...item,
+                                id: item.tmdbId
+                            }))
+                            .sort((a: any, b: any) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
+
+                        setFilteredList(processed);
+                        setListFn(processed);
+                        setTotalPages(result.page.totalPages);
+                        setPageSize(result.page.size);
+                    }
                 }
 
             } catch (error) {
@@ -285,9 +346,10 @@ const ListSearch: React.FC = () => {
         if (user.username && listType) fetchData();
     }, [user.username, listType]);
 
-
     useEffect(() => {
         async function getT() {
+            if (!cookieUsername) return;
+
             try {
                 const favEndpoint = `${Endpoints.FAVOURITES}?username=${cookieUsername}`;
                 const watchEndpoint = `${Endpoints.WATCHLIST}?username=${cookieUsername}`;
@@ -304,105 +366,10 @@ const ListSearch: React.FC = () => {
             }
         }
 
-        if (username) {
+        if (username && cookieUsername) {
             getT();
         }
-    }, [username]);
-
-    const Pagination = () => {
-        if (totalPages <= 1) return null;
-
-        const pageNumbers = [];
-        const maxPageButtons = 5;
-        let startPage = Math.max(0, currentPage - Math.floor(maxPageButtons / 2));
-        let endPage = Math.min(totalPages - 1, startPage + maxPageButtons - 1);
-
-        if (endPage - startPage + 1 < maxPageButtons) {
-            startPage = Math.max(0, endPage - maxPageButtons + 1);
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            pageNumbers.push(i);
-        }
-
-        return (
-            <div className="d-flex justify-content-center my-4">
-                <ul className="pagination">
-                    <li className={`page-item ${currentPage === 0 ? 'disabled' : ''}`}>
-                        <button
-                            className="page-link"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 0}
-                            aria-label="Previous page"
-                        >
-                            <ChevronLeft size={16} />
-                        </button>
-                    </li>
-
-                    {startPage > 0 && (
-                        <>
-                            <li className="page-item">
-                                <button
-                                    className="page-link"
-                                    onClick={() => handlePageChange(0)}
-                                >
-                                    1
-                                </button>
-                            </li>
-                            {startPage > 1 && (
-                                <li className="page-item disabled">
-                                    <span className="page-link">...</span>
-                                </li>
-                            )}
-                        </>
-                    )}
-
-                    {pageNumbers.map(number => (
-                        <li
-                            key={number}
-                            className={`page-item ${currentPage === number ? 'active' : ''}`}
-                        >
-                            <button
-                                className="page-link"
-                                onClick={() => handlePageChange(number)}
-                            >
-                                {number + 1}
-                            </button>
-                        </li>
-                    ))}
-
-                    {endPage < totalPages - 1 && (
-                        <>
-                            {endPage < totalPages - 2 && (
-                                <li className="page-item disabled">
-                                    <span className="page-link">...</span>
-                                </li>
-                            )}
-                            <li className="page-item">
-                                <button
-                                    className="page-link"
-                                    onClick={() => handlePageChange(totalPages - 1)}
-                                >
-                                    {totalPages}
-                                </button>
-                            </li>
-                        </>
-                    )}
-
-                    <li className={`page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
-                        <button
-                            className="page-link"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages - 1}
-                            aria-label="Next page"
-                        >
-                            <ChevronRight size={16} />
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        );
-    };
+    }, [username, listType, cookieUsername]);
 
     if (is404) {
         return <NotFoundPage />;
@@ -467,7 +434,6 @@ const ListSearch: React.FC = () => {
                             )}
                         </div>
 
-
                         <button
                             onClick={() => navigate(-1)}
                             className="btn btn-outline-primary d-flex items-align-center goBackBtn"
@@ -481,7 +447,6 @@ const ListSearch: React.FC = () => {
                             }}>GO BACK</span>
                         </button>
                     </div>
-
 
                     {filteredList && filteredList.length > 0 ? (
                         <>
@@ -517,7 +482,19 @@ const ListSearch: React.FC = () => {
                                 })}
                             </div>
 
-                            <Pagination />
+                            <Pagination
+                                currentPage={searchQuery.trim() ? searchCurrentPage : currentPage}
+                                totalPages={searchQuery.trim() ?
+                                    Math.ceil(allData.filter((item: any) =>
+                                        item.title?.toLowerCase().includes(searchQuery.toLowerCase())
+                                    ).length / searchPageSize) :
+                                    totalPages
+                                }
+                                onPageChange={handlePageChange}
+                                searchQuery={searchQuery}
+                                maxPageButtons={5}
+                                showWhenSearching={true}
+                            />
                         </>
                     ) : (
                         <div className="similar-movies-track-container">

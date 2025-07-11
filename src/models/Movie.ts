@@ -11,6 +11,7 @@ export class Media {
   backDropUrl!: string;
   overview?: string;
   releaseYear?: string;
+  release_date?: string;
   mediaType?: MediaType;
   rating?: number;
   genreList?: string[];
