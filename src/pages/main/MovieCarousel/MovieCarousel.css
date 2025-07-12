@@ -6,173 +6,6 @@
 
 .slide {
     cursor: pointer;
-    position: relative;
-}
-
-.image-container-carousel {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;
-    overflow: hidden;
-}
-
-.image-container-carousel img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.image-skeleton {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(110deg, #2a2a2a 8%, #3a3a3a 18%, #2a2a2a 33%);
-    background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite linear;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.skeleton-shimmer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.08) 50%,
-        transparent 100%
-    );
-    animation: shimmer 2s infinite ease-in-out;
-}
-
-.skeleton-content {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
-.skeleton-play-button {
-    opacity: 0.6;
-    animation: pulse 2s infinite ease-in-out;
-}
-
-@keyframes skeleton-loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-@keyframes shimmer {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        opacity: 0.4;
-    }
-    50% {
-        opacity: 0.8;
-    }
-}
-
-.upcoming-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 10;
-    background: linear-gradient(135deg, rgb(13, 26, 63), rgb(11, 22, 51));
-    border-radius: 12px;
-    padding: 8px 12px;
-    box-shadow: 0 4px 12px rgba(13, 26, 63, 0.6);
-    transform: rotate(-5deg);
-    transition: transform 0.3s ease;
-}
-
-.upcoming-badge:hover {
-    transform: rotate(0deg) scale(1.05);
-}
-
-.upcoming-badge-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.upcoming-text {
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.days-until-release {
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 500;
-    opacity: 0.9;
-    white-space: nowrap;
-}
-
-.upcoming-badge-inline {
-    display: block;
-    width: fit-content;
-    background: linear-gradient(135deg, rgb(13, 26, 63), rgb(11, 22, 51));
-    border-radius: 8px;
-    padding: 4px 12px;
-    margin-bottom: 8px;
-    box-shadow: 0 2px 8px rgba(13, 26, 63, 0.6);
-}
-
-.upcoming-badge-inline span {
-    display: inline;
-    margin-right: 6px;
-}
-
-.upcoming-badge-inline span:last-child {
-    margin-right: 0;
-}
-
-.upcoming-text-inline {
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.days-until-release-inline {
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 500;
-    opacity: 0.9;
-    white-space: nowrap;
 }
 
 .movie-content {
@@ -185,8 +18,8 @@
     inset: 0;
     background-image: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 20%, rgba(0, 0, 0, 0.1) 40%, transparent 60%);
     opacity: 0.9;
-    z-index: 3;
 }
+
 
 .movie-content {
     position: absolute;
@@ -194,7 +27,6 @@
     left: 0;
     padding: 1.5rem;
     width: 100%;
-    z-index: 4;
 }
 
 .movie-title {
@@ -204,6 +36,8 @@
     margin-bottom: 0.75rem;
     text-align: left;
 }
+
+
 
 .genre-container {
     display: flex;
@@ -224,12 +58,13 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
+
 }
 
-.m-container {
-    display: flex;
-    flex-direction: column;
-}
+/* .m-container {
+    opacity: 50%;
+    transition: all .2s ease-in-out;
+} */
 
 .slide:hover .m-container {
     opacity: 100%;
@@ -273,49 +108,11 @@
     .movie-description {
         font-size: 1rem;
     }
-
-    .upcoming-badge {
-        top: 10px;
-        right: 10px;
-        padding: 6px 10px;
-        border-radius: 8px;
-    }
-
-    .upcoming-text {
-        font-size: 0.65rem;
-    }
-
-    .days-until-release {
-        font-size: 0.55rem;
-    }
 }
-
-
 
 @media screen and (max-width: 700px) {
     .control-dots {
         display: none !important;
-    }
-
-    .image-container-carousel {
-        padding-bottom: 150%; 
-    }
-
-    .upcoming-badge-inline {
-        padding: 3px 8px;
-        padding-top: 0px;
-        margin: auto;
-        margin-bottom: 7px !important;
-        border-radius: 6px;
-        box-shadow: none;
-    }
-
-    .upcoming-text-inline {
-        font-size: 0.65rem;
-    }
-
-    .days-until-release-inline {
-        font-size: 0.6rem;
     }
 
     .movie-content {
@@ -323,11 +120,11 @@
         display: flex;
         flex-direction: column;
         height: 100%;
-        width: 100% !important;
+        width: 108% !important;
         justify-content: space-between;
         padding: 2rem 0rem 0rem 0rem !important;
         gap: 85px;
-        padding-right: 45px !important;
+        padding-right: 58px !important;
     }
 
     .movie-title {
@@ -342,6 +139,7 @@
     .movie-rating-mobile span {
         font-size: 1rem !important;
     }
+
 
     .movie-content-top {
         display: flex;
@@ -364,6 +162,7 @@
         align-items: center;
         min-width: fit-content;
     }
+
 
     .movie-rating-mobile span:first-child {
         font-size: 20px;
@@ -415,4 +214,33 @@
         margin: 0px !important;
         font-size: 1rem !important;
     }
+
+    .title-container {
+        gap: 0.3rem;
+        align-items: center !important;
+    }
+
+    .upcoming-badge {
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        align-self: center !important;
+    }
+}
+
+.title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.upcoming-badge {
+    background: linear-gradient(135deg, rgb(13, 26, 63), rgb(11, 22, 51));
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    align-self: flex-start;
 }
