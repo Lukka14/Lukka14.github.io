@@ -214,4 +214,33 @@
         margin: 0px !important;
         font-size: 1rem !important;
     }
+
+    .title-container {
+        gap: 0.3rem;
+        align-items: center !important;
+    }
+
+    .upcoming-badge {
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        align-self: center !important;
+    }
+}
+
+.title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.upcoming-badge {
+    background: linear-gradient(135deg, rgb(13, 26, 63), rgb(11, 22, 51));
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    align-self: flex-start;
 }

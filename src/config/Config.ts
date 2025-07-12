@@ -14,6 +14,7 @@ export const Endpoints = {
   TOP_RATED_MOVIES: `${URL_SEARCH}/topRatedMovies`,
   DETAILED_MOVIE: `${URL_SEARCH}/movieDetails`,
   DETAILED_SERIES: `${URL_SEARCH}/seriesDetails`,
+  FULL_MOVIE_INFO: `${URL_SEARCH}/fullMovieInfo`,
   EPISODES: `${URL_SEARCH}/episodes`,
   
   // 🔐 Auth
@@ -25,6 +26,8 @@ export const Endpoints = {
   GET_USER: `${API_URL}/auth/user`,
   VERIFY_EMAIL: `${API_URL}/auth/verify`,
   CHANGE_PASSWORD: `${API_URL}/auth/password`,
+  FORGOT_PASSWORD: `${API_URL}/auth/forgotPassword`,
+  RESET_PASSWORD: `${API_URL}/auth/passwordWithToken`,
 
   // 👤 User Data
   WATCHED: `${API_URL}/user/watched`,

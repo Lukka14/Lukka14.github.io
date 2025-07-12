@@ -22,4 +22,54 @@
   margin: 20px 0 20px 0;  /* top and bottom 20px */
 }
 
+@keyframes skeleton-loading {
+  0% { 
+    background-position: 200% 0; 
+  }
+  100% { 
+    background-position: -200% 0; 
+  }
+}
+
+@keyframes shimmer {
+  0% { 
+    transform: translateX(-100%); 
+  }
+  100% { 
+    transform: translateX(100%); 
+  }
+}
+
+@keyframes float {
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
+.player-skeleton {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.player-skeleton-overlay {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(10px) brightness(0.4);
+  background: rgba(0, 0, 0, 0.4);
+  animation: skeleton-loading 1.5s infinite linear;
+}
+
+.player-skeleton-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+}
+
   

@@ -39,6 +39,30 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
     }
   };
 
+  const isUpcoming = (media: Media): boolean => {
+    if (!media.release_date) return false;
+
+    const releaseDate = new Date(media.release_date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return releaseDate > today;
+  };
+
+  const getDaysUntilRelease = (media: Media): number | null => {
+    if (!media.release_date) return null;
+
+    const releaseDate = new Date(media.release_date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (releaseDate > today) {
+      return Math.ceil((releaseDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    return null;
+  };
+
   return (
     <div style={{ width: !isSmallScreen ? "95%" : "100%", margin: "0 auto", marginTop: '10px', fontFamily: "Roboto" }}>
       <Carousel
@@ -73,7 +97,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
             key={index}
           >
             <div className="image-overlay"></div>
-            <img alt="sample_file" src={!isSmallScreen ? media.backDropUrl : media.posterUrl} />
+            <img alt="movie-poster" src={!isSmallScreen ? media.backDropUrl : media.posterUrl} />
             <div className="movie-content">
               {isSmallScreen ? (
                 <>
@@ -92,12 +116,22 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
                     </div>
                   </div>
                   <div className="movie-content-bottom">
-                    <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
+                    <div className="title-container">
+                      {isUpcoming(media) && (
+                        <span className="upcoming-badge">Upcoming • {getDaysUntilRelease(media)}d</span>
+                      )}
+                      <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
+                    </div>
                   </div>
                 </>
               ) : (
                 <div className="m-container">
-                  <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
+                  <div className="title-container">
+                    {isUpcoming(media) && (
+                      <span className="upcoming-badge">Upcoming • {getDaysUntilRelease(media)}d</span>
+                    )}
+                    <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
+                  </div>
                   <div className="movie-meta">
                     <div className="movie-rating">
                       <span>{media.rating?.toFixed(1) == "0.0" ? 'N/A' : media.rating?.toFixed(1)}</span>

@@ -18,7 +18,9 @@ const passwordSchema = z
         newPassword: z
             .string()
             .min(6, "New password must be at least 6 characters")
-            .regex(/^(?=.*[a-zA-Z])[\x00-\x7F]+$/, "Must contain at least one letter"),
+            .max(50, "New password must not exceed 50 characters")
+            .regex(/^(?=.*[a-zA-Z])[\x00-\x7F]+$/, "Must contain at least one letter")
+            .refine((val) => val.trim().length > 0, "New password cannot be empty"),
         confirmPassword: z.string(),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
