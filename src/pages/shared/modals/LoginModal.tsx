@@ -202,24 +202,6 @@ export default function LoginModal() {
                                 <div className="mb-4">
                                     <div className="d-flex justify-content-between align-items-center">
                                         <label htmlFor="password" className="form-label">Password</label>
-                                        <button
-                                            type="button"
-                                            className="text-decoration-none p-0"
-                                            onClick={toggleForgotPasswordMode}
-                                            disabled={loading}
-                                            style={{
-                                                background: "none",
-                                                border: "none",
-                                                color: "#3b71ca",
-                                                cursor: "pointer",
-                                                fontSize: "inherit",
-                                                lineHeight: "inherit"
-                                            }}
-                                            onMouseEnter={(e) => (e.target as HTMLElement).style.opacity = "0.95"}
-                                            onMouseLeave={(e) => (e.target as HTMLElement).style.opacity = "1"}
-                                        >
-                                            Forgot Password?
-                                        </button>
                                     </div>
                                     <input
                                         type="password"
@@ -235,7 +217,25 @@ export default function LoginModal() {
                                     )}
                                 </div>
 
-                                <div className="d-flex justify-content-end mt-4">
+                                <div className="d-flex justify-content-between mt-4">
+                                    <button
+                                        type="button"
+                                        className="text-decoration-none p-0"
+                                        onClick={toggleForgotPasswordMode}
+                                        disabled={loading}
+                                        style={{
+                                            background: "none",
+                                            border: "none",
+                                            color: "#3b71ca",
+                                            cursor: "pointer",
+                                            fontSize: "inherit",
+                                            lineHeight: "inherit"
+                                        }}
+                                        onMouseEnter={(e) => (e.target as HTMLElement).style.opacity = "0.95"}
+                                        onMouseLeave={(e) => (e.target as HTMLElement).style.opacity = "1"}
+                                    >
+                                        Forgot Password?
+                                    </button>
                                     <div>
                                         <span style={{ color: "#c2c2c2" }}>Don't have an account? </span>
                                         <a href="/#/register/" onClick={() => {
