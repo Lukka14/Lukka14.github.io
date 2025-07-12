@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Media } from "../../models/Movie";
 import { fetchMedia, fetchTrendingMedia, fetchTrendingMediaWithDetails } from "../../services/MediaService";
 import { MovieList } from "../shared/MovieList";
@@ -16,6 +16,7 @@ let page = 1;
 const setNewMediaLoader = (
   offset = 0,
   addMediaList: (newMedia: Media[]) => void,
+  isLoadingRef: React.MutableRefObject<boolean>,
   setIsLoading: (loading: boolean) => void
 ) => {
   useEffect(() => {
@@ -24,16 +25,19 @@ const setNewMediaLoader = (
         window.innerHeight + window.scrollY >=
         document.body.offsetHeight - offset;
 
-      if (scrolledToBottom) {
+      if (scrolledToBottom && !isLoadingRef.current) {
+        isLoadingRef.current = true;
         setIsLoading(true);
         fetchTrendingMedia(++page)
           .then((media) => {
             addMediaList(media);
             setIsLoading(false);
+            isLoadingRef.current = false;
           })
           .catch((err) => {
             console.error(err);
             setIsLoading(false);
+            isLoadingRef.current = false;
           });
       }
     };
@@ -47,6 +51,7 @@ const MainPage: React.FC = () => {
   const [medias, setMedias] = useState<Media[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
+  const isLoadingRef = useRef(false);
 
   const handleSearch = (query: string) => {
     setIsLoading(true);
@@ -89,7 +94,7 @@ const MainPage: React.FC = () => {
       });
   }, []);
 
-  setNewMediaLoader(0, addMediaList, setIsLoading);
+  setNewMediaLoader(0, addMediaList, isLoadingRef, setIsLoading);
 
   const recentylyWatched: Media[] = getRecentlyWatched();
 
