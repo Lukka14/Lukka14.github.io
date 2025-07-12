@@ -26,6 +26,8 @@ export const Endpoints = {
   GET_USER: `${API_URL}/auth/user`,
   VERIFY_EMAIL: `${API_URL}/auth/verify`,
   CHANGE_PASSWORD: `${API_URL}/auth/password`,
+  FORGOT_PASSWORD: `${API_URL}/auth/forgotPassword`,
+  RESET_PASSWORD: `${API_URL}/auth/passwordWithToken`,
 
   // 👤 User Data
   WATCHED: `${API_URL}/user/watched`,
