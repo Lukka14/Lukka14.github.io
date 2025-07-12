@@ -134,6 +134,8 @@ const WatchPage: React.FC = () => {
     setPlayerUrl(url);
   };
 
+  const playerKey = `${id}-${seasonEpisode?.season}-${seasonEpisode?.episode}`;
+
   if (
     media != null &&
     (mediaType === MediaType.TV_SERIES || mediaType === MediaType.MOVIE)
@@ -316,6 +318,7 @@ const WatchPage: React.FC = () => {
         renderUpcomingBanner()
       ) : (
         <VideoPlayer
+          key={playerKey}
           id={id}
           playerUrl={playerUrl}
           mediaType={mediaType}
