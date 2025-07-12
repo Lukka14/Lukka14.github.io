@@ -148,24 +148,19 @@ const WatchPage: React.FC = () => {
   const renderPlayerSkeleton = () => {
     return (
       <div className="container-xl">
-        <div
-          className="ratio ratio-16x9 player-skeleton"
-          style={{
-            backgroundImage: `url(${state.bgUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center"
-          }}
-        >
-          <div className="player-skeleton-overlay" />
-
-          <div className="player-skeleton-content">
-            <div className="spinner-border text-light" role="status" style={{ width: "4rem", height: "4rem" }}>
-              <span className="visually-hidden">Loading...</span>
-            </div>
-            <p style={{ marginTop: "1rem", fontSize: "1.1rem", color: "rgba(255,255,255,0.8)" }}>
-              Loading Player...
-            </p>
-          </div>
+        <div className="ratio ratio-16x9" style={{ position: "relative" }}>
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(90deg, #2c2c2c 25%, #3c3c3c 50%, #2c2c2c 75%)",
+              backgroundSize: "200% 100%",
+              animation: "skeleton-loading 1.5s infinite"
+            }}
+          />
         </div>
       </div>
     );
