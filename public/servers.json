@@ -1,8 +1,8 @@
 [
-   {
-    "name": "Vidjoy",
-    "movie_url": "https://vidjoy.pro/embed/movie/{id}?adFree=true&DefaultIcons=true&primary=ce0d0d&secondary=828282&icon=ffffff&autoplay=true&title=false&poster=true",
-    "series_url": "https://vidjoy.pro/embed/tv/{id}/{season}/{episode}?adFree=true&DefaultIcons=true&primary=ce0d0d&secondary=828282&icon=ffffff&autoplay=true&title=false&poster=true",
+  {
+    "name": "Vidify",
+    "movie_url": "https://player.vidify.top/embed/movie/{id}?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&download=true&font=Roboto&fontcolor=6f63ff&fontsize=20&opacity=0.5&primarycolor=ce0d0d&secondarycolor=828282&iconcolor=ffffff",
+    "series_url": "https://player.vidify.top/embed/tv/{id}/{season}/{episode}?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&download=true&font=Roboto&fontcolor=6f63ff&fontsize=20&opacity=0.5&primarycolor=ce0d0d&secondarycolor=828282&iconcolor=ffffff",
     "safe": true
   },
   {

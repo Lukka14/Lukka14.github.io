@@ -2,18 +2,18 @@ import { ImdbMedia, Media, Movie, TvSeries } from "../models/Movie";
 import { Endpoints } from "../config/Config";
 import axios from "axios";
 
-export const fetchFullMovieInfo = async (id: string): Promise<Media | null> => {
-  if (!id) return null;
+// export const fetchFullMovieInfo = async (id: string): Promise<Media | null> => {
+//   if (!id) return null;
   
-  try {
-    const response = await axios.get(Endpoints.FULL_MOVIE_INFO, {
-      params: { id }
-    });
-    return Object.assign(new Media(), response.data);
-  } catch (error) {
-    return null;
-  }
-};
+//   try {
+    // const response = await axios.get(Endpoints.FULL_MOVIE_INFO, {
+//       params: { id }
+//     });
+//     return Object.assign(new Media(), response.data);
+//   } catch (error) {
+//     return null;
+//   }
+// };
 
 export const fetchTrendingMediaWithDetails = async (page: number = 1): Promise<Media[]> => {
   try {
@@ -21,10 +21,10 @@ export const fetchTrendingMediaWithDetails = async (page: number = 1): Promise<M
     
     const enrichedMedia = await Promise.allSettled(
       trendingMedia.map(async (media) => {
-        const fullInfo = await fetchFullMovieInfo(media.id?.toString() || '');
-        if (fullInfo && fullInfo.release_date) {
-          return { ...media, release_date: fullInfo.release_date };
-        }
+        // const fullInfo = await fetchFullMovieInfo(media.id?.toString() || '');
+        // if (fullInfo && fullInfo.release_date) {
+        //   return { ...media, release_date: fullInfo.release_date };
+        // }
         return media;
       })
     );

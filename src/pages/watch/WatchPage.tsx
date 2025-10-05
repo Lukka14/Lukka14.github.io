@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Background } from "./components/Background";
 import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
-import { MediaType, ImdbMedia, TvSeries, Media, Movie } from "../../models/Movie";
-import { fetchMovie, fetchTvSeries, fetchFullMovieInfo } from "../../services/MediaService";
+import { MediaType, ImdbMedia, TvSeries, ReleaseStatus } from "../../models/Movie";
+import { fetchMovie, fetchTvSeries} from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/TopNavBar";
 import MediaInfo from "./components/MediaInfo";
 import StreamingServerSelector from "./components/StreamingServerSelector";
@@ -34,7 +34,7 @@ const WatchPage: React.FC = () => {
   const [notFound, setNotFound] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isUpcoming, setIsUpcoming] = useState(false);
-  const [releaseDate, setReleaseDate] = useState<string | null>(null);
+  // const [releaseDate, setReleaseDate] = useState<string | null>(null);
   const [playerUrl, setPlayerUrl] = useState<string>("");
 
   const [state, setState] = useState<{
@@ -46,12 +46,12 @@ const WatchPage: React.FC = () => {
       "https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true",
   });
 
-  const checkIfUpcoming = (releaseDate: string): boolean => {
-    const release = new Date(releaseDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return release > today;
-  };
+  // const checkIfUpcoming = (releaseDate: string): boolean => {
+  //   const release = new Date(releaseDate);
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
+  //   return release > today;
+  // };
 
   const getDaysUntilRelease = (releaseDate: string): number => {
     const release = new Date(releaseDate);
@@ -82,12 +82,11 @@ const WatchPage: React.FC = () => {
           setState({ media: data, bgUrl: finalBgUrl });
 
           try {
-            const fullInfo = await fetchFullMovieInfo(id);
-            if (fullInfo?.release_date) {
-              setReleaseDate(fullInfo.release_date);
-              const upcoming = checkIfUpcoming(fullInfo.release_date);
+            // const fullInfo = await fetchFullMovieInfo(id);
+           
+              const upcoming = media?.releaseStatus === ReleaseStatus.UPCOMING;
               setIsUpcoming(upcoming);
-            }
+      
           } catch (error) {
             console.error(error);
           }
@@ -167,6 +166,7 @@ const WatchPage: React.FC = () => {
   };
 
   const renderUpcomingBanner = () => {
+    const releaseDate = media?.release_date;
     const daysUntil = releaseDate ? getDaysUntilRelease(releaseDate) : 0;
     const releaseFormatted = releaseDate ? new Date(releaseDate).toLocaleDateString('en-US', {
       year: 'numeric',

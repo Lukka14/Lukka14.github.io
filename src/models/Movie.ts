@@ -4,6 +4,12 @@ export enum MediaType {
   PERSON = "PERSON"
 }
 
+export enum ReleaseStatus {
+  UPCOMING = "UPCOMING",
+  RELEASED = "RELEASED",
+  UNKNOWN = "UNKNOWN"
+}
+
 export class Media {
   id?: number;
   title?: string;
@@ -17,6 +23,7 @@ export class Media {
   genreList?: string[];
   originalLanguage?: string;
   similar?: Media[];
+  releaseStatus?: ReleaseStatus;
   
   constructor(data?: Partial<Media>) {
     if (data) {

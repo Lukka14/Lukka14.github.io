@@ -14,7 +14,7 @@ export const Endpoints = {
   TOP_RATED_MOVIES: `${URL_SEARCH}/topRatedMovies`,
   DETAILED_MOVIE: `${URL_SEARCH}/movieDetails`,
   DETAILED_SERIES: `${URL_SEARCH}/seriesDetails`,
-  FULL_MOVIE_INFO: `${URL_SEARCH}/fullMovieInfo`,
+  // FULL_MOVIE_INFO: `${URL_SEARCH}/fullMovieInfo`,
   EPISODES: `${URL_SEARCH}/episodes`,
   
   // 🔐 Auth
