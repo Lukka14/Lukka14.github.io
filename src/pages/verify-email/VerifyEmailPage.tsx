@@ -23,11 +23,13 @@ export default function VerifyEmailPage() {
             hasVerified.current = true;
             try {
                 if (!token) {
+                    console.error("No token provided in URL");
                     setVerificationState("error");
                     return;
                 }
                 const res = await fetch(`${Endpoints.VERIFY_EMAIL}?token=${token}`);
                 if (!res?.ok) {
+                    console.error("Failed to verify email:", res.statusText);
                     setVerificationState("error");
                     return;
                 }
@@ -35,6 +37,7 @@ export default function VerifyEmailPage() {
                 const data = await res.json();
 
                 if (!data.accessToken || !data.accessToken.token || !data.accessToken.expiresIn) {
+                    console.error("Invalid access token data:", data);
                     setVerificationState("error");
                     return;
                 }
@@ -49,6 +52,7 @@ export default function VerifyEmailPage() {
 
                 const username = Cookies.get("username");
                 if (!username) {
+                    console.error("Username cookie not found");
                     setVerificationState("error");
                     return;
                 }
@@ -65,6 +69,7 @@ export default function VerifyEmailPage() {
 
                 setVerificationState("success");
             } catch (e: any) {
+                console.error("Exception during verification:", e);
                 setVerificationState("error");
             }
         }

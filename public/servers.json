@@ -1,14 +1,14 @@
 [
+    {
+    "name": "VidSrc",
+    "movie_url": "https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=true",
+    "series_url": "https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=true",
+    "safe": true
+  },
   {
     "name": "Vidify",
     "movie_url": "https://player.vidify.top/embed/movie/{id}?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&download=true&font=Roboto&fontcolor=6f63ff&fontsize=20&opacity=0.5&primarycolor=ce0d0d&secondarycolor=828282&iconcolor=ffffff",
     "series_url": "https://player.vidify.top/embed/tv/{id}/{season}/{episode}?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&download=true&font=Roboto&fontcolor=6f63ff&fontsize=20&opacity=0.5&primarycolor=ce0d0d&secondarycolor=828282&iconcolor=ffffff",
-    "safe": true
-  },
-  {
-    "name": "VidSrc",
-    "movie_url": "https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=true",
-    "series_url": "https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=true",
     "safe": true
   }
 ]
