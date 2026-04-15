@@ -1,5 +1,11 @@
 [
-    {
+  {
+    "name": "Vidking",
+    "movie_url": "https://www.vidking.net/embed/movie/{id}?color=e50914&autoPlay=true",
+    "series_url": "https://www.vidking.net/embed/tv/{id}/{season}/{episode}?color=e50914&autoPlay=true",
+    "safe": true
+  },
+  {
     "name": "VidSrc",
     "movie_url": "https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=true",
     "series_url": "https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=true",
