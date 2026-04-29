@@ -230,7 +230,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             )}
 
             <iframe
-              sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
+              // sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
               src={mediaURL}
               title="Video Player"
               allowFullScreen
