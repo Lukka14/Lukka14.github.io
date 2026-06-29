@@ -55,7 +55,7 @@ const HelpPage: React.FC = () => {
           className="btn btn-primary btn-lg"
           style={{ marginBottom: "20px" }}
         >
-          Notify Me
+          Notify me
         </button>
       </div> */}
       <Footer />
