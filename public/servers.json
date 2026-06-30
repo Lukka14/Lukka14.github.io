@@ -1,14 +1,14 @@
 [
+    {
+    "name": "Videasy",
+    "movie_url": "https://player.videasy.net/movie/{id}?color=e50914&autoPlay=true",
+    "series_url": "https://player.videasy.net/tv/{id}/{season}/{episode}?color=e50914&autoPlay=true",
+    "safe": true
+  },
   {
     "name": "Vidking",
     "movie_url": "https://www.vidking.net/embed/movie/{id}?color=e50914&autoPlay=true",
     "series_url": "https://www.vidking.net/embed/tv/{id}/{season}/{episode}?color=e50914&autoPlay=true",
-    "safe": true
-  },
-   {
-    "name": "Videasy",
-    "movie_url": "https://player.videasy.net/movie/{id}?color=e50914&autoPlay=true",
-    "series_url": "https://player.videasy.net/tv/{id}/{season}/{episode}?color=e50914&autoPlay=true",
     "safe": true
   }
 ]
