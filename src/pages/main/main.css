@@ -254,7 +254,10 @@
   justify-content: space-between;
   padding: 0 1rem;
   pointer-events: none;
-  z-index: 2;
+  /* Above .home-feature-copy — the copy panel is a later sibling, so at an equal
+     z-index it wins the paint order and swallows clicks on the arrows wherever
+     the two overlap. */
+  z-index: 4;
 }
 
 .home-feature-nav-btn {
@@ -336,8 +339,10 @@
 .home-feature-copy {
   position: absolute;
   inset: auto 0 0 0;
-  width: min(62%, 640px);
-  padding: 1.35rem 1.35rem 1.45rem;
+  width: min(76%, 900px);
+  /* Left padding clears the previous-arrow gutter (1rem offset + 2.75rem button)
+     so the text never runs underneath it when the panel is tall. */
+  padding: 1.35rem 1.35rem 1.45rem 4.6rem;
   /* Own stacking context so the mobile scrim pseudo-element (z-index: -1) sits
      above the artwork instead of falling behind the card. */
   z-index: 2;
@@ -349,7 +354,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.65rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .home-feature-copy .home-chip-row {
@@ -364,7 +369,7 @@
 }
 
 .home-feature-copy h2 {
-  margin: 0.85rem 0 0;
+  margin: 0.55rem 0 0;
   font-size: clamp(1.8rem, 3vw, 2.7rem);
   letter-spacing: -0.03em;
   line-height: 1.12;
@@ -379,20 +384,22 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1.1rem;
+  margin-top: 0.9rem;
 }
 
 .home-feature-copy p {
-  margin: 0.8rem 0 0;
+  margin: 0.55rem 0 0;
   color: rgba(225, 232, 255, 0.82);
-  line-height: 1.6;
-  max-width: 52ch;
+  line-height: 1.55;
+  /* The panel is wide, so let the synopsis use it — a short measure would force
+     extra lines and make the panel taller. */
+  max-width: 76ch;
   /* Overviews vary from one line to several paragraphs — clamp so a long synopsis
      can never grow the panel over the artwork. */
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
 }
 
@@ -400,7 +407,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
-  margin-top: 1rem;
+  margin-top: 0.8rem;
 }
 
 .home-feature-meta span {
@@ -652,7 +659,7 @@
   }
 
   .home-feature-copy {
-    width: min(72%, 620px);
+    width: min(84%, 780px);
   }
 }
 
@@ -731,7 +738,19 @@
   }
 
   .home-feature-copy {
-    padding: 1rem;
+    padding: 1rem 1rem 1rem 3.9rem;
+  }
+
+  /* Smaller arrows on a phone so the text indent that clears them doesn't eat
+     the narrow column. */
+  .home-feature-nav {
+    padding: 0 0.6rem;
+  }
+
+  .home-feature-nav-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.5rem;
   }
 
   /* Genre chips + badge on one row eat two lines on a phone; the badge is
