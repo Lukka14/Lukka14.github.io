@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { AlertTriangle, MonitorPlay } from "lucide-react";
+import { AlertTriangle, ExternalLink, MonitorPlay, ShieldCheck } from "lucide-react";
 import "../css/watch.css";
 import { Server } from "../models/Server";
 
@@ -80,6 +80,27 @@ const StreamingServerSelector: React.FC<StreamingServerSelectorProps> = ({
             : "No streaming sources are available right now."}
         </div>
       )}
+
+      <div className="watch-adblock-note">
+        <span className="watch-adblock-icon">
+          <ShieldCheck size={16} />
+        </span>
+        <p className="watch-adblock-text">
+          Playback comes from third-party sources, so they may show ads or open
+          new tabs when clicked. We can't remove those from our side &mdash; a
+          blocker such as{" "}
+          <a
+            className="watch-adblock-link"
+            href="https://ublockorigin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            uBlock Origin
+            <ExternalLink size={12} />
+          </a>{" "}
+          stops them for good.
+        </p>
+      </div>
     </div>
   );
 };

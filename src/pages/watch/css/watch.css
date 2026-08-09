@@ -290,6 +290,52 @@
   font-size: 0.88rem;
 }
 
+.watch-adblock-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 0.95rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(129, 140, 248, 0.22);
+  background: rgba(99, 102, 241, 0.09);
+}
+
+.watch-adblock-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 9px;
+  background: rgba(129, 140, 248, 0.18);
+  color: #a5b4fc;
+}
+
+.watch-adblock-text {
+  margin: 0;
+  color: rgba(225, 232, 255, 0.68);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.watch-adblock-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #a5b4fc;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(165, 180, 252, 0.4);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.watch-adblock-link:hover {
+  color: #c7d2fe;
+  border-bottom-color: rgba(199, 210, 254, 0.75);
+}
+
 /* ---------- Info panel ---------- */
 
 .watch-panel {
