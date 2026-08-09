@@ -5,9 +5,10 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
 import {
+  ChevronDown,
   Clapperboard,
   HelpCircle,
   Home,
@@ -251,14 +252,15 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             {user?.username ? (
               <div className="dropdown">
                 <button
-                  className="btn mp-nav-user"
+                  className="mp-nav-user"
                   type="button"
                   id="userDropdown"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   {renderAvatar()}
-                  <span>{user.username}</span>
+                  <span className="mp-nav-user-name">{user.username}</span>
+                  <ChevronDown size={15} className="mp-nav-user-caret" />
                 </button>
                 <ul
                   className="dropdown-menu dropdown-menu-end mp-nav-menu"
@@ -269,14 +271,14 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
                     <span className="mp-nav-menu-sub">Signed in</span>
                   </li>
                   <li>
-                    <a className="dropdown-item" href={`/profile/${user.username}`}>
+                    <Link className="dropdown-item" to={`/profile/${user.username}`}>
                       <UserCircle2 size={17} /> Profile
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="/settings">
+                    <Link className="dropdown-item" to="/settings">
                       <Settings size={17} /> Settings
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <button
@@ -306,7 +308,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             {user?.username ? (
               <button
                 type="button"
-                className="btn mp-nav-user"
+                className="mp-nav-user is-icon-only"
                 onClick={() => go(`/profile/${user.username}`)}
                 aria-label="Open profile"
               >

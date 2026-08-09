@@ -91,14 +91,44 @@
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.3rem 0.75rem 0.3rem 0.4rem;
+  max-width: 220px;
+  padding: 0.25rem 0.7rem 0.25rem 0.25rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
+  line-height: 1;
   transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mp-nav-user.is-icon-only {
+  padding: 0.25rem;
+  gap: 0;
+}
+
+.mp-nav-user-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-nav-user-caret {
+  flex-shrink: 0;
+  color: rgba(225, 232, 255, 0.55);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.mp-nav-user[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(129, 140, 248, 0.55);
+}
+
+.mp-nav-user[aria-expanded="true"] .mp-nav-user-caret {
+  transform: rotate(180deg);
+  color: #fff;
 }
 
 .mp-nav-user:hover,
@@ -109,20 +139,36 @@
   box-shadow: none;
 }
 
+.mp-nav-user:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.65);
+  outline-offset: 2px;
+}
+
 .mp-nav-avatar {
-  width: 30px;
-  height: 30px;
+  display: block;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  padding: 1.5px;
 }
 
 .mp-nav-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+  background: #0a0f20;
   display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-nav-user,
+  .mp-nav-user-caret {
+    transition: none;
+  }
 }
 
 .mp-nav-signin {

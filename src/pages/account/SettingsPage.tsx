@@ -1,20 +1,37 @@
-import { useEffect, useState, FormEvent, ChangeEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    AlertCircle,
+    ArrowLeft,
+    AtSign,
+    CheckCircle2,
+    Eye,
+    EyeOff,
+    ImageUp,
+    KeyRound,
+    Lock,
+    UserRound,
+} from "lucide-react";
+import axios from "axios";
 import { Background } from "../main/Background";
 import PrimarySearchAppBar from "../shared/TopNavBar";
 import { fetchMedia } from "../../services/MediaService";
 import { Media } from "../../models/Movie";
-import { Edit } from "lucide-react";
 import { getCurrentUser, getUsername, getAccessToken } from "../../services/UserService";
 import { Endpoints } from "../../config/Config";
-import axios from "axios";
+import { openModal } from "../shared/modals/modal-utils";
+import "../shared/modals/auth-modal.css";
+import "./settings-page.css";
+
+const BACKDROP =
+    "https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true";
 
 const passwordSchema = z
     .object({
-        currentPassword: z.string(),
+        currentPassword: z.string().min(1, "Enter your current password"),
         newPassword: z
             .string()
             .min(6, "New password must be at least 6 characters")
@@ -28,20 +45,24 @@ const passwordSchema = z
         path: ["confirmPassword"],
     });
 
-
 type PasswordFormData = z.infer<typeof passwordSchema>;
 
 export default function SettingsPage() {
-    const [media, setMedias] = useState<Media[]>([]);
+    const [, setMedias] = useState<Media[]>([]);
     const username = getUsername();
     const [avatarVersion, setAvatarVersion] = useState(Date.now());
     const [avatarUrl, setAvatarUrl] = useState<string>("");
     const [loading, setLoading] = useState(false);
-    const [passwordMessage, setPasswordMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+    const [showCurrent, setShowCurrent] = useState(false);
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [passwordMessage, setPasswordMessage] = useState<{
+        text: string;
+        type: "success" | "error";
+    } | null>(null);
     const [user, setUser] = useState<any>({
         username: username,
         avatar: `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${username}&backgroundType=gradientLinear,solid`,
-        createdAt: new Date("2023-01-01"),
     });
 
     const navigate = useNavigate();
@@ -57,8 +78,7 @@ export default function SettingsPage() {
     });
 
     useEffect(() => {
-        const newAvatarUrl = `${Endpoints.IMG_VIEW}/${username}.webp`;
-        setAvatarUrl(newAvatarUrl);
+        setAvatarUrl(`${Endpoints.IMG_VIEW}/${username}.webp`);
     }, [username, avatarVersion]);
 
     useEffect(() => {
@@ -80,10 +100,8 @@ export default function SettingsPage() {
 
     useEffect(() => {
         const handleProfileUpdated = (event: Event) => {
-            setAvatarVersion((_) => {
-                const customEvent = event as CustomEvent;
-                return customEvent.detail?.timestamp || Date.now();
-            });
+            const customEvent = event as CustomEvent;
+            setAvatarVersion(customEvent.detail?.timestamp || Date.now());
         };
         window.addEventListener("profile-updated", handleProfileUpdated);
         return () => window.removeEventListener("profile-updated", handleProfileUpdated);
@@ -105,7 +123,7 @@ export default function SettingsPage() {
             if (!accessToken) {
                 setPasswordMessage({
                     text: "Not authenticated. Please log in again.",
-                    type: 'error'
+                    type: "error",
                 });
                 return;
             }
@@ -114,21 +132,20 @@ export default function SettingsPage() {
                 `${Endpoints.CHANGE_PASSWORD}`,
                 {
                     oldPassword: data.currentPassword,
-                    newPassword: data.newPassword
+                    newPassword: data.newPassword,
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
+                        Authorization: `Bearer ${accessToken}`,
+                    },
                 }
             );
 
             setPasswordMessage({
-                text: response.data.detail || "Password changed successfully!",
-                type: 'success'
+                text: response.data.detail || "Password changed successfully.",
+                type: "success",
             });
             reset();
-
         } catch (error: any) {
             console.error(error);
 
@@ -142,171 +159,268 @@ export default function SettingsPage() {
                 }
             }
 
-            setPasswordMessage({
-                text: errorMessage,
-                type: 'error'
-            });
+            setPasswordMessage({ text: errorMessage, type: "error" });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <>
-            <Background url="https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true" />
+        <div className="settings-page">
+            <Background url={BACKDROP} />
+            <div className="settings-scrim" />
             <PrimarySearchAppBar onClick={handleSearch} displaySearch={false} />
 
-            <div className="container-xl px-4 mt-4">
-                <div className="card mb-4" style={cardStyle}>
-                    <div className="card-header">
-                        <h5 className="font-weight-bold">Change Profile Picture</h5>
+            <div className="settings-shell">
+                {user.username && (
+                    <Link to={`/profile/${user.username}`} className="settings-back">
+                        <ArrowLeft size={16} />
+                        Back to profile
+                    </Link>
+                )}
+
+                <div>
+                    <h1 className="settings-page-title">Account settings</h1>
+                    <p className="settings-page-subtitle">
+                        Manage how you appear on MoviePlus and keep your account secure.
+                    </p>
+                </div>
+
+                <section className="settings-card">
+                    <div className="settings-card-head">
+                        <span className="settings-card-icon">
+                            <UserRound size={19} />
+                        </span>
+                        <div>
+                            <h2 className="settings-card-title">Profile</h2>
+                            <p className="settings-card-desc">
+                                Your picture is shown next to your name across the site.
+                            </p>
+                        </div>
                     </div>
-                    <div className="card-body">
-                        <div className="mb-4 text-center">
+
+                    <div className="settings-avatar-row">
+                        <div className="settings-avatar-ring">
                             <img
                                 key={`avatar-${avatarVersion}`}
                                 src={avatarUrl}
-                                alt="Profile"
-                                className="rounded-circle border-2 border-primary"
-                                style={{
-                                    width: "120px",
-                                    height: "120px",
-                                    objectFit: "cover",
-                                    border: "1px solid white",
-                                }}
+                                alt={`${user.username ?? "Your"} avatar`}
+                                className="settings-avatar"
                                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                                     const target = e.target as HTMLImageElement;
                                     target.onerror = null;
                                     target.src = user.avatar;
                                 }}
                             />
-                            <div className="d-flex justify-content-center mt-4">
+                        </div>
+
+                        <div className="settings-avatar-copy">
+                            <p>
+                                Square images work best. You can crop your picture after
+                                choosing it.
+                            </p>
+                            <button
+                                type="button"
+                                className="settings-ghost-btn"
+                                onClick={() => openModal("editProfileModal")}
+                            >
+                                <ImageUp size={16} />
+                                Change picture
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="settings-readonly-grid settings-readonly">
+                        <div className="auth-field">
+                            <label className="auth-label" htmlFor="username">
+                                Username
+                            </label>
+                            <div className="auth-input-wrap">
+                                <UserRound size={17} className="auth-input-icon" />
+                                <input
+                                    className="auth-input"
+                                    id="username"
+                                    type="text"
+                                    value={user.username ?? ""}
+                                    readOnly
+                                    disabled
+                                />
+                                <Lock size={15} className="auth-input-icon" />
+                            </div>
+                        </div>
+
+                        <div className="auth-field">
+                            <label className="auth-label" htmlFor="email">
+                                Email
+                            </label>
+                            <div className="auth-input-wrap">
+                                <AtSign size={17} className="auth-input-icon" />
+                                <input
+                                    className="auth-input"
+                                    id="email"
+                                    type="email"
+                                    value={user.email ?? ""}
+                                    readOnly
+                                    disabled
+                                />
+                                <Lock size={15} className="auth-input-icon" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <span className="settings-hint">
+                        Your username and email cannot be changed yet. Contact support if you
+                        need them updated.
+                    </span>
+                </section>
+
+                <section className="settings-card">
+                    <div className="settings-card-head">
+                        <span className="settings-card-icon">
+                            <KeyRound size={19} />
+                        </span>
+                        <div>
+                            <h2 className="settings-card-title">Password</h2>
+                            <p className="settings-card-desc">
+                                Choose a password you do not use anywhere else.
+                            </p>
+                        </div>
+                    </div>
+
+                    {passwordMessage && (
+                        <div
+                            className={`auth-alert ${passwordMessage.type === "success"
+                                ? "auth-alert--success"
+                                : "auth-alert--error"
+                                }`}
+                            role="alert"
+                        >
+                            {passwordMessage.type === "success" ? (
+                                <CheckCircle2 size={17} />
+                            ) : (
+                                <AlertCircle size={17} />
+                            )}
+                            <span>{passwordMessage.text}</span>
+                        </div>
+                    )}
+
+                    <form className="settings-form" onSubmit={handleSubmit(onPasswordSubmit)} noValidate>
+                        <div className="auth-field">
+                            <label className="auth-label" htmlFor="currentPassword">
+                                Current password
+                            </label>
+                            <div
+                                className={`auth-input-wrap${errors.currentPassword ? " is-invalid" : ""
+                                    }`}
+                            >
+                                <Lock size={17} className="auth-input-icon" />
+                                <input
+                                    className="auth-input"
+                                    id="currentPassword"
+                                    type={showCurrent ? "text" : "password"}
+                                    placeholder="Enter current password"
+                                    autoComplete="current-password"
+                                    disabled={loading}
+                                    {...register("currentPassword")}
+                                />
                                 <button
-                                    className="btn btn-outline-primary px-4 py-2 d-flex align-items-center gap-2"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editProfileModal"
+                                    type="button"
+                                    className="auth-toggle-visibility"
+                                    onClick={() => setShowCurrent((v) => !v)}
+                                    aria-label={showCurrent ? "Hide password" : "Show password"}
                                 >
-                                    <Edit size={16} />
-                                    EDIT PROFILE
+                                    {showCurrent ? <EyeOff size={17} /> : <Eye size={17} />}
                                 </button>
                             </div>
+                            {errors.currentPassword && (
+                                <span className="auth-error-text">
+                                    {errors.currentPassword.message}
+                                </span>
+                            )}
                         </div>
-                        <div className="mb-3">
-                            <label className="small mb-1" htmlFor="newPassword">Username</label>
-                            <input
-                                className={`form-control`}
-                                id="username"
-                                type="text"
-                                value={user.username}
-                                disabled={true}
-                                style={{
-                                    cursor: "not-allowed"
-                                }}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label className="small mb-1" htmlFor="newPassword">Email</label>
-                            <input
-                                className={`form-control`}
-                                id="email"
-                                type="email"
-                                value={user.email}
-                                disabled={true}
-                                style={{
-                                    cursor: "not-allowed"
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
 
-                <div className="card mt-4 mb-5" style={cardStyle}>
-                    <div className="card-header">
-                        <h5 className="font-weight-bold">Change Password</h5>
-                    </div>
-                    <div className="card-body">
-                        {passwordMessage && (
+                        <div className="auth-field">
+                            <label className="auth-label" htmlFor="newPassword">
+                                New password
+                            </label>
                             <div
-                                className={`alert ${passwordMessage.type === 'success' ? 'alert-success' : 'alert-danger'} mb-4`}
-                                role="alert"
+                                className={`auth-input-wrap${errors.newPassword ? " is-invalid" : ""}`}
                             >
-                                {passwordMessage.text}
-                            </div>
-                        )}
-
-                        <form onSubmit={handleSubmit(onPasswordSubmit)}>
-                            <div className="mb-3">
-                                <label className="small mb-1" htmlFor="currentPassword">Current Password</label>
+                                <KeyRound size={17} className="auth-input-icon" />
                                 <input
-                                    className={`form-control ${errors.currentPassword ? 'is-invalid' : ''}`}
-                                    id="currentPassword"
-                                    type="password"
-                                    placeholder="Enter current password"
-                                    {...register("currentPassword")}
-                                    disabled={loading}
-                                />
-                                {errors.currentPassword && (
-                                    <div className="small text-danger">{errors.currentPassword.message}</div>
-                                )}
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="small mb-1" htmlFor="newPassword">New Password</label>
-                                <input
-                                    className={`form-control ${errors.newPassword ? 'is-invalid' : ''}`}
+                                    className="auth-input"
                                     id="newPassword"
-                                    type="password"
+                                    type={showNew ? "text" : "password"}
                                     placeholder="Enter new password"
+                                    autoComplete="new-password"
+                                    disabled={loading}
                                     {...register("newPassword")}
-                                    disabled={loading}
                                 />
-                                {errors.newPassword && (
-                                    <div className="small text-danger">{errors.newPassword.message}</div>
-                                )}
+                                <button
+                                    type="button"
+                                    className="auth-toggle-visibility"
+                                    onClick={() => setShowNew((v) => !v)}
+                                    aria-label={showNew ? "Hide password" : "Show password"}
+                                >
+                                    {showNew ? <EyeOff size={17} /> : <Eye size={17} />}
+                                </button>
                             </div>
+                            {errors.newPassword && (
+                                <span className="auth-error-text">{errors.newPassword.message}</span>
+                            )}
+                        </div>
 
-                            <div className="mb-3">
-                                <label className="small mb-1" htmlFor="confirmPassword">Confirm Password</label>
-                                <input
-                                    className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
-                                    id="confirmPassword"
-                                    type="password"
-                                    placeholder="Confirm new password"
-                                    {...register("confirmPassword")}
-                                    disabled={loading}
-                                />
-                                {errors.confirmPassword && (
-                                    <div className="small text-danger">{errors.confirmPassword.message}</div>
-                                )}
-                            </div>
-
-                            <button
-                                className="btn btn-outline-primary"
-                                type="submit"
-                                disabled={!isValid || loading}
+                        <div className="auth-field">
+                            <label className="auth-label" htmlFor="confirmPassword">
+                                Confirm new password
+                            </label>
+                            <div
+                                className={`auth-input-wrap${errors.confirmPassword ? " is-invalid" : ""
+                                    }`}
                             >
-                                {loading ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        Changing Password...
-                                    </>
-                                ) : (
-                                    "Change Password"
-                                )}
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                                <KeyRound size={17} className="auth-input-icon" />
+                                <input
+                                    className="auth-input"
+                                    id="confirmPassword"
+                                    type={showConfirm ? "text" : "password"}
+                                    placeholder="Repeat new password"
+                                    autoComplete="new-password"
+                                    disabled={loading}
+                                    {...register("confirmPassword")}
+                                />
+                                <button
+                                    type="button"
+                                    className="auth-toggle-visibility"
+                                    onClick={() => setShowConfirm((v) => !v)}
+                                    aria-label={showConfirm ? "Hide password" : "Show password"}
+                                >
+                                    {showConfirm ? <EyeOff size={17} /> : <Eye size={17} />}
+                                </button>
+                            </div>
+                            {errors.confirmPassword && (
+                                <span className="auth-error-text">
+                                    {errors.confirmPassword.message}
+                                </span>
+                            )}
+                        </div>
+
+                        <p className="settings-requirements">
+                            At least 6 characters, including one letter.
+                        </p>
+
+                        <button className="auth-submit" type="submit" disabled={!isValid || loading}>
+                            {loading ? (
+                                <>
+                                    <span className="auth-spinner" aria-hidden="true" />
+                                    Updating...
+                                </>
+                            ) : (
+                                "Update password"
+                            )}
+                        </button>
+                    </form>
+                </section>
             </div>
-        </>
+        </div>
     );
 }
-
-const cardStyle = {
-    padding: "24px",
-    marginTop: "24px",
-    background: "rgba(0, 0, 0, 0.4)",
-    backdropFilter: "blur(8px)",
-    borderRadius: "8px",
-    color: "#f5f5f5",
-};
