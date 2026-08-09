@@ -7,6 +7,7 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
+import Tooltip from "@mui/material/Tooltip";
 import {
   ChevronDown,
   Clapperboard,
@@ -24,6 +25,7 @@ import {
 import { Endpoints } from "../../config/Config";
 import { getCurrentUser, logout } from "../../services/UserService";
 import { openModal } from "./modals/modal-utils";
+import { DISCORD_INVITE_URL, DiscordMark } from "./DiscordIcon";
 import "./top-nav.css";
 
 const Search = styled("div")(({ theme }) => ({
@@ -249,6 +251,18 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
 
             <Box sx={{ width: "1px", height: 24, bgcolor: "rgba(255,255,255,0.12)", mx: 1 }} />
 
+            <Tooltip title="Join our Discord">
+              <a
+                className="mp-nav-discord"
+                href={DISCORD_INVITE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Join our Discord"
+              >
+                <DiscordMark size={19} />
+              </a>
+            </Tooltip>
+
             {user?.username ? (
               <div className="dropdown">
                 <button
@@ -414,6 +428,17 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
               <Settings size={18} />
               Settings
             </button>
+
+            <a
+              className="mp-drawer-link mp-drawer-discord"
+              href={DISCORD_INVITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => toggleDrawer(false)}
+            >
+              <DiscordMark size={18} />
+              Join our Discord
+            </a>
           </nav>
 
           {user?.username && (

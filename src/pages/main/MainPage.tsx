@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MovieCarousel from "./MovieCarousel/MovieCarousel";
+import { DiscordBanner } from "./DiscordBanner";
 
 const featuredFallbackImage =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019";
@@ -328,6 +329,8 @@ const MainPage: React.FC = () => {
             description="Binge-ready shows and ongoing favorites"
             mediaList={seriesTitles.slice(0, 12)}
           />
+
+          <DiscordBanner />
 
           <section className="home-section home-section-grid">
             <div className="home-section-header">
