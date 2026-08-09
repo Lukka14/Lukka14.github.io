@@ -23,7 +23,6 @@
     "jquery": "^3.7.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.501.0",
-    "mdb-react-ui-kit": "^9.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.7",
     "react-dom": "^18.2.0",

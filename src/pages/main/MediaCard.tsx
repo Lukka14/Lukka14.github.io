@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Media } from "../../models/Movie";
-import { HeartIcon, BookmarkIcon } from "lucide-react";
+import { HeartIcon, BookmarkIcon, Play, Star } from "lucide-react";
 import { toggleFavorite, toggleWatchlist } from "../../services/MediaCardService";
 import "./MediaCard.css";
 import { Tooltip } from "@mui/material";
 import { CustomToast } from "../shared/Toast";
+
+const FALLBACK_POSTER =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019";
 
 interface MediaCardProps {
   mediaInfo: Media;
@@ -17,15 +20,12 @@ interface MediaCardProps {
 
 export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, isWatch, stateHandler, isLoggedIn }) => {
   const { title, posterUrl, rating, releaseYear, originalLanguage } = mediaInfo;
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [isFavorite, setIsFavorite] = useState(isFav);
   const [isInWatchList, setIsInWatchList] = useState(isWatch);
-  const [isHeartHovered, setIsHeartHovered] = useState(false);
-  const [isBookmarkHovered, setIsBookmarkHovered] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
-  const [imageAspectRatio, setImageAspectRatio] = useState(0);
+  const [isOddRatio, setIsOddRatio] = useState(false);
 
   useEffect(() => {
     setIsFavorite(isFav);
@@ -33,21 +33,12 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
   }, [isFav, isWatch]);
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
     setImageLoaded(false);
+    setIsOddRatio(false);
 
     if (!posterUrl) {
-      setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019");
+      setImageUrl(FALLBACK_POSTER);
+      setIsOddRatio(true);
       setImageLoaded(true);
       return;
     }
@@ -55,30 +46,21 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     const img = new Image();
     img.onload = () => {
       setImageUrl(posterUrl);
-      setImageAspectRatio(img.width / img.height);
+      // Most posters are a clean 2:3. Anything else gets letterboxed over a
+      // blurred copy of itself rather than cropped, so nothing important
+      // (titles, faces) is cut off.
+      setIsOddRatio(Math.abs(img.width / img.height - 2 / 3) > 0.02);
       setImageLoaded(true);
     };
     img.onerror = () => {
-      setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019");
+      setImageUrl(FALLBACK_POSTER);
+      setIsOddRatio(true);
       setImageLoaded(true);
     };
     img.src = posterUrl;
   }, [posterUrl]);
 
-  const getDisplayGenres = () => {
-    if (!mediaInfo?.genreList || mediaInfo.genreList.length === 0) {
-      return null;
-    }
-
-    if (windowWidth <= 576) {
-      const limitedGenres = mediaInfo.genreList.slice(0, 2);
-      return <div className="text-center genre-list">{limitedGenres.join(" | ")}</div>
-    } else {
-      return <div className="text-center genre-list">{mediaInfo.genreList.join(" | ")}</div>
-    }
-  };
-
-  const handleFavoriteClick = async (e: any) => {
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -87,7 +69,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
         setIsFavorite(!isFavorite);
       }
 
-      let res = await toggleFavorite(mediaInfo.id, mediaInfo.mediaType, setIsFavorite);
+      const res = await toggleFavorite(mediaInfo.id, mediaInfo.mediaType, setIsFavorite);
 
       if (stateHandler && isLoggedIn) {
         stateHandler(mediaInfo.id, "favourites", res ? 'add' : 'remove');
@@ -98,7 +80,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     }
   };
 
-  const handleWatchlistClick = async (e: any) => {
+  const handleWatchlistClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -107,7 +89,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
         setIsInWatchList(!isInWatchList);
       }
 
-      let res = await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType, setIsInWatchList);
+      const res = await toggleWatchlist(mediaInfo.id, mediaInfo.mediaType, setIsInWatchList);
 
       if (stateHandler && isLoggedIn) {
         stateHandler(mediaInfo.id, "watchlist", res ? 'add' : 'remove');
@@ -118,202 +100,87 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     }
   };
 
+  const genres = mediaInfo?.genreList?.length ? mediaInfo.genreList.slice(0, 2).join(" · ") : null;
+  const ratingLabel = rating ? rating.toFixed(1) : null;
+
+  if (!imageLoaded) {
+    return (
+      <div className="media-card media-card-skeleton" aria-hidden="true">
+        <div className="media-card-poster-wrap" />
+      </div>
+    );
+  }
+
   return (
     <>
       <CustomToast open={toastOpen} setOpen={setToastOpen} />
-      <a href={href} className="text-decoration-none media-card-link">
-        <div className={`card border-0 shadow-lg position-relative media-card ${!imageLoaded ? 'skeleton-card' : ''}`}
-          style={{
-            background: "black"
-          }}>
-          {!imageLoaded ? (
-            <>
-              <div className="skeleton-image"></div>
-              <div className="card-img-overlay d-flex flex-column justify-content-center align-items-center">
-                <div className="skeleton-title"></div>
-                <div className="skeleton-rating"></div>
-                <div className="skeleton-year"></div>
-                <div className="skeleton-genre"></div>
-                <div className="skeleton-language"></div>
-              </div>
-              <div className="card-footer d-flex justify-content-between align-items-center">
-                <div className="skeleton-badge"></div>
-                <div className="skeleton-badge"></div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="image-container fade-in" style={{ position: "relative", overflow: "hidden" }}>
-                <div
-                  style={{
-                    background: `url(${mediaInfo.posterUrl})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    filter: "blur(8px)",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    zIndex: 0,
-                  }}
-                ></div>
-
-                <img
-                  src={imageUrl}
-                  alt={title}
-                  className="media-poster"
-                  style={{
-                    position: "relative",
-                    zIndex: 1,
-                    ...(Math.abs(imageAspectRatio - 2 / 3) > 0.003
-                      ? {
-                        maskImage:
-                          "linear-gradient(to bottom, transparent 0%, white 6%, white 94%, transparent 100%)",
-                        WebkitMaskImage:
-                          "linear-gradient(to bottom, transparent 0%, white 6%, white 94%, transparent 100%)",
-                      }
-                      : {}),
-                  }}
-                />
-
-
-                <div style={{
-                  position: "absolute",
-                  top: "10px",
-                  left: "10px",
-                  zIndex: 2,
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  borderRadius: "50%",
-                  padding: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Tooltip title={isFavorite ? "Remove from favourites" : "Add to favourites"}>
-                    <HeartIcon
-                      size={26}
-                      style={{
-                        cursor: "pointer",
-                        fill: isFavorite ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
-                        stroke: "#FFD580",
-                        transition: "all 0.2s ease-in-out"
-                      }}
-                      onClick={handleFavoriteClick}
-                      onMouseEnter={() => setIsHeartHovered(true)}
-                      onMouseLeave={() => setIsHeartHovered(false)}
-                    />
-                  </Tooltip>
-                </div>
-
-                <div style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  zIndex: 2,
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  borderRadius: "50%",
-                  padding: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Tooltip title={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}>
-                    <BookmarkIcon
-                      size={26}
-                      style={{
-                        cursor: "pointer",
-                        fill: isInWatchList ? isBookmarkHovered ? "none" : "#00BFFF" : isBookmarkHovered ? "#00BFFF" : "none",
-                        stroke: "#87CEFA",
-                        transition: "all 0.2s ease-in-out"
-                      }}
-                      onClick={handleWatchlistClick}
-                      onMouseEnter={() => setIsBookmarkHovered(true)}
-                      onMouseLeave={() => setIsBookmarkHovered(false)}
-                    />
-                  </Tooltip>
-                </div>
-              </div>
-
-              <div className={`card-img-overlay d-flex flex-column justify-content-center align-items-center overlay-text`}>
-                <div style={{
-                  position: "absolute",
-                  top: "10px",
-                  left: "10px",
-                  zIndex: 2,
-                  borderRadius: "50%",
-                  padding: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Tooltip title={isFavorite ? "Remove from favourites" : "Add to favourites"}>
-                    <HeartIcon
-                      size={26}
-                      style={{
-                        cursor: "pointer",
-                        fill: isFavorite ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
-                        stroke: "#FFD580",
-                        transition: "all 0.2s ease-in-out"
-                      }}
-                      onClick={handleFavoriteClick}
-                      onMouseEnter={() => setIsHeartHovered(true)}
-                      onMouseLeave={() => setIsHeartHovered(false)}
-                    />
-                  </Tooltip>
-                </div>
-
-                <div style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  zIndex: 2,
-                  borderRadius: "50%",
-                  padding: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Tooltip title={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}>
-                    <BookmarkIcon
-                      size={26}
-                      style={{
-                        cursor: "pointer",
-                        fill: isInWatchList ? isBookmarkHovered ? "none" : "#00BFFF" : isBookmarkHovered ? "#00BFFF" : "none",
-                        stroke: "#87CEFA",
-                        transition: "all 0.2s ease-in-out"
-                      }}
-                      onClick={handleWatchlistClick}
-                      onMouseEnter={() => setIsBookmarkHovered(true)}
-                      onMouseLeave={() => setIsBookmarkHovered(false)}
-                    />
-                  </Tooltip>
-                </div>
-
-                <h5 className="card-title text-center text-white">
-                  {title || "Untitled"}
-                </h5>
-                <p className="card-rating text-white">
-                  ⭐ {rating ? rating.toFixed(1) : "N/A"}
-                </p>
-                {getDisplayGenres()}
-                <div className="text-white-50 text-center">{originalLanguage?.toUpperCase() || "N/A"}</div>
-              </div>
-
-              <div className="card-footer text-white d-flex justify-content-between align-items-center" style={{
-                zIndex: 1
-              }}>
-                <div className="rating-badge">
-                  <span className="imdb-star">⭐</span> {rating ? rating.toFixed(1) : "N/A"}
-                </div>
-                <div className="year-badge">
-                  {releaseYear ? releaseYear : "N/A"}
-                </div>
-              </div>
-            </>
+      <a href={href} className="media-card" aria-label={title || "Untitled"}>
+        <div className="media-card-poster-wrap">
+          {isOddRatio && (
+            <div
+              className="media-card-backdrop"
+              style={{ backgroundImage: `url(${imageUrl})` }}
+              aria-hidden="true"
+            />
           )}
+
+          <img
+            src={imageUrl}
+            alt=""
+            loading="lazy"
+            className={`media-card-poster ${isOddRatio ? "is-contained" : ""}`}
+          />
+
+          <div className="media-card-scrim" aria-hidden="true" />
+
+          <div className="media-card-actions">
+            <Tooltip title={isFavorite ? "Remove from favourites" : "Add to favourites"}>
+              <button
+                type="button"
+                className={`media-card-action ${isFavorite ? "is-active is-fav" : ""}`}
+                onClick={handleFavoriteClick}
+                aria-label={isFavorite ? "Remove from favourites" : "Add to favourites"}
+                aria-pressed={isFavorite}
+              >
+                <HeartIcon size={17} />
+              </button>
+            </Tooltip>
+
+            <Tooltip title={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}>
+              <button
+                type="button"
+                className={`media-card-action ${isInWatchList ? "is-active is-watch" : ""}`}
+                onClick={handleWatchlistClick}
+                aria-label={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}
+                aria-pressed={isInWatchList}
+              >
+                <BookmarkIcon size={17} />
+              </button>
+            </Tooltip>
+          </div>
+
+          <span className="media-card-play" aria-hidden="true">
+            <Play size={20} fill="currentColor" />
+          </span>
+
+          <div className="media-card-info">
+            <h3 className="media-card-title">{title || "Untitled"}</h3>
+
+            <div className="media-card-meta">
+              {ratingLabel && (
+                <span className="media-card-rating">
+                  <Star size={12} fill="currentColor" strokeWidth={0} />
+                  {ratingLabel}
+                </span>
+              )}
+              {releaseYear && <span>{releaseYear}</span>}
+              {originalLanguage && <span className="media-card-lang">{originalLanguage.toUpperCase()}</span>}
+            </div>
+
+            {genres && <div className="media-card-genres">{genres}</div>}
+          </div>
         </div>
-      </a >
+      </a>
     </>
   );
 };

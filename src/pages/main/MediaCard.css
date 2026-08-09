@@ -1,179 +1,321 @@
-.media-card-link {
-    font-family: "Roboto";
-}
-
 .media-card {
-    cursor: pointer;
-    overflow: hidden;
+  position: relative;
+  display: block;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  background: #0b1020;
+  box-shadow: 0 10px 26px rgba(3, 6, 16, 0.5);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+  isolation: isolate;
+}
+
+.media-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  transition: border-color 0.28s ease;
+  z-index: 4;
+}
+
+.media-card:hover,
+.media-card:focus-visible {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(3, 6, 16, 0.65);
+}
+
+.media-card:hover::after,
+.media-card:focus-visible::after {
+  border-color: rgba(129, 140, 248, 0.55);
+}
+
+.media-card:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.9);
+  outline-offset: 3px;
+}
+
+/* The poster wrapper owns the card's height. Everything else is absolutely
+   positioned inside it, so the card can never end up taller than its art. */
+.media-card-poster-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: #0b1020;
+}
+
+.media-card-backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(18px) brightness(0.55);
+  transform: scale(1.15);
+}
+
+.media-card-poster {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease, filter 0.28s ease;
+}
+
+.media-card-poster.is-contained {
+  object-fit: contain;
+}
+
+.media-card:hover .media-card-poster {
+  transform: scale(1.06);
+  filter: brightness(0.72);
+}
+
+.media-card-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(4, 7, 18, 0.95) 0%,
+    rgba(4, 7, 18, 0.72) 22%,
+    rgba(4, 7, 18, 0) 52%
+  );
+  transition: opacity 0.28s ease;
+}
+
+/* ------------------------------------------------------------- actions */
+
+.media-card-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.media-card:hover .media-card-actions,
+.media-card:focus-within .media-card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.media-card-action {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  color: rgba(238, 242, 255, 0.92);
+  background: rgba(9, 13, 28, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.media-card-action:hover {
+  transform: scale(1.1);
+  background: rgba(24, 30, 56, 0.92);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.media-card-action.is-fav.is-active {
+  color: #fb7185;
+  border-color: rgba(251, 113, 133, 0.6);
+}
+
+.media-card-action.is-watch.is-active {
+  color: #60a5fa;
+  border-color: rgba(96, 165, 250, 0.6);
+}
+
+.media-card-action.is-active svg {
+  fill: currentColor;
+}
+
+.media-card-action:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.9);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- play */
+
+.media-card-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  box-shadow: 0 10px 26px rgba(99, 102, 241, 0.45);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.7);
+  transition: opacity 0.24s ease, transform 0.24s ease;
+  pointer-events: none;
+}
+
+.media-card:hover .media-card-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ---------------------------------------------------------------- info */
+
+.media-card-info {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  padding: 10px 11px 11px;
+  pointer-events: none;
+}
+
+.media-card-title {
+  margin: 0 0 4px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.75);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.media-card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: rgba(225, 232, 255, 0.72);
+}
+
+.media-card-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #fbbf24;
+}
+
+.media-card-lang {
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  color: rgba(225, 232, 255, 0.82);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Genres are the least important line, so they only appear on hover where
+   there is room for them. */
+.media-card-genres {
+  margin-top: 5px;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: rgba(225, 232, 255, 0.62);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.28s ease, opacity 0.28s ease, margin-top 0.28s ease;
+}
+
+.media-card:hover .media-card-genres {
+  max-height: 2.8rem;
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------ skeleton */
+
+.media-card-skeleton {
+  box-shadow: none;
+}
+
+.media-card-skeleton .media-card-poster-wrap {
+  background: linear-gradient(110deg, #141a2e 8%, #1e2540 18%, #141a2e 33%);
+  background-size: 200% 100%;
+  animation: media-card-shine 1.4s infinite linear;
+}
+
+@keyframes media-card-shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+/* ---------------------------------------------------------- responsive */
+
+@media (max-width: 575.98px) {
+  .media-card {
     border-radius: 12px;
-    transform: translateY(0) scale(1);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .media-card-title {
+    font-size: 0.8rem;
+  }
+
+  .media-card-meta {
+    font-size: 0.68rem;
+  }
+
+  .media-card-play {
+    width: 38px;
+    height: 38px;
+  }
 }
 
-.image-container {
-    position: relative;
-    width: 100%;
-    border-radius: 8px 8px 0 0;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    aspect-ratio: 2/3;
+/* Touch devices never fire hover, so surface the controls permanently
+   instead of hiding them behind an interaction that cannot happen. */
+@media (hover: none) {
+  .media-card-actions {
+    opacity: 1;
+    transform: none;
+  }
+
+  .media-card-genres {
+    display: none;
+  }
 }
 
-.media-poster {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-}
+@media (prefers-reduced-motion: reduce) {
+  .media-card,
+  .media-card-poster,
+  .media-card-play,
+  .media-card-actions,
+  .media-card-genres,
+  .media-card-action {
+    transition: none;
+  }
 
-.overlay-text {
-    opacity: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
-    transition: opacity 0.3s ease;
-}
+  .media-card:hover {
+    transform: none;
+  }
 
-.card-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
-    margin-bottom: 10px;
-    width: 162px;
-}
+  .media-card:hover .media-card-poster {
+    transform: none;
+  }
 
-.genre-list {
-    width: 162px !important;
-    opacity: 85% !important;
-    color: white !important;
-}
-
-.card-rating {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-
-.card-year {
-    font-size: 0.95rem;
-    margin-bottom: 10px;
-}
-
-.card-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 10px !important;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border-top: none !important;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-}
-
-.rating-badge {
-    background: rgba(0, 0, 0, 0.6) !important;
-    color: white;
-    font-size: 0.95rem;
-    font-weight: bold;
-    padding: 3px 11px 2px 6px;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-}
-
-.imdb-star {
-    color: #000;
-    margin-right: 3px;
-}
-
-.year-badge {
-    background: rgba(0, 0, 0, 0.6) !important;
-    color: #fff;
-    font-size: 0.95rem;
-    font-weight: bold;
-    opacity: 0.9;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    background-color: rgba(255, 255, 255, 0.15);
-    padding: 3px 8px 3px 8px;
-    border-radius: 4px;
-}
-
-.skeleton-card {
-    background-color: #242424;
-}
-
-.skeleton-image {
-    aspect-ratio: 2/3;
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(110deg, #333 8%, #444 18%, #333 33%);
-    background-size: 200% 100%;
-    animation: shine 1.5s infinite linear;
-    border-radius: 8px 8px 0 0;
-}
-
-.skeleton-title {
-    height: 24px;
-    width: 80%;
-    margin-bottom: 10px;
-    background: linear-gradient(110deg, #333 8%, #444 18%, #333 33%);
-    background-size: 200% 100%;
-    animation: shine 1.5s infinite linear;
-    border-radius: 4px;
-}
-
-.skeleton-rating,
-.skeleton-year,
-.skeleton-genre,
-.skeleton-language {
-    height: 16px;
-    width: 60%;
-    margin-bottom: 8px;
-    background: linear-gradient(110deg, #333 8%, #444 18%, #333 33%);
-    background-size: 200% 100%;
-    animation: shine 1.5s infinite linear;
-    border-radius: 4px;
-}
-
-.skeleton-genre {
-    width: 70%;
-}
-
-.skeleton-language {
-    width: 40%;
-}
-
-.skeleton-badge {
-    height: 18px;
-    width: 50px;
-    background: linear-gradient(110deg, #333 8%, #444 18%, #333 33%);
-    background-size: 200% 100%;
-    animation: shine 1.5s infinite linear;
-    border-radius: 4px;
-}
-
-@keyframes shine {
-    to {
-        background-position-x: -200%;
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+  .media-card-skeleton .media-card-poster-wrap {
+    animation: none;
+  }
 }
