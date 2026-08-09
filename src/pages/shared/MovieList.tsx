@@ -52,7 +52,7 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
 
   return (
     <div className="container py-4">
-      <div className="row g-4 row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-5 justify-content-center">
+      <div className="row g-4 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 justify-content-center">
         {mediaList.map((media: Media) => {
           let isFav = fav.some((item: any) => item.tmdbId == media?.id);
           let isWatch = watch.some((item: any) => item.tmdbId == media?.id);

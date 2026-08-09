@@ -1,6 +1,6 @@
 import { Media } from "../../models/Movie";
 
-const maxHistorySize = 5;
+const maxHistorySize = 10;
 
 export const saveRecentlyWatched = (newMedia: Media): void => {
 

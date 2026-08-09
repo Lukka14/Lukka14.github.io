@@ -48,3 +48,11 @@ export enum RoutePaths {
   WATCH = '/watch',
   LOGIN = '/login',
 }
+
+/**
+ * Registration is paused until the backend has a transactional email provider wired up
+ * for verification emails. Flip this back to true once /auth/register can send them.
+ */
+export const FeatureFlags = {
+  REGISTRATION_ENABLED: false,
+};

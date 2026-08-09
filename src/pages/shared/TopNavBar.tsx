@@ -149,7 +149,12 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="static"
-        sx={{ backgroundColor: "rgba(255, 255, 255, 0.0)" }}
+        sx={{
+          backgroundColor: "rgba(4, 8, 20, 0.58)",
+          backdropFilter: "blur(16px)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          boxShadow: "0 12px 30px rgba(0, 0, 0, 0.24)",
+        }}
       >
         <Toolbar>
           {/* Logo */}
@@ -258,12 +263,15 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
             >
               Search
             </Button>
-            <Button sx={{ color: "white" }} onClick={() => navigate("/movies")}>
+            <Button
+              sx={{ color: "white" }}
+              onClick={() => navigate("/multiSearch?type=movie")}
+            >
               Movies
             </Button>
             <Button
               sx={{ color: "white" }}
-              onClick={() => navigate("/tv-shows")}
+              onClick={() => navigate("/multiSearch?type=tv")}
             >
               TV Shows
             </Button>
@@ -400,13 +408,13 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
           </Button>
           <Button
             sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
-            onClick={() => navigate("/movies")}
+            onClick={() => navigate("/multiSearch?type=movie")}
           >
             Movies
           </Button>
           <Button
             sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
-            onClick={() => navigate("/tv-shows")}
+            onClick={() => navigate("/multiSearch?type=tv")}
           >
             TV Shows
           </Button>

@@ -1,246 +1,194 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+GO&display=swap');
-
-.slide.selected {
-    min-width: 80%;
+.movie-carousel-container {
+  width: min(1420px, 100%);
+  margin: 1.25rem auto 0;
+  color: #f5f7ff;
 }
 
-.slide {
-    cursor: pointer;
+.movie-carousel-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.movie-content {
-    margin: 20px !important;
-    font-family: 'Fira Go', sans-serif;
+.movie-carousel-kicker {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  color: #d5ddff;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
 }
 
-.image-overlay {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 20%, rgba(0, 0, 0, 0.1) 40%, transparent 60%);
-    opacity: 0.9;
+.movie-carousel-title {
+  margin: 0.45rem 0 0;
+  font-size: clamp(1.4rem, 2vw, 2rem);
 }
 
-
-.movie-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 1.5rem;
-    width: 100%;
+.movie-carousel-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
 }
 
-.movie-title {
-    font-size: 1.35rem;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 0.75rem;
-    text-align: left;
+.movie-carousel-count {
+  color: rgba(225, 232, 255, 0.78);
+  font-size: 0.95rem;
 }
 
-
-
-.genre-container {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+.movie-carousel-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(4, 8, 20, 0.78);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  line-height: 1;
 }
 
-.movie-description {
-    color: white;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    max-width: 48rem;
-    text-align: left;
+.movie-carousel-button:disabled {
+  opacity: 0.4;
 }
 
-.movie-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem;
-
+.movie-carousel-track-container {
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 12px 0;
+  margin: -12px 0;
 }
 
-/* .m-container {
-    opacity: 50%;
-    transition: all .2s ease-in-out;
-} */
-
-.slide:hover .m-container {
-    opacity: 100%;
+.movie-carousel-track {
+  display: flex;
+  transition: transform 0.45s ease;
+  cursor: grab;
+  user-select: none;
 }
 
-.movie-rating {
-    color: yellow;
-    font-weight: bold;
-    font-size: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.movie-carousel-track.dragging {
+  cursor: grabbing;
 }
 
-.movie-rating span:first-child {
-    font-size: 23px;
-    font-weight: bold;
-    padding: 0;
+.movie-carousel-card-wrap {
+  flex: 0 0 auto;
+  padding: 0 8px;
+  box-sizing: border-box;
 }
 
-.rating-label {
-    color: #f5f5f5;
-    font-size: 0.875rem;
-    margin-left: 0.25rem;
-    margin-top: -6px;
+.movie-carousel-card {
+  position: relative;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(8, 13, 33, 0.86);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.genre-tag {
-    background: rgba(0, 0, 0, 0.6) !important;
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
-    font-size: 1rem;
+.movie-carousel-card:hover {
+  transform: scale(1.05) translateY(-6px);
+  box-shadow: 0 32px 60px rgba(0, 0, 0, 0.5);
+  z-index: 2;
 }
 
-@media (max-width: 768px) {
-    .movie-title {
-        font-size: 1.75rem;
-    }
-
-    .movie-description {
-        font-size: 1rem;
-    }
+.movie-carousel-card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
 }
 
-@media screen and (max-width: 700px) {
-    .control-dots {
-        display: none !important;
-    }
-
-    .movie-content {
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 108% !important;
-        justify-content: space-between;
-        padding: 2rem 0rem 0rem 0rem !important;
-        gap: 85px;
-        padding-right: 58px !important;
-    }
-
-    .movie-title {
-        font-size: 1.2rem !important;
-        margin-bottom: -5px !important;
-    }
-
-    .movie-description {
-        font-size: 0.8rem !important;
-    }
-
-    .movie-rating-mobile span {
-        font-size: 1rem !important;
-    }
-
-
-    .movie-content-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        margin-right: 16px !important;
-    }
-
-    .movie-rating-mobile {
-        transform: scale(0.91);
-        background: rgba(0, 0, 0, 0.6) !important;
-        padding: 3px 11px 2px 4.5px;
-        border-radius: 0.25rem;
-        color: yellow;
-        font-weight: bold;
-        font-size: 1rem;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        min-width: fit-content;
-    }
-
-
-    .movie-rating-mobile span:first-child {
-        font-size: 20px;
-        font-weight: bold;
-        padding: 0;
-    }
-
-    .rating-label-mobile {
-        color: #9ca3af;
-        font-size: 0.9rem;
-    }
-
-    .genres-mobile {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        justify-content: flex-end;
-    }
-
-    .genre-tag-mobile {
-        background: rgba(0, 0, 0, 0.6) !important;
-        color: white;
-        padding: 0.2rem 0.6rem;
-        border-radius: 0.25rem;
-        font-size: 0.9rem;
-    }
-
-    .movie-content-bottom {
-        text-align: center;
-    }
-
-    .movie-title {
-        font-size: 1.5rem;
-        margin-bottom: 1.1rem;
-        text-align: center;
-    }
-
-    .movie-description {
-        margin-bottom: 0;
-        text-align: center;
-        font-size: 0.9rem;
-    }
-
-    .movie-meta {
-        display: none;
-    }
-
-    .rating-mobile-label {
-        margin: 0px !important;
-        font-size: 1rem !important;
-    }
-
-    .title-container {
-        gap: 0.3rem;
-        align-items: center !important;
-    }
-
-    .upcoming-badge {
-        font-size: 0.65rem;
-        padding: 3px 8px;
-        align-self: center !important;
-    }
+.movie-carousel-overlay {
+  position: absolute;
+  inset: -1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.8rem;
+  background: linear-gradient(180deg, rgba(4, 8, 20, 0.08) 0%, rgba(4, 8, 20, 0.8) 100%);
 }
 
-.title-container {
-    display: flex;
-    flex-direction: column;
+.movie-carousel-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: rgba(4, 8, 20, 0.25);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.movie-carousel-card:hover::after {
+  opacity: 1;
+}
+
+.movie-carousel-tag {
+  width: fit-content;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(4, 8, 20, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.movie-carousel-copy {
+  padding-top: 0.75rem;
+}
+
+.movie-carousel-copy h3 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.movie-carousel-copy p {
+  margin: 0.3rem 0 0;
+  color: rgba(225, 232, 255, 0.78);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 1199px) {
+  .movie-carousel-card img {
+    /* aspect-ratio handles sizing */
+  }
+}
+
+@media (max-width: 991px) {
+  .movie-carousel-header {
     align-items: flex-start;
-    gap: 0.5rem;
+    flex-direction: column;
+  }
 }
 
-.upcoming-badge {
-    background: linear-gradient(135deg, rgb(13, 26, 63), rgb(11, 22, 51));
-    color: #fff;
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    white-space: nowrap;
-    align-self: flex-start;
+@media (max-width: 767px) {
+  .movie-carousel-card img {
+    /* aspect-ratio handles sizing */
+  }
+}
+
+@media (max-width: 575px) {
+  .movie-carousel-card-wrap {
+    padding: 0 6px;
+  }
+
+  .movie-carousel-card img {
+    /* aspect-ratio handles sizing */
+  }
 }

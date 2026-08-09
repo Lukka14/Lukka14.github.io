@@ -45,8 +45,8 @@ export function Footer() {
                         <div className="col d-flex justify-content-center">
                             <nav className="d-flex flex-wrap justify-content-center">
                                 <a href="/#/multiSearch" className="mx-2">Search</a>
-                                <a href="/#/movies" className="mx-2">Movies</a>
-                                <a href="/#/tv-shows" className="mx-2">TV Shows</a>
+                                <a href="/#/multiSearch?type=movie" className="mx-2">Movies</a>
+                                <a href="/#/multiSearch?type=tv" className="mx-2">TV Shows</a>
                                 <a href="/#/help" className="mx-2">Help</a>
                             </nav>
                         </div>

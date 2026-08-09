@@ -1,158 +1,184 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Media, MediaType } from "../../../models/Movie";
 import { useNavigate } from "react-router-dom";
-
-import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Cookies from "js-cookie";
-import './MovieCarousel.css';
+import "./MovieCarousel.css";
 
 interface MovieCarouselProps {
+  title: string;
+  description: string;
   mediaList: Media[];
 }
 
-const MovieCarousel: React.FC<MovieCarouselProps> = ({ mediaList }) => {
+const fallbackImage =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019";
+
+const DRAG_THRESHOLD = 60;
+
+const MovieCarousel: React.FC<MovieCarouselProps> = ({
+  title,
+  description,
+  mediaList,
+}) => {
   const navigate = useNavigate();
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 700);
+  const [startIndex, setStartIndex] = useState(0);
+  const [cardsToShow, setCardsToShow] = useState(5);
+  const [dragOffset, setDragOffset] = useState(0);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const didDrag = useRef(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 700);
+      const width = window.innerWidth;
+      if (width < 411) setCardsToShow(1);
+      else if (width < 668) setCardsToShow(2);
+      else if (width < 992) setCardsToShow(3);
+      else if (width < 1200) setCardsToShow(4);
+      else setCardsToShow(5);
     };
 
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const getGenresToShow = (genreList: string[] | undefined) => {
-    if (!genreList) return [];
+  useEffect(() => {
+    setStartIndex(0);
+  }, [mediaList, cardsToShow]);
 
-    if (isSmallScreen) {
-      return genreList.slice(0, 2);
-    } else if (window.innerWidth <= 768) {
-      return genreList.slice(0, 2);
-    } else {
-      return genreList;
-    }
-  };
+  const buildWatchUrl = (media: Media) => {
+    let url = `/watch?id=${media.id}`;
 
-  const isUpcoming = (media: Media): boolean => {
-    if (!media.release_date) return false;
-
-    const releaseDate = new Date(media.release_date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return releaseDate > today;
-  };
-
-  const getDaysUntilRelease = (media: Media): number | null => {
-    if (!media.release_date) return null;
-
-    const releaseDate = new Date(media.release_date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (releaseDate > today) {
-      return Math.ceil((releaseDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    if (media.mediaType === MediaType.TV_SERIES) {
+      const cookieValue = Cookies.get(String(media.id));
+      url += cookieValue ? cookieValue : "&s=1&e=1";
     }
 
-    return null;
+    return url;
   };
+
+  if (!mediaList || mediaList.length === 0) return null;
+
+  const maxIndex = Math.max(
+    0,
+    (Math.ceil(mediaList.length / cardsToShow) - 1) * cardsToShow
+  );
+
+  const handleNext = () => {
+    setStartIndex((prev) => Math.min(prev + cardsToShow, maxIndex));
+  };
+
+  const handlePrev = () => {
+    setStartIndex((prev) => Math.max(prev - cardsToShow, 0));
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    isDragging.current = true;
+    didDrag.current = false;
+    startX.current = e.clientX;
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging.current) return;
+    const dx = e.clientX - startX.current;
+    if (Math.abs(dx) > 5) didDrag.current = true;
+    setDragOffset(dx);
+  };
+
+  const onPointerUp = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const dx = dragOffset;
+    setDragOffset(0);
+    if (dx < -DRAG_THRESHOLD) handleNext();
+    else if (dx > DRAG_THRESHOLD) handlePrev();
+  };
+
+  const visibleMedia = mediaList;
 
   return (
-    <div style={{ width: !isSmallScreen ? "95%" : "100%", margin: "0 auto", marginTop: '10px', fontFamily: "Roboto" }}>
-      <Carousel
-        dynamicHeight={true}
-        centerMode={true}
-        showStatus={false}
-        infiniteLoop={true}
-        autoFocus={true}
-        centerSlidePercentage={!isSmallScreen ? 80 : 90}
-        autoPlay={false}
-      >
-        {mediaList.map((media, index) => (
-          <div
-            className="slide"
-            onClick={() => {
-              let url = `/watch?id=${media.id}`;
-
-              if (media.mediaType === MediaType.TV_SERIES) {
-                if (media.mediaType === MediaType.TV_SERIES) {
-                  let cookieValue = Cookies.get(String(media?.id));
-                  if (cookieValue) {
-                    url += cookieValue;
-                  } else {
-                    url += `&s=${1}&e=${1}`;
-                  }
-                }
-              }
-
-              navigate(url)
-            }}
-            style={{ cursor: "pointer" }}
-            key={index}
+    <section className="movie-carousel-container">
+      <div className="movie-carousel-header">
+        <div>
+          <p className="movie-carousel-kicker">{title}</p>
+          <h2 className="movie-carousel-title">{description}</h2>
+        </div>
+        <div className="movie-carousel-controls">
+          <span className="movie-carousel-count">
+            {Math.floor(startIndex / cardsToShow) + 1} /{" "}
+            {Math.ceil(mediaList.length / cardsToShow)}
+          </span>
+          <button
+            type="button"
+            className="movie-carousel-button"
+            onClick={handlePrev}
+            disabled={startIndex === 0}
+            aria-label={`Previous ${title.toLowerCase()}`}
           >
-            <div className="image-overlay"></div>
-            <img alt="movie-poster" src={!isSmallScreen ? media.backDropUrl : media.posterUrl} />
-            <div className="movie-content">
-              {isSmallScreen ? (
-                <>
-                  <div className="movie-content-top">
-                    <div className="movie-rating-mobile">
-                      <span className="rating-label-mobile">⭐</span>
-                      <span className="rating-mobile-label">{media.rating?.toFixed(1) || 'N/A'}</span>
-                    </div>
+            ‹
+          </button>
+          <button
+            type="button"
+            className="movie-carousel-button"
+            onClick={handleNext}
+            disabled={startIndex >= maxIndex}
+            aria-label={`Next ${title.toLowerCase()}`}
+          >
+            ›
+          </button>
+        </div>
+      </div>
 
-                    <div className="genres-mobile">
-                      {getGenresToShow(media.genreList).map((genre, index) => (
-                        <span key={index} className="genre-tag-mobile">
-                          {genre}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="movie-content-bottom">
-                    <div className="title-container">
-                      {isUpcoming(media) && (
-                        <span className="upcoming-badge">Upcoming • {getDaysUntilRelease(media)}d</span>
-                      )}
-                      <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="m-container">
-                  <div className="title-container">
-                    {isUpcoming(media) && (
-                      <span className="upcoming-badge">Upcoming • {getDaysUntilRelease(media)}d</span>
-                    )}
-                    <h2 className="movie-title">{media.title} ({media.releaseYear ?? "N/A"})</h2>
-                  </div>
-                  <div className="movie-meta">
-                    <div className="movie-rating">
-                      <span>{media.rating?.toFixed(1) == "0.0" ? 'N/A' : media.rating?.toFixed(1)}</span>
-                      <span className="rating-label">Rating</span>
-                    </div>
-
-                    <div className="genre-container">
-                      {getGenresToShow(media.genreList).map((genre, index) => (
-                        <span key={index} className="genre-tag">
-                          {genre}
-                        </span>
-                      ))}
-                    </div>
+      <div className="movie-carousel-track-container">
+        <div
+          className={`movie-carousel-track${isDragging.current ? " dragging" : ""}`}
+          style={{
+            transform: `translateX(calc(-${startIndex * (100 / cardsToShow)}% + ${dragOffset}px))`,
+            transition: dragOffset !== 0 ? "none" : "transform 0.45s ease",
+          }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+        >
+          {visibleMedia.map((media) => (
+            <div
+              key={media.id || media.title}
+              className="movie-carousel-card-wrap"
+              style={{ width: `${100 / cardsToShow}%` }}
+            >
+              <button
+                type="button"
+                className="movie-carousel-card"
+                onClick={() => {
+                  if (didDrag.current) return;
+                  navigate(buildWatchUrl(media));
+                }}
+              >
+                <img
+                  src={media.posterUrl || media.backDropUrl || fallbackImage}
+                  alt={media.title || "Featured title"}
+                />
+                <div className="movie-carousel-overlay">
+                  <span className="movie-carousel-tag">
+                    {media.mediaType === MediaType.TV_SERIES ? "Series" : "Movie"}
+                  </span>
+                  <div className="movie-carousel-copy">
+                    <h3>{media.title || "Untitled"}</h3>
+                    <p>
+                      {media.releaseYear || "Now playing"}
+                      {media.rating ? ` • ${media.rating.toFixed(1)}` : ""}
+                    </p>
                   </div>
                 </div>
-              )}
+              </button>
             </div>
-          </div>
-        ))}
-      </Carousel>
-    </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

@@ -38,7 +38,7 @@ export const fetchTrendingMediaWithDetails = async (page: number = 1): Promise<M
   }
 };
 
-export const fetchMedia = (query: string): Promise<Media[]> => {
+export const fetchMedia = (query: string, page: number = 1): Promise<Media[]> => {
   // const URL = "http://localhost:8080/search/multi";
   const URL = Endpoints.MULTI;
 
@@ -50,6 +50,7 @@ export const fetchMedia = (query: string): Promise<Media[]> => {
     .get(URL, {
       params: {
         query: query,
+        page: page,
       },
     })
     .then(response => {
@@ -77,7 +78,7 @@ export const fetchUserByUsername = (username: string) => {
   })
 }
 
-export const fetchOnlyMovies = (query: string): Promise<Media[]> => {
+export const fetchOnlyMovies = (query: string, page: number = 1): Promise<Media[]> => {
   const URL = Endpoints.MOVIES;
 
   if (query.length === 0) {
@@ -88,6 +89,7 @@ export const fetchOnlyMovies = (query: string): Promise<Media[]> => {
     .get(URL, {
       params: {
         query: query,
+        page: page,
       },
     })
     .then(response => {
@@ -102,7 +104,7 @@ export const fetchOnlyMovies = (query: string): Promise<Media[]> => {
     });
 };
 
-export const fetchOnlyTvSeries = (query: string): Promise<Media[]> => {
+export const fetchOnlyTvSeries = (query: string, page: number = 1): Promise<Media[]> => {
   const URL = Endpoints.SERIES;
 
   if (query.length === 0) {
@@ -113,6 +115,7 @@ export const fetchOnlyTvSeries = (query: string): Promise<Media[]> => {
     .get(URL, {
       params: {
         query: query,
+        page: page,
       },
     })
     .then(response => {
@@ -263,10 +266,32 @@ export const fetchDiscoverTvSeries = (): Promise<Media[]> => {
     });
 };
 
-export const fetchTrendingMedia = (page: number = 1): Promise<Media[]> => {
+export interface TrendingPageResult {
+  media: Media[];
+  totalResults: number;
+}
+
+export const fetchTrendingMediaPage = async (page: number = 1): Promise<TrendingPageResult> => {
   const URL = `${Endpoints.TRENDING_ALL}?page=${page}`;
-  return fetchMediaFromUrl(URL);
+  try {
+    const response = await axios.get(URL);
+    const rawData = response.data.results || response.data.content || [];
+    const media: Media[] = rawData.map((item: any) => Object.assign(new Media(), item));
+    const totalResults =
+      response.data.total_results ??
+      response.data.totalResults ??
+      response.data.totalElements ??
+      response.data.page?.totalElements ??
+      media.length;
+    return { media, totalResults };
+  } catch (error) {
+    console.error("Error fetching trending media page:", error);
+    return { media: [], totalResults: 0 };
+  }
 };
+
+export const fetchTrendingMedia = (page: number = 1): Promise<Media[]> =>
+  fetchTrendingMediaPage(page).then((r) => r.media);
 
 export const fetchTopRatedMovies = (): Promise<Media[]> => {
   const URL = Endpoints.TOP_RATED_MOVIES;
