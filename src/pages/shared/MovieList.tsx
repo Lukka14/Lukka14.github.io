@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { fetchAllPages } from "../../utils/Utils";
+import { getResumeQuery } from "./RecentlyWatchService";
 import { getCurrentUser } from "../../services/UserService";
 
 export const MovieList = ({ mediaList }: MediaListProps) => {
@@ -18,18 +19,10 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
     userFetch();
   }, [isLoggedIn])
   const generateHref = (media: Media): string => {
-    let seriesSuffix = "";
-    if (media.mediaType === MediaType.TV_SERIES) {
-      let cookieValue = Cookies.get(String(media?.id));
-      if (cookieValue) {
-        seriesSuffix = cookieValue;
-      } else {
-        seriesSuffix = `&s=${1}&e=${1}`;
-      }
+    const seriesSuffix =
+      media.mediaType === MediaType.TV_SERIES ? getResumeQuery(media.id) : "";
 
-    }
-
-    return `#${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
+    return `${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
   };
 
   const username = Cookies.get("username");

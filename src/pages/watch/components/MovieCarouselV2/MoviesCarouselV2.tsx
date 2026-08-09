@@ -140,24 +140,20 @@ const MoviesCarouselV2: React.FC<SimilarMoviesCarouselProps> = ({
     <>
       <div className="similar-movies-container">
         <div className="similar-movies-header">
-          <div className='d-flex align-items-center justify-content-center'>
+          <div className='d-flex align-items-center'>
             <h2 className="similar-movies-title">{title}</h2>
             {accountPage && <Link
               to={`/profile/${ParamsUsername}/${title.toLowerCase()}`}
-              style={{
-                marginLeft: "15px",
-                borderLeft: "1px solid #f5f5f5",
-                paddingLeft: "10px"
-              }}
+              className="similar-movies-viewall"
             >
-              View at once <i className="fas fa-arrow-right"></i>
+              View all
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
             </Link>}
           </div>
           <div className="similar-movies-controls d-flex align-items-center">
-            <span className="page-indicator h5 mb-0" style={{
-              color: "#f5f5f5",
-              marginRight: "10px"
-            }}>
+            <span className="similar-movies-page">
               {Math.floor(startIndex / cardsToShow) + 1} / {Math.ceil(similarMovies.length / cardsToShow)}
             </span>
             <button onClick={handlePrev} disabled={startIndex === 0} className="similar-movies-button">

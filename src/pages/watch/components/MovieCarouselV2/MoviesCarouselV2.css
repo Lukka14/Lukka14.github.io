@@ -8,12 +8,46 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
       margin-bottom: 20px;
   }
 
+  .similar-movies-viewall {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-left: 14px;
+      padding-left: 14px;
+      border-left: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #a5b4fc;
+      text-decoration: none;
+      transition: color 0.2s ease;
+  }
+
+  .similar-movies-viewall:hover {
+      color: #c7d2fe;
+  }
+
+  .similar-movies-viewall:focus-visible {
+      outline: 2px solid #a5b4fc;
+      outline-offset: 3px;
+      border-radius: 4px;
+  }
+
+  .similar-movies-page {
+      margin-right: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(225, 232, 255, 0.55);
+      font-variant-numeric: tabular-nums;
+  }
+
   .similar-movies-title {
-      font-size: 24px;
-      font-weight: bold;
+      font-size: clamp(1.15rem, 2.6vw, 1.5rem);
+      font-weight: 700;
       margin: 0;
       color: white;
       font-family: 'Roboto', sans-serif;
@@ -25,21 +59,31 @@
   }
 
   .similar-movies-button {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.2);
-      border: none;
+      background-color: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
       color: #fff;
   }
 
+  .similar-movies-button svg {
+      fill: none;
+  }
+
   .similar-movies-button:hover:not(:disabled) {
-      background-color: rgba(255, 255, 255, 0.3);
+      background-color: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.26);
+  }
+
+  .similar-movies-button:focus-visible {
+      outline: 2px solid #a5b4fc;
+      outline-offset: 2px;
   }
 
   .similar-movies-button:disabled {
@@ -48,7 +92,9 @@
   }
 
   .similar-movies-track-container {
-      overflow: visible;
+      overflow-x: hidden;
+      padding: 10px 0;
+      margin: -10px 0;
   }
 
   .similar-movies-track {

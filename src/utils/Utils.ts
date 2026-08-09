@@ -1,6 +1,6 @@
-import Cookies from "js-cookie";
 import { Media, MediaType } from "../models/Movie";
 import { RoutePaths } from "../config/Config";
+import { getResumeQuery } from "../pages/shared/RecentlyWatchService";
 import axios from "axios";
 
 interface MediaWithType extends Media {
@@ -15,21 +15,16 @@ export function firstToUppercase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
+/**
+ * Builds the watch-page path for a media item. Series get their saved resume
+ * point appended so a click drops the viewer back on the last episode watched.
+ */
 export const generateHref = (media: MediaWithType, acc: boolean = false): string => {
-  let seriesSuffix = "";
-  let mt = acc ? normalizeType(media.type) : media.mediaType;
-  if (mt == MediaType.TV_SERIES) {
+  const mediaType = acc ? normalizeType(media.type) : media.mediaType;
+  const seriesSuffix =
+    mediaType === MediaType.TV_SERIES ? getResumeQuery(media.id) : "";
 
-    let cookieValue = Cookies.get(String(media?.id));
-    if (cookieValue) {
-      seriesSuffix = cookieValue;
-    } else {
-      seriesSuffix = `&s=${1}&e=${1}`;
-    }
-
-  }
-
-  return `#${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
+  return `${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`;
 };
 
 export const convertMinutes = (totalMinutes: number): { hours: number, minutes: number } => {

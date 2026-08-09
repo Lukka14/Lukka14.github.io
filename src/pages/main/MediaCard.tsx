@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Media } from "../../models/Movie";
 import { HeartIcon, BookmarkIcon, Play, Star } from "lucide-react";
 import { toggleFavorite, toggleWatchlist } from "../../services/MediaCardService";
@@ -114,7 +115,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
   return (
     <>
       <CustomToast open={toastOpen} setOpen={setToastOpen} />
-      <a href={href} className="media-card" aria-label={title || "Untitled"}>
+      <Link to={href} className="media-card" aria-label={title || "Untitled"}>
         <div className="media-card-poster-wrap">
           {isOddRatio && (
             <div
@@ -180,7 +181,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
             {genres && <div className="media-card-genres">{genres}</div>}
           </div>
         </div>
-      </a>
+      </Link>
     </>
   );
 };
