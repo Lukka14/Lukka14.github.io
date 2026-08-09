@@ -71,11 +71,11 @@ export default function SettingsPage() {
                     return updated;
                 });
             } else {
-                navigate("/#/");
+                navigate("/");
             }
         }
         if (username) fetchUser();
-        else navigate("/#/");
+        else navigate("/");
     }, [username]);
 
     useEffect(() => {

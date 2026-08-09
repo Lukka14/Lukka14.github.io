@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /settings
+Disallow: /profile/
+Disallow: /verify/
+Disallow: /password/
+
+Sitemap: https://movieplus.live/sitemap.xml

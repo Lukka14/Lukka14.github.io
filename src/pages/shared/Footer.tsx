@@ -1,11 +1,11 @@
 import { EmailOutlined } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function Footer() {
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const currentPath = window.location.hash;
-    const isHelpPage = currentPath.includes('/help');
+    const isHelpPage = location.pathname.includes('/help');
 
     const SUPPORT_EMAIL = "team@movieplus.live"
     return (
@@ -44,10 +44,10 @@ export function Footer() {
 
                         <div className="col d-flex justify-content-center">
                             <nav className="d-flex flex-wrap justify-content-center">
-                                <a href="/#/multiSearch" className="mx-2">Search</a>
-                                <a href="/#/multiSearch?type=movie" className="mx-2">Movies</a>
-                                <a href="/#/multiSearch?type=tv" className="mx-2">TV Shows</a>
-                                <a href="/#/help" className="mx-2">Help</a>
+                                <a href="/multiSearch" className="mx-2">Search</a>
+                                <a href="/multiSearch?type=movie" className="mx-2">Movies</a>
+                                <a href="/multiSearch?type=tv" className="mx-2">TV Shows</a>
+                                <a href="/help" className="mx-2">Help</a>
                             </nav>
                         </div>
 

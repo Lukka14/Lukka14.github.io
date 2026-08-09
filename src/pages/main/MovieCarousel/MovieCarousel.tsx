@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Media, MediaType } from "../../../models/Movie";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+import { getResumeQuery } from "../../shared/RecentlyWatchService";
 import "./MovieCarousel.css";
 
 interface MovieCarouselProps {
@@ -51,8 +51,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({
     let url = `/watch?id=${media.id}`;
 
     if (media.mediaType === MediaType.TV_SERIES) {
-      const cookieValue = Cookies.get(String(media.id));
-      url += cookieValue ? cookieValue : "&s=1&e=1";
+      url += getResumeQuery(media.id);
     }
 
     return url;

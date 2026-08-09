@@ -130,7 +130,7 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
     logout();
     setUser(null);
     setDrawerOpen(false);
-    window.location.hash = "/";
+    navigate("/");
   };
 
   const handleUserBtn = () => {
@@ -269,12 +269,12 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
                     <span className="mp-nav-menu-sub">Signed in</span>
                   </li>
                   <li>
-                    <a className="dropdown-item" href={`/#/profile/${user.username}`}>
+                    <a className="dropdown-item" href={`/profile/${user.username}`}>
                       <UserCircle2 size={17} /> Profile
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="/#/settings">
+                    <a className="dropdown-item" href="/settings">
                       <Settings size={17} /> Settings
                     </a>
                   </li>

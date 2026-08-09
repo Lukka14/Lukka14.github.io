@@ -92,12 +92,12 @@ export default function LoginModal() {
       }
 
       if (
-        window.location.href.includes("watch") ||
-        window.location.hash === "#/profile/" + data.username
+        window.location.pathname.includes("watch") ||
+        window.location.pathname === "/profile/" + data.username
       ) {
         window.location.reload();
       } else {
-        window.location.href = "/#/profile/" + data.username;
+        window.location.href = "/profile/" + data.username;
       }
     } catch (error: any) {
       setErrorMessage(

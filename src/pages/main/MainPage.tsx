@@ -8,7 +8,7 @@ import {
 import { MovieList } from "../shared/MovieList";
 import { Background } from "./Background";
 import PrimarySearchAppBar from "../shared/TopNavBar";
-import { getRecentlyWatched } from "../shared/RecentlyWatchService";
+import { getRecentlyWatched, getResumeQuery } from "../shared/RecentlyWatchService";
 import { LoadingSpinner } from "./LoadingSpinner";
 import {
   Clapperboard,
@@ -21,7 +21,6 @@ import {
   Clock3,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import MovieCarousel from "./MovieCarousel/MovieCarousel";
 
 const featuredFallbackImage =
@@ -31,8 +30,7 @@ const buildWatchUrl = (media: Media) => {
   let url = `/watch?id=${media.id}`;
 
   if (media.mediaType === MediaType.TV_SERIES) {
-    const cookieValue = Cookies.get(String(media?.id));
-    url += cookieValue ? cookieValue : `&s=${1}&e=${1}`;
+    url += getResumeQuery(media.id);
   }
 
   return url;

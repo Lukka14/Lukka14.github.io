@@ -10,6 +10,7 @@ import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardServ
 import { CustomToast } from "../../shared/Toast";
 import EpisodeCarousel from "./EpisodeCarousel/EpisodeCarousel";
 import { getCurrentUser } from "../../../services/UserService";
+import { useSearchParams } from "react-router-dom";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -38,7 +39,7 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
   const [isInWatchList, setIsInWatchList] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const queryParams = new URLSearchParams(window.location.hash.split("?")[1]);
+  const [queryParams] = useSearchParams();
   const seasonFromQuery = Number(queryParams.get("s"));
   const episodeFromQuery = Number(queryParams.get("e"));
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);

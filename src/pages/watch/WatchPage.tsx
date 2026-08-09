@@ -7,9 +7,8 @@ import PrimarySearchAppBar from "../shared/TopNavBar";
 import MediaInfo from "./components/MediaInfo";
 import StreamingServerSelector from "./components/StreamingServerSelector";
 import { Server } from "./models/Server";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
-import { saveRecentlyWatched } from "../shared/RecentlyWatchService";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { saveRecentlyWatched, saveResumePoint } from "../shared/RecentlyWatchService";
 import MoviesCarouselV2 from "./components/MovieCarouselV2/MoviesCarouselV2";
 import NotFoundPage from "../shared/NotFoundPage";
 import { CalendarDays } from "lucide-react";
@@ -26,7 +25,7 @@ export class SeasonEpisode {
 }
 
 const WatchPage: React.FC = () => {
-  const queryParams = new URLSearchParams(window.location.hash.split("?")[1]);
+  const [queryParams] = useSearchParams();
   const id = queryParams.get("id")!;
   const season = queryParams.get("s");
   const episode = Number(queryParams.get("e"));
@@ -97,8 +96,9 @@ const WatchPage: React.FC = () => {
     setSeasonEpisode(seasonEpisode);
     navigate(query);
 
-    const cookieName = String(media?.id);
-    Cookies.set(cookieName, seasonAndEpisodeString, { expires: 30 }); // Expires in 30 days
+    if (media?.id) {
+      saveResumePoint(media.id, seasonEpisode.season, seasonEpisode.episode);
+    }
   };
 
   const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(
@@ -122,8 +122,19 @@ const WatchPage: React.FC = () => {
   useEffect(() => {
     if (media != null) {
       saveRecentlyWatched(media);
+
+      // Record the resume point on load too. Previously it was only written
+      // when the user opened the season selector, so simply landing on an
+      // episode from a link never updated where they left off.
+      if (
+        media.mediaType === MediaType.TV_SERIES &&
+        seasonEpisode?.season &&
+        seasonEpisode?.episode
+      ) {
+        saveResumePoint(media.id, seasonEpisode.season, seasonEpisode.episode);
+      }
     }
-  }, [media]);
+  }, [media, seasonEpisode]);
 
   if (loadingFinished && notFound) return <NotFoundPage />;
 

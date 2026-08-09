@@ -261,7 +261,7 @@ const ListSearch: React.FC = () => {
             const userByUsername = await fetchUserByUsername(username!);
             if (userByUsername) {
                 setUser((prev: any) => ({ ...prev, ...userByUsername }));
-                window.history.replaceState({}, '', `/#/profile/` + userByUsername.username + `/` + listType);
+                window.history.replaceState({}, '', `/profile/` + userByUsername.username + `/` + listType);
             } else {
                 setIs404(true);
             }

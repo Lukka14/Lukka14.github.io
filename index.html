@@ -48,6 +48,25 @@
       "url": "https://movieplus.live/"
     }
   </script>
+
+  <script>
+    /*
+      Restores the real URL after 404.html bounced a deep link through the root
+      document, and rewrites legacy "#/watch?id=1" links (shared while the app
+      used a HashRouter) to their plain-path equivalent. Both run before the
+      bundle loads so the router only ever sees the final URL.
+    */
+    (function (l) {
+      if (l.search[1] === '/') {
+        var decoded = l.search.slice(1).split('&').map(function (part) {
+          return part.replace(/~and~/g, '&');
+        }).join('?');
+        history.replaceState(null, '', l.pathname.slice(0, -1) + decoded + l.hash);
+      } else if (l.hash.indexOf('#/') === 0) {
+        history.replaceState(null, '', l.hash.slice(1) || '/');
+      }
+    }(window.location));
+  </script>
 </head>
 
 <body>

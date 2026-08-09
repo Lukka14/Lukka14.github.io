@@ -9,4 +9,17 @@ export default defineConfig({
   define: {
     APP_VERSION: JSON.stringify(process.env.npm_package_version ?? version),
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Vendor code changes far less often than app code, so giving it its
+        // own chunks lets returning visitors reuse the cached copy after a
+        // deploy instead of re-downloading everything.
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          mui: ['@mui/material', '@mui/icons-material'],
+        },
+      },
+    },
+  },
 });
