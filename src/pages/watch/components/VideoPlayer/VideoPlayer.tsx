@@ -12,6 +12,13 @@ interface WatchedList {
   [key: string]: any;
 }
 
+// Videasy and Vidking both refuse to play inside a sandboxed frame, and they
+// detect the attribute rather than the individual permissions -- even granting
+// every token still trips "Iframe Sandbox Detected". So this is opt-in per
+// server and unused by default. allow-presentation keeps casting working.
+const IFRAME_SANDBOX =
+  "allow-scripts allow-same-origin allow-forms allow-presentation";
+
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   id,
   playerUrl,
@@ -20,7 +27,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   episode,
   posterURL,
   isPlaying,
-  setIsPlaying
+  setIsPlaying,
+  sandboxed = false
 }) => {
   const [runtime, setRuntime] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -198,10 +206,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {isLoading && <div className="watch-skeleton" style={{ zIndex: 10 }} />}
 
           <iframe
-            // sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
             src={mediaURL}
             title="Video Player"
             allowFullScreen
+            // Off unless a server opts in -- see IFRAME_SANDBOX above.
+            sandbox={sandboxed ? IFRAME_SANDBOX : undefined}
+            // Denies camera, microphone and geolocation, which an embed would
+            // otherwise inherit by default. This does not trip the providers'
+            // sandbox detection.
+            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+            referrerPolicy="origin"
             onLoad={() => setIsLoading(false)}
             style={{ border: 0, width: "100%", height: "100%" }}
           ></iframe>

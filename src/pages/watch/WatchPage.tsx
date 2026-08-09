@@ -36,6 +36,7 @@ const WatchPage: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isUpcoming, setIsUpcoming] = useState(false);
   const [playerUrl, setPlayerUrl] = useState<string>("");
+  const [sandboxed, setSandboxed] = useState(false);
 
   const [state, setState] = useState<{
     media: ImdbMedia | TvSeries | null;
@@ -116,9 +117,14 @@ const WatchPage: React.FC = () => {
     }
 
     setPlayerUrl(url);
+    // Opt-in: current providers detect and reject any sandbox, so this stays
+    // off unless a server explicitly sets "sandbox": true.
+    setSandboxed(server.sandbox === true);
   };
 
-  const playerKey = `${id}-${seasonEpisode?.season}-${seasonEpisode?.episode}`;
+  // The sandbox attribute only takes effect on load, so a change in sandbox
+  // mode has to remount the iframe rather than patch it in place.
+  const playerKey = `${id}-${seasonEpisode?.season}-${seasonEpisode?.episode}-${sandboxed}`;
 
   useEffect(() => {
     if (media != null) {
@@ -211,6 +217,7 @@ const WatchPage: React.FC = () => {
                 posterURL={state.bgUrl}
                 isPlaying={isPlaying}
                 setIsPlaying={setIsPlaying}
+                sandboxed={sandboxed}
               />
             </div>
 

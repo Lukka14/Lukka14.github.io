@@ -10,4 +10,5 @@ export interface VideoPlayerProps {
   posterURL: string;
   isPlaying: boolean,
   setIsPlaying: Dispatch<React.SetStateAction<boolean>>;
+  sandboxed?: boolean;
 }
