@@ -5,6 +5,7 @@ import { MediaType, ImdbMedia, TvSeries, ReleaseStatus } from "../../models/Movi
 import { fetchMovie, fetchTvSeries } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/TopNavBar";
 import MediaInfo from "./components/MediaInfo";
+import EpisodeSection from "./components/EpisodeSection";
 import StreamingServerSelector from "./components/StreamingServerSelector";
 import { Server } from "./models/Server";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -213,31 +214,32 @@ const WatchPage: React.FC = () => {
               />
             </div>
 
-            {media?.title && (
-              <div className="watch-bar">
-                <h2 className="watch-bar-title">
-                  <span>{media.title}</span>
-                  {mediaType === MediaType.TV_SERIES && (
-                    <span className="watch-ep-badge">
-                      S{seasonEpisode?.season} · E{seasonEpisode?.episode}
-                    </span>
-                  )}
-                </h2>
-              </div>
-            )}
+            <div className="watch-console">
+              {media?.title && (
+                <div className="watch-bar">
+                  <h2 className="watch-bar-title">
+                    <span>{media.title}</span>
+                    {mediaType === MediaType.TV_SERIES && (
+                      <span className="watch-ep-badge">
+                        S{seasonEpisode?.season} · E{seasonEpisode?.episode}
+                      </span>
+                    )}
+                  </h2>
+                </div>
+              )}
 
-            <StreamingServerSelector selectServer={selectServer} />
+              <EpisodeSection
+                media={media}
+                setSeasonEpisode={updateSeasonEpisode}
+                setIsPlaying={setIsPlaying}
+              />
+
+              <StreamingServerSelector selectServer={selectServer} />
+            </div>
           </>
         )}
 
-        {media && (
-          <MediaInfo
-            media={media}
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-            setSeasonEpisode={updateSeasonEpisode}
-          />
-        )}
+        {media && <MediaInfo media={media} />}
 
         {media?.similar && media.similar.length > 0 && (
           <div className="watch-recommended">

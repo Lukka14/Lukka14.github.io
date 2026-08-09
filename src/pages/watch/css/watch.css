@@ -106,7 +106,21 @@
   filter: brightness(1.08);
 }
 
-/* ---------- Bar under the player ---------- */
+/* ---------- Console under the player ----------
+   Title, episode picker and streaming sources share one panel, split by
+   dividers rather than sitting in three separate cards. */
+
+.watch-console {
+  margin-top: 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(10, 15, 32, 0.72);
+  backdrop-filter: blur(16px);
+}
+
+.watch-console > * + * {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
 
 .watch-bar {
   display: flex;
@@ -114,12 +128,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top: 1rem;
-  padding: 1rem 1.25rem;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(10, 15, 32, 0.72);
-  backdrop-filter: blur(16px);
+  padding: 1rem 1.35rem;
 }
 
 .watch-bar-title {
@@ -194,12 +203,7 @@
 /* ---------- Server picker ---------- */
 
 .watch-servers {
-  margin-top: 1rem;
-  padding: 1.1rem 1.25rem;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(10, 15, 32, 0.72);
-  backdrop-filter: blur(16px);
+  padding: 1.1rem 1.35rem;
 }
 
 .watch-servers-head {
@@ -412,6 +416,24 @@
   margin-top: 1.75rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* Episode picker sits inside .watch-console, between the title and the
+   streaming sources, so it carries no chrome of its own. */
+.watch-episodes-panel {
+  padding: 1.25rem 1.35rem;
+  color: #fff;
+}
+
+@media (max-width: 575.98px) {
+  .watch-bar,
+  .watch-servers {
+    padding: 0.9rem 1rem;
+  }
+
+  .watch-episodes-panel {
+    padding: 1rem;
+  }
 }
 
 .watch-empty-note {

@@ -1,47 +1,21 @@
-import React, { Dispatch, useEffect, useState } from "react";
-import { ImdbMedia, TvSeries, MediaType, Season, Movie } from "../../../models/Movie";
-import { SeasonEpisode } from "../WatchPage";
+import React, { useEffect, useState } from "react";
+import { ImdbMedia, TvSeries, MediaType, Movie } from "../../../models/Movie";
 import { convertMinutes, fetchAllPages, formatMoney } from "../../../utils/Utils";
 import { BookmarkIcon, Clapperboard, Clock3, Globe, HeartIcon, Star, Tv } from "lucide-react";
-import axios from "axios";
 import { Endpoints } from "../../../config/Config";
 import Cookies from "js-cookie";
 import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardService";
 import { CustomToast } from "../../shared/Toast";
-import EpisodeCarousel from "./EpisodeCarousel/EpisodeCarousel";
 import { getCurrentUser } from "../../../services/UserService";
-import { useSearchParams } from "react-router-dom";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
-  setSeasonEpisode: (seasonEpisode: SeasonEpisode) => void;
-  isPlaying: boolean,
-  setIsPlaying: Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface Episode {
-  id: number;
-  tvSeriesId: number;
-  name: string;
-  airDate: string;
-  overview: string;
-  stillPath: string;
-  runtime: number;
-  seasonNumber: number;
-  episodeNumber: number;
-}
-
-const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlaying, setIsPlaying }) => {
-  const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
-  const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null);
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
+const MediaInfo: React.FC<MediaInfoProps> = ({ media }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInWatchList, setIsInWatchList] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [queryParams] = useSearchParams();
-  const seasonFromQuery = Number(queryParams.get("s"));
-  const episodeFromQuery = Number(queryParams.get("e"));
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
@@ -50,23 +24,6 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
     }
     userFetch();
   }, []);
-
-  useEffect(() => {
-    if (media && media.mediaType === MediaType.TV_SERIES) {
-      const tvSeason = (media as TvSeries).seasonList?.find(
-        (season) => season.seasonNumber === seasonFromQuery
-      );
-      if (tvSeason) {
-        setSelectedSeason(tvSeason);
-        // Set the first episode of season 1 as default
-        setSelectedEpisode(episodeFromQuery || 1);
-        if (tvSeason.seasonNumber !== undefined) {
-          setSeasonEpisode(new SeasonEpisode(tvSeason.seasonNumber, episodeFromQuery || 1));
-          loadEpisodes(media.id, tvSeason.seasonNumber);
-        }
-      }
-    }
-  }, [media]);
 
   const username = Cookies.get("username");
 
@@ -99,22 +56,6 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
 
     if (username && media) getT();
   }, [media]);
-
-  const loadEpisodes = async (seriesId?: number | null, seasonNumber?: number) => {
-    if (!seriesId || seasonNumber === undefined) return;
-
-    setLoading(true);
-    try {
-      const response = await axios.get(`${Endpoints.EPISODES}?id=${seriesId}&seasonNumber=${seasonNumber}`);
-      if (response.data) {
-        setEpisodes(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleFavoriteClick = async () => {
     try {
@@ -149,21 +90,6 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
   }
 
   const isTvSeries = media.mediaType === MediaType.TV_SERIES;
-
-  const handleSeasonClick = (season: Season) => {
-    setSelectedSeason(season);
-    setSelectedEpisode(null); // Reset the episode selection when season is clicked
-    if (season.seasonNumber !== undefined && media.id) {
-      loadEpisodes(media.id, season.seasonNumber);
-    }
-  };
-
-  const handleEpisodeClick = (seasonNumber: number, episodeNumber: number) => {
-    setSelectedEpisode(episodeNumber); // Set the selected episode
-    setSeasonEpisode(new SeasonEpisode(seasonNumber, episodeNumber)); // Notify parent component about the selected episode
-    window.scrollTo(0, 0);
-    setIsPlaying(true)
-  };
 
   const runtime = (media as Movie).runtime;
   const budget = (media as Movie).budget;
@@ -306,27 +232,6 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
           </div>
         </div>
 
-        {selectedSeason && (
-          <div className="watch-episodes">
-            {episodes.length > 0 ? (
-              <EpisodeCarousel
-                episodes={episodes}
-                selectedEpisode={selectedEpisode}
-                onEpisodeClick={handleEpisodeClick}
-                seasonNumber={selectedSeason.seasonNumber}
-                seasonName={selectedSeason.name}
-                media={media}
-                selectedSeason={selectedSeason}
-                handleSeasonClick={handleSeasonClick}
-                loading={loading}
-              />
-            ) : (
-              <div className="watch-empty-note">
-                No episode data available for this season.
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </>
   );
