@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { MDBContainer } from "mdb-react-ui-kit";
 import { VideoPlayerProps } from "../../../../models/VidePlayerProps";
 import Cookies from "js-cookie";
 import { fetchMovie } from "../../../../services/MediaService";
@@ -172,77 +171,43 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [id, playerUrl]);
 
   return (
-    <MDBContainer breakpoint="xl">
-      <div className="ratio ratio-16x9" style={{ position: "relative" }}>
-        {!isPlaying ? (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `url(${posterURL})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              cursor: "pointer",
-            }}
-            onClick={handlePlay}
-          >
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                borderRadius: "50%",
-                padding: "10px",
-              }}
+    <div className="ratio ratio-16x9" style={{ position: "relative" }}>
+      {!isPlaying ? (
+        <div
+          className="watch-poster-overlay"
+          style={{ backgroundImage: `url(${posterURL})` }}
+          onClick={handlePlay}
+          role="button"
+          aria-label="Play"
+        >
+          <button type="button" className="watch-play-btn" onClick={handlePlay}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              viewBox="0 0 16 16"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="50"
-                height="50"
-                fill="white"
-                viewBox="0 0 16 16"
-              >
-                <path d="M4.268 1.438a.5.5 0 0 1 .518-.04l10 6a.5.5 0 0 1 0 .884l-10 6A.5.5 0 0 1 4 14.5V1.5a.5.5 0 0 1 .268-.062z" />
-              </svg>
-            </div>
-          </div>
-        ) : (
-          <>
-            {isLoading && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  background: "linear-gradient(90deg, #2c2c2c 25%, #3c3c3c 50%, #2c2c2c 75%)",
-                  backgroundSize: "200% 100%",
-                  animation: "skeleton-loading 1.5s infinite",
-                  zIndex: 10,
-                }}
-              />
-            )}
+              <path d="M4.268 1.438a.5.5 0 0 1 .518-.04l10 6a.5.5 0 0 1 0 .884l-10 6A.5.5 0 0 1 4 14.5V1.5a.5.5 0 0 1 .268-.062z" />
+            </svg>
+            Play now
+          </button>
+        </div>
+      ) : (
+        <>
+          {isLoading && <div className="watch-skeleton" style={{ zIndex: 10 }} />}
 
-            <iframe
-              // sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
-              src={mediaURL}
-              title="Video Player"
-              allowFullScreen
-              onLoad={() => setIsLoading(false)}
-              style={{ border: 0, width: "100%", height: "100%" }}
-            ></iframe>
-          </>
-
-
-        )}
-      </div>
-    </MDBContainer>
+          <iframe
+            // sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
+            src={mediaURL}
+            title="Video Player"
+            allowFullScreen
+            onLoad={() => setIsLoading(false)}
+            style={{ border: 0, width: "100%", height: "100%" }}
+          ></iframe>
+        </>
+      )}
+    </div>
   );
 };
 

@@ -36,17 +36,6 @@
   padding: 1.25rem 0 0;
 }
 
-.home-feature-card {
-  position: relative;
-  border-radius: 30px;
-  overflow: hidden;
-  cursor: pointer;
-  width: 100%;
-  aspect-ratio: 16 / 7;
-  min-height: 380px;
-  transition: box-shadow 0.3s ease;
-}
-
 .home-feature-card:hover {
   box-shadow: 0 36px 80px rgba(0, 0, 0, 0.55);
 }
@@ -244,8 +233,9 @@
   border-radius: 30px;
   overflow: hidden;
   cursor: pointer;
+  width: 100%;
   min-height: 460px;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 7;
   flex: 1;
   transition: box-shadow 0.3s ease;
 }
@@ -326,20 +316,32 @@
 .home-feature-art-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-    rgba(4, 8, 20, 0.05) 0%,
-    rgba(4, 8, 20, 0.0) 40%,
-    rgba(4, 8, 20, 0.82) 75%,
-    rgba(4, 8, 20, 0.97) 100%
-  );
+  background:
+    linear-gradient(180deg,
+      rgba(4, 8, 20, 0.05) 0%,
+      rgba(4, 8, 20, 0) 42%,
+      rgba(4, 8, 20, 0.72) 82%,
+      rgba(4, 8, 20, 0.94) 100%
+    ),
+    linear-gradient(90deg,
+      rgba(4, 8, 20, 0.82) 0%,
+      rgba(4, 8, 20, 0.5) 45%,
+      rgba(4, 8, 20, 0) 78%
+    );
   pointer-events: none;
 }
 
+/* The copy sits over the artwork, so it must stay narrow enough for the backdrop
+   to read as an image rather than a dark panel. */
 .home-feature-copy {
   position: absolute;
   inset: auto 0 0 0;
+  width: min(62%, 640px);
   padding: 1.35rem 1.35rem 1.45rem;
-  background: linear-gradient(180deg, rgba(4, 8, 20, 0) 0%, rgba(4, 8, 20, 0.9) 38%, rgba(4, 8, 20, 0.98) 100%);
+  /* Own stacking context so the mobile scrim pseudo-element (z-index: -1) sits
+     above the artwork instead of falling behind the card. */
+  z-index: 2;
+  isolation: isolate;
 }
 
 .home-feature-copy-top {
@@ -365,6 +367,12 @@
   margin: 0.85rem 0 0;
   font-size: clamp(1.8rem, 3vw, 2.7rem);
   letter-spacing: -0.03em;
+  line-height: 1.12;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 .home-feature-actions {
@@ -377,8 +385,15 @@
 .home-feature-copy p {
   margin: 0.8rem 0 0;
   color: rgba(225, 232, 255, 0.82);
-  line-height: 1.7;
+  line-height: 1.6;
   max-width: 52ch;
+  /* Overviews vary from one line to several paragraphs — clamp so a long synopsis
+     can never grow the panel over the artwork. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
 }
 
 .home-feature-meta {
@@ -635,6 +650,42 @@
   .home-feature-card {
     aspect-ratio: 16 / 8;
   }
+
+  .home-feature-copy {
+    width: min(72%, 620px);
+  }
+}
+
+@media (max-width: 992px) {
+  .home-feature-copy {
+    width: 100%;
+  }
+
+  /* Once the copy spans the full width it needs its own scrim again, otherwise
+     the text sits directly on the artwork. */
+  .home-feature-copy::before {
+    content: "";
+    position: absolute;
+    inset: -3rem 0 0 0;
+    background: linear-gradient(
+      180deg,
+      rgba(4, 8, 20, 0) 0%,
+      rgba(4, 8, 20, 0.78) 45%,
+      rgba(4, 8, 20, 0.94) 100%
+    );
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .home-feature-art-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(4, 8, 20, 0.1) 0%,
+      rgba(4, 8, 20, 0) 40%,
+      rgba(4, 8, 20, 0.7) 78%,
+      rgba(4, 8, 20, 0.94) 100%
+    );
+  }
 }
 
 @media (max-width: 768px) {
@@ -650,6 +701,12 @@
   .home-feature-card {
     aspect-ratio: unset;
     min-height: 420px;
+  }
+
+  .home-feature-copy p {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font-size: 0.94rem;
   }
 
   .home-stats-bar {
@@ -669,17 +726,35 @@
 }
 
 @media (max-width: 576px) {
+  .home-feature-card {
+    min-height: 440px;
+  }
+
   .home-feature-copy {
     padding: 1rem;
   }
 
-  .home-feature-actions {
-    flex-direction: column;
+  /* Genre chips + badge on one row eat two lines on a phone; the badge is
+     enough context, so drop the chips. */
+  .home-feature-copy .home-chip-row {
+    display: none;
   }
 
-  .home-primary-button,
-  .home-secondary-button {
-    width: 100%;
+  /* Both labels are short enough to share a row — stacking them made the copy
+     panel tall enough to hide the artwork completely. */
+  .home-feature-actions .home-primary-button,
+  .home-feature-actions .home-secondary-button {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 3rem;
+    padding: 0 0.85rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .home-feature-meta span {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -739,6 +814,8 @@
   margin: 1.75rem 0 1.25rem;
   padding: 0.4rem 0.4rem 0.4rem 1rem;
   border-radius: 999px;
+  /* Autofill fill colour (see css/App.css) tuned to this panel's surface. */
+  --mp-autofill-bg: #1b2140;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);

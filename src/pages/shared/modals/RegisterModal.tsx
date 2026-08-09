@@ -202,7 +202,7 @@ export default function RegisterModal() {
             <div className="auth-modal-head">
               <img
                 className="auth-modal-logo"
-                src="/assets/movieplus-logo-no-bg.png"
+                src="/assets/movieplus-mark.svg"
                 alt="MoviePlus"
               />
               <h5 className="auth-modal-title" id="registerModalLabel">
@@ -450,10 +450,6 @@ export default function RegisterModal() {
                 </button>
               </p>
 
-                <p className="auth-terms">
-                  By creating an account you agree to our terms of service and
-                  confirm you have read our privacy policy.
-                </p>
                 </form>
               </>
             )}

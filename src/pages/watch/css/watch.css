@@ -1,75 +1,627 @@
+/* Watch page. All rules are scoped with watch-* / server-* prefixes so nothing
+   leaks into other pages (see about.css and ContactModalWindow for past regressions). */
+
 .background-image_watch {
-    position: fixed; 
-    width: 100%;
-    height: 100%;
-    /* background-position: center; */
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: -1; 
-    filter: brightness(40%);
-    background-color: rgba(0, 0, 0, 1); 
-  }
-
-.streaming-server-btn {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.server-bg {
-  background-color: #1a1a1a;
-  color: white;
-  border: 1px solid #1a1a1a;
-  border-radius: 5px;
-  margin: 20px 0 20px 0;  /* top and bottom 20px */
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: -1;
+  filter: brightness(35%);
+  background-color: rgba(0, 0, 0, 1);
 }
 
 @keyframes skeleton-loading {
-  0% { 
-    background-position: 200% 0; 
+  0% {
+    background-position: 200% 0;
   }
-  100% { 
-    background-position: -200% 0; 
-  }
-}
-
-@keyframes shimmer {
-  0% { 
-    transform: translateX(-100%); 
-  }
-  100% { 
-    transform: translateX(100%); 
+  100% {
+    background-position: -200% 0;
   }
 }
 
-@keyframes float {
-  0% { 
-    transform: rotate(0deg); 
+@keyframes watchFloat {
+  0% {
+    transform: rotate(0deg);
   }
-  100% { 
-    transform: rotate(360deg); 
+  100% {
+    transform: rotate(360deg);
   }
 }
 
-.player-skeleton {
+.watch-shell {
+  padding-top: 1.25rem;
+  padding-bottom: 3rem;
+}
+
+/* ---------- Player stage ---------- */
+
+.watch-stage {
   position: relative;
-  border-radius: 8px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #05070f;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.6);
+}
+
+.watch-stage .ratio {
+  border-radius: inherit;
   overflow: hidden;
 }
 
-.player-skeleton-overlay {
+.watch-skeleton {
   position: absolute;
   inset: 0;
-  backdrop-filter: blur(10px) brightness(0.4);
-  background: rgba(0, 0, 0, 0.4);
-  animation: skeleton-loading 1.5s infinite linear;
+  background: linear-gradient(90deg, #141a2b 25%, #1e2740 50%, #141a2b 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
 }
 
-.player-skeleton-content {
+.watch-poster-overlay {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+}
+
+.watch-poster-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(3, 6, 16, 0.85),
+    rgba(3, 6, 16, 0.35) 55%,
+    rgba(3, 6, 16, 0.6)
+  );
+}
+
+.watch-play-btn {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.9rem 0.9rem 1.6rem;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  box-shadow: 0 18px 40px rgba(99, 102, 241, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.watch-play-btn:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  filter: brightness(1.08);
+}
+
+/* ---------- Bar under the player ---------- */
+
+.watch-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(10, 15, 32, 0.72);
+  backdrop-filter: blur(16px);
+}
+
+.watch-bar-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.watch-bar-title span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.watch-ep-badge {
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(129, 140, 248, 0.45);
+  background: rgba(99, 102, 241, 0.2);
+  color: #c7d2fe;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.watch-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.watch-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(225, 232, 255, 0.85);
+  font-size: 0.86rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.watch-action-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.watch-action-btn.is-active-fav {
+  border-color: rgba(251, 146, 60, 0.55);
+  background: rgba(251, 146, 60, 0.18);
+  color: #fdba74;
+}
+
+.watch-action-btn.is-active-list {
+  border-color: rgba(56, 189, 248, 0.55);
+  background: rgba(56, 189, 248, 0.18);
+  color: #7dd3fc;
+}
+
+/* ---------- Server picker ---------- */
+
+.watch-servers {
+  margin-top: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(10, 15, 32, 0.72);
+  backdrop-filter: blur(16px);
+}
+
+.watch-servers-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.watch-servers-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.watch-servers-hint {
+  margin: 0;
+  color: rgba(225, 232, 255, 0.55);
+  font-size: 0.83rem;
+}
+
+.watch-server-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.watch-server-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.05rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(225, 232, 255, 0.78);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.watch-server-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.watch-server-pill.is-active {
+  border-color: rgba(129, 140, 248, 0.7);
+  background: rgba(99, 102, 241, 0.22);
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+}
+
+.watch-server-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.watch-server-pill.is-active .watch-server-index {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.watch-servers-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #fcd34d;
+  font-size: 0.88rem;
+}
+
+/* ---------- Info panel ---------- */
+
+.watch-panel {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(10, 15, 32, 0.72);
+  backdrop-filter: blur(16px);
+  color: #fff;
+}
+
+.watch-info-grid {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 1.75rem;
+}
+
+.watch-poster {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  display: block;
+}
+
+.watch-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 0.75rem;
+}
+
+.watch-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.1rem;
+}
+
+.watch-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(225, 232, 255, 0.82);
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.watch-chip--rating {
+  border-color: rgba(250, 204, 21, 0.4);
+  background: rgba(250, 204, 21, 0.14);
+  color: #fde047;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.watch-chip--rating:hover {
+  background: rgba(250, 204, 21, 0.22);
+  color: #fde047;
+}
+
+.watch-overview {
+  color: rgba(225, 232, 255, 0.78);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.watch-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.watch-genre-tag {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(129, 140, 248, 0.35);
+  background: rgba(99, 102, 241, 0.15);
+  color: #c7d2fe;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.watch-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.watch-stat {
+  padding: 0.8rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.watch-stat-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(225, 232, 255, 0.5);
+  margin-bottom: 0.25rem;
+}
+
+.watch-stat-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.watch-episodes {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.watch-empty-note {
+  padding: 1rem 1.15rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(225, 232, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+/* ---------- Upcoming banner ---------- */
+
+.watch-upcoming {
+  position: relative;
+  overflow: hidden;
+  padding: 3.5rem 2rem;
   text-align: center;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 15, 32, 0.82);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55);
+}
+
+.watch-upcoming-dots {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px
+  );
+  background-size: 30px 30px;
+  animation: watchFloat 60s infinite linear;
+  pointer-events: none;
+}
+
+.watch-upcoming-inner {
+  position: relative;
   z-index: 2;
 }
 
-  
+.watch-upcoming-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  margin-bottom: 1.5rem;
+  border-radius: 24px;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  box-shadow: 0 18px 38px rgba(99, 102, 241, 0.4);
+}
+
+.watch-upcoming-kicker {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.16);
+  color: #fcd34d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.watch-upcoming-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.watch-upcoming-date {
+  display: inline-block;
+  padding: 1.25rem 2rem;
+  margin-bottom: 1.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.watch-upcoming-date-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(225, 232, 255, 0.55);
+  margin-bottom: 0.4rem;
+}
+
+.watch-upcoming-date-value {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.watch-upcoming-countdown {
+  display: inline-block;
+  margin-top: 0.85rem;
+  padding: 0.35rem 1.1rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.25);
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  color: #c7d2fe;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.watch-upcoming-note {
+  color: rgba(225, 232, 255, 0.65);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ---------- Recommended ---------- */
+
+.watch-recommended {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(10, 15, 32, 0.72);
+  backdrop-filter: blur(16px);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 991px) {
+  .watch-info-grid {
+    grid-template-columns: 170px minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .watch-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .watch-shell {
+    padding-top: 0.75rem;
+  }
+
+  .watch-stage {
+    border-radius: 14px;
+  }
+
+  .watch-info-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .watch-poster {
+    max-width: 190px;
+    margin: 0 auto;
+  }
+
+  .watch-panel,
+  .watch-recommended {
+    padding: 1.15rem;
+    border-radius: 16px;
+  }
+
+  .watch-bar,
+  .watch-servers {
+    padding: 0.9rem 1rem;
+    border-radius: 16px;
+  }
+
+  .watch-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .watch-meta-row {
+    justify-content: center;
+  }
+
+  .watch-actions {
+    width: 100%;
+  }
+
+  .watch-action-btn {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .watch-upcoming {
+    padding: 2.25rem 1.15rem;
+  }
+
+  .watch-upcoming-title {
+    font-size: 1.6rem;
+  }
+
+  .watch-upcoming-date {
+    padding: 1rem 1.25rem;
+  }
+
+  .watch-upcoming-date-value {
+    font-size: 1.3rem;
+  }
+}

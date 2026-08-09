@@ -1,0 +1,321 @@
+/* Top navigation. All rules are mp-nav-* scoped so nothing leaks into pages. */
+
+.mp-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(225, 232, 255, 0.72);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.mp-nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.mp-nav-link.is-active {
+  color: #fff;
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.mp-nav-link.is-active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+}
+
+.mp-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #fff;
+  transition: transform 0.18s ease;
+}
+
+.mp-nav-brand:hover {
+  transform: translateY(-1px);
+}
+
+.mp-nav-brand img {
+  height: 36px;
+  width: 36px;
+  display: block;
+  filter: drop-shadow(0 6px 14px rgba(99, 102, 241, 0.45));
+  transition: filter 0.18s ease;
+}
+
+.mp-nav-brand:hover img {
+  filter: drop-shadow(0 8px 20px rgba(236, 72, 153, 0.5));
+}
+
+@media (max-width: 575.98px) {
+  .mp-nav-brand img {
+    height: 32px;
+    width: 32px;
+  }
+}
+
+.mp-nav-brand-text {
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.mp-nav-brand-text span {
+  background: linear-gradient(90deg, #818cf8, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mp-nav-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.3rem 0.75rem 0.3rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mp-nav-user:hover,
+.mp-nav-user:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(129, 140, 248, 0.5);
+  color: #fff;
+  box-shadow: none;
+}
+
+.mp-nav-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.mp-nav-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mp-nav-signin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.48rem 1.05rem;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 10px 22px rgba(99, 102, 241, 0.32);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.mp-nav-signin:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.dropdown-menu.mp-nav-menu {
+  min-width: 210px;
+  padding: 0.4rem;
+  margin-top: 0.5rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 17, 34, 0.97);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.55);
+}
+
+.dropdown-menu.mp-nav-menu .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  color: rgba(225, 232, 255, 0.82);
+  font-size: 0.88rem;
+}
+
+.dropdown-menu.mp-nav-menu .dropdown-item:hover,
+.dropdown-menu.mp-nav-menu .dropdown-item:focus {
+  background: rgba(255, 255, 255, 0.09);
+  color: #fff;
+}
+
+.dropdown-menu.mp-nav-menu .dropdown-item.is-danger {
+  color: #fca5a5;
+}
+
+.dropdown-menu.mp-nav-menu .dropdown-item.is-danger:hover {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+}
+
+.mp-nav-menu-head {
+  padding: 0.5rem 0.7rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  margin-bottom: 0.35rem;
+}
+
+.mp-nav-menu-name {
+  display: block;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-nav-menu-sub {
+  display: block;
+  color: rgba(225, 232, 255, 0.45);
+  font-size: 0.75rem;
+}
+
+.mp-nav-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+.mp-nav-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* ---------- Mobile drawer ---------- */
+
+.mp-drawer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.1rem;
+}
+
+.mp-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.mp-drawer-user {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  text-align: left;
+}
+
+.mp-drawer-user .mp-nav-avatar {
+  width: 38px;
+  height: 38px;
+}
+
+.mp-drawer-user-name {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-drawer-user-sub {
+  display: block;
+  color: rgba(225, 232, 255, 0.5);
+  font-size: 0.76rem;
+}
+
+.mp-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mp-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(225, 232, 255, 0.78);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mp-drawer-link:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.mp-drawer-link.is-active {
+  background: rgba(99, 102, 241, 0.22);
+  color: #fff;
+}
+
+.mp-drawer-link.is-danger {
+  color: #fca5a5;
+}
+
+.mp-drawer-link.is-danger:hover {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+}
+
+.mp-drawer-foot {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}

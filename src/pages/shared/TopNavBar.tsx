@@ -3,54 +3,67 @@ import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
+import { useLocation, useNavigate } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import { User2Icon } from "lucide-react";
-import { ExitToApp, LogoutOutlined, Refresh } from "@mui/icons-material";
+import {
+  Clapperboard,
+  HelpCircle,
+  Home,
+  LogOut,
+  Menu as MenuIcon,
+  Search as SearchLucide,
+  Settings,
+  Tv,
+  User2Icon,
+  UserCircle2,
+  X,
+} from "lucide-react";
 import { Endpoints } from "../../config/Config";
 import { getCurrentUser, logout } from "../../services/UserService";
+import { openModal } from "./modals/modal-utils";
+import "./top-nav.css";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  borderRadius: 999,
+  border: "1px solid rgba(255, 255, 255, 0.12)",
+  backgroundColor: alpha(theme.palette.common.white, 0.07),
   "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
+    backgroundColor: alpha(theme.palette.common.white, 0.12),
+  },
+  "&:focus-within": {
+    borderColor: "rgba(129, 140, 248, 0.6)",
   },
   marginRight: theme.spacing(2),
-  marginLeft: 0,
+  marginLeft: theme.spacing(2),
   width: "100%",
   [theme.breakpoints.up("md")]: {
-    marginLeft: theme.spacing(3),
     width: "auto",
   },
 }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
+  padding: theme.spacing(0, 1.75),
   height: "100%",
   position: "absolute",
   pointerEvents: "none",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  color: "rgba(225, 232, 255, 0.55)",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    padding: theme.spacing(1, 1.5, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(3.5)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("md")]: {
-      width: "20ch",
+      width: "22ch",
     },
   },
 }));
@@ -78,11 +91,21 @@ export interface User {
   credentialsNonExpired: boolean;
 }
 
+const NAV_ITEMS = [
+  { label: "Home", path: "/", icon: Home },
+  { label: "Search", path: "/multiSearch", icon: SearchLucide },
+  { label: "Movies", path: "/multiSearch?type=movie", icon: Clapperboard },
+  { label: "TV Shows", path: "/multiSearch?type=tv", icon: Tv },
+  { label: "Help", path: "/help", icon: HelpCircle },
+];
+
 export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [refresh, setRefresh] = React.useState("");
   const [user, setUser] = React.useState<User | null>(null);
+
   const handleSearch = () => {
     const searchInput = document.querySelector(
       "#movieSearchInput"
@@ -104,11 +127,10 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
   }, []);
 
   const handleLogout = () => {
-    logout()
+    logout();
     setUser(null);
+    setDrawerOpen(false);
     window.location.hash = "/";
-    // navigate("/");
-    // window.location.reload();
   };
 
   const handleUserBtn = () => {
@@ -118,20 +140,11 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
         setUser(user);
         navigate(`/profile/${user?.username}`);
       } else {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.setAttribute("data-bs-toggle", "modal");
-        button.setAttribute("data-bs-target", "#loginModal");
-        button.style.display = "none";
-
-        document.body.appendChild(button);
-        button.click();
-        document.body.removeChild(button);
-
+        openModal("loginModal");
       }
     }
     fetchUser();
-  }
+  };
 
   React.useEffect(() => {
     const handleProfileUpdated = (event: Event) => {
@@ -145,47 +158,71 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
     return () => window.removeEventListener("profile-updated", handleProfileUpdated);
   }, []);
 
+  const currentType = new URLSearchParams(location.search).get("type");
+
+  const isActive = (path: string) => {
+    const [pathname, query] = path.split("?");
+    if (location.pathname !== pathname) return false;
+    const type = query ? new URLSearchParams(query).get("type") : null;
+    return (type ?? null) === (currentType ?? null);
+  };
+
+  const go = (path: string) => {
+    setDrawerOpen(false);
+    navigate(path);
+  };
+
+  const avatarSrc = `${Endpoints.IMG_VIEW}/${user?.username}.webp?ver=${refresh}`;
+  const avatarFallback = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
+
+  const renderAvatar = (className = "mp-nav-avatar") => (
+    <div className={className}>
+      <img
+        src={avatarSrc}
+        alt="pfp"
+        onError={(e) => {
+          e.currentTarget.src = avatarFallback;
+        }}
+      />
+    </div>
+  );
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
-        position="static"
+        position="sticky"
         sx={{
-          backgroundColor: "rgba(4, 8, 20, 0.58)",
-          backdropFilter: "blur(16px)",
+          top: 0,
+          // Below Bootstrap's modal/backdrop (1050+) so modals still cover the bar.
+          zIndex: 1030,
+          backgroundColor: "rgba(4, 8, 20, 0.72)",
+          backdropFilter: "blur(18px)",
           borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-          boxShadow: "0 12px 30px rgba(0, 0, 0, 0.24)",
+          boxShadow: "0 12px 30px rgba(0, 0, 0, 0.28)",
+          backgroundImage: "none",
         }}
       >
-        <Toolbar>
-          {/* Logo */}
-          <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-            <img
-              src="/assets/movieplus-logo-no-bg.png"
-              alt="Movie Plus Logo"
-              style={{ height: "50px", cursor: "pointer" }}
-              onClick={() => navigate("/")}
-            />
-          </Box>
-          {/* Title */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", md: "block", cursor: "pointer" } }}
-            onClick={() => navigate("/")}
+        <Toolbar sx={{ gap: 1, minHeight: { xs: 64, md: 72 } }}>
+          <button
+            type="button"
+            className="mp-nav-brand"
+            onClick={() => go("/")}
+            aria-label="MoviePlus home"
           >
-            Movie Plus
-          </Typography>
+            <img src="/assets/movieplus-mark.svg" alt="" aria-hidden="true" />
+            <span className="mp-nav-brand-text d-none d-sm-block">
+              Movie<span>Plus</span>
+            </span>
+          </button>
 
-          {/* Search Bar */}
           {displaySearch && (
             <Search>
               <SearchIconWrapper>
-                <SearchIcon />
+                <SearchIcon fontSize="small" />
               </SearchIconWrapper>
               <StyledInputBase
                 id="movieSearchInput"
-                placeholder="Search…"
+                placeholder="Search movies & series…"
                 inputProps={{ "aria-label": "movie" }}
                 onChange={handleSearch}
               />
@@ -193,178 +230,107 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
           )}
 
           <Box sx={{ flexGrow: 1 }} />
-          <div className="d-flex align-items-center gap-2">
-            {user?.username ? (
-              <Button
-                sx={{
-                  color: "white",
-                  fontSize: "1.2rem",
-                  p: "2px 18px",
-                  minWidth: "auto",
-                  alignItems: "center",
-                  borderRight: "1px solid white",
-                  borderTopRightRadius: "0px",
-                  borderBottomRightRadius: "0px",
-                  display: { xs: "flex", md: "none" },
-                  textTransform: "none",
-                }}
-                onClick={() => navigate(`/profile/${user?.username}`)}
-              >
-                <div className="d-flex align-items-center gap-2">
-                  <span className="h6 mb-0">
-                    {user?.username}
-                  </span>
-                  <div className="header-profile-image-container">
-                    <img
-                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp?ver=${refresh}`}
-                      alt="pfp"
-                      onError={(e) => {
-                        e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
-                      }}
-                    />
-                  </div>
-                </div>
-              </Button>
-            ) : (
-              <Button
-                sx={{
-                  color: "white",
-                  fontSize: "1.2rem",
-                  p: "4px 5px",
-                  minWidth: "auto",
-                  display: { xs: "block", md: "none" }
-                }}
-                onClick={() => handleUserBtn()}
-              >
-                <User2Icon />
-              </Button>
-            )}
-            {/* Hamburger Icon for Mobile */}
-            <IconButton
-              size="large"
-              edge="end"
-              color="inherit"
-              aria-label="menu"
-              sx={{ display: { xs: "block", md: "none" } }}
-              onClick={() => toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
-          </div>
 
-          {/* Desktop Menu Items */}
-          <Box sx={{ display: { xs: "none", md: "flex" }, ml: 2 }}>
-            <Button sx={{ color: "white" }} onClick={() => navigate("/")}>
-              Home
-            </Button>
-            <Button
-              sx={{ color: "white" }}
-              onClick={() => navigate("/multiSearch")}
-            >
-              Search
-            </Button>
-            <Button
-              sx={{ color: "white" }}
-              onClick={() => navigate("/multiSearch?type=movie")}
-            >
-              Movies
-            </Button>
-            <Button
-              sx={{ color: "white" }}
-              onClick={() => navigate("/multiSearch?type=tv")}
-            >
-              TV Shows
-            </Button>
-            <Button sx={{ color: "white" }} onClick={() => navigate("/help")}>
-              Help
-            </Button>
+          {/* Desktop navigation */}
+          <Box
+            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 0.5 }}
+          >
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                className={`mp-nav-link${isActive(item.path) ? " is-active" : ""}`}
+                onClick={() => go(item.path)}
+              >
+                {item.label}
+              </button>
+            ))}
+
+            <Box sx={{ width: "1px", height: 24, bgcolor: "rgba(255,255,255,0.12)", mx: 1 }} />
 
             {user?.username ? (
               <div className="dropdown">
                 <button
-                  className="btn d-flex align-items-center gap-2"
+                  className="btn mp-nav-user"
                   type="button"
                   id="userDropdown"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
-                  style={{
-                    color: "white",
-                    fontSize: "1.2rem",
-                    padding: "2px 18px",
-                    borderLeft: "1px solid white",
-                    borderTopLeftRadius: "0px",
-                    borderBottomLeftRadius: "0px",
-                    textTransform: "none"
-                  }}
                 >
-                  <span className="h6 mb-0">
-                    {user?.username}
-                  </span>
-                  <div className="header-profile-image-container">
-                    <img
-                      src={`${Endpoints.IMG_VIEW}/${user?.username}.webp?ver=${refresh}`}
-                      alt="pfp"
-                      onError={(e) => {
-                        e.currentTarget.src = `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user?.username}&backgroundType=gradientLinear,solid`;
-                      }}
-                    />
-                  </div>
+                  {renderAvatar()}
+                  <span>{user.username}</span>
                 </button>
                 <ul
-                  className="dropdown-menu dropdown-menu-end"
+                  className="dropdown-menu dropdown-menu-end mp-nav-menu"
                   aria-labelledby="userDropdown"
-                  style={{
-                    backgroundColor: "#061337",
-                    border: "1px solid #0c2052",
-                    boxShadow: "0 0 10px rgba(0,0,0,0.2)"
-                  }}
                 >
+                  <li className="mp-nav-menu-head">
+                    <span className="mp-nav-menu-name">{user.username}</span>
+                    <span className="mp-nav-menu-sub">Signed in</span>
+                  </li>
                   <li>
-                    <a
-                      className="dropdown-item d-flex align-items-center gap-2"
-                      href={`/#/profile/${user?.username}`}
-                      style={{ color: "#f5f5f5" }}
-                    >
-                      <i className="bi bi-person-circle"></i> Profile
+                    <a className="dropdown-item" href={`/#/profile/${user.username}`}>
+                      <UserCircle2 size={17} /> Profile
                     </a>
                   </li>
                   <li>
-                    <a
-                      className="dropdown-item d-flex align-items-center gap-2"
-                      href="/#/settings"
-                      style={{ color: "#f5f5f5" }}
-                    >
-                      <i className="bi bi-gear-fill"></i> Settings
+                    <a className="dropdown-item" href="/#/settings">
+                      <Settings size={17} /> Settings
                     </a>
                   </li>
-                  <li><hr className="dropdown-divider" style={{ borderColor: "#0c2052" }} /></li>
                   <li>
-                    <a
-                      className="dropdown-item d-flex align-items-center gap-2"
-                      href="#"
+                    <button
+                      type="button"
+                      className="dropdown-item is-danger"
                       onClick={handleLogout}
-                      style={{ color: "#f5f5f5" }}
                     >
-                      <ExitToApp /> Logout
-                    </a>
+                      <LogOut size={17} /> Log out
+                    </button>
                   </li>
                 </ul>
               </div>
             ) : (
               <button
-                className="btn"
+                className="mp-nav-signin"
                 type="button"
                 onClick={() => handleUserBtn()}
-                style={{
-                  color: "white",
-                  fontSize: "1.2rem",
-                  padding: "4px 18px",
-                  minWidth: "auto"
-                }}
               >
-                <User2Icon />
+                <User2Icon size={17} />
+                Sign in
               </button>
             )}
+          </Box>
+
+          {/* Mobile controls */}
+          <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", gap: 1 }}>
+            {user?.username ? (
+              <button
+                type="button"
+                className="btn mp-nav-user"
+                onClick={() => go(`/profile/${user.username}`)}
+                aria-label="Open profile"
+              >
+                {renderAvatar()}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="mp-nav-icon-btn"
+                onClick={() => handleUserBtn()}
+                aria-label="Sign in"
+              >
+                <User2Icon size={19} />
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="mp-nav-icon-btn"
+              aria-label="Open menu"
+              onClick={() => toggleDrawer(true)}
+            >
+              <MenuIcon size={20} />
+            </button>
           </Box>
         </Toolbar>
       </AppBar>
@@ -375,76 +341,93 @@ export default function TopNavBar({ onClick, displaySearch }: SearchBarProps) {
         onClose={() => toggleDrawer(false)}
         sx={{
           "& .MuiDrawer-paper": {
-            backgroundImage:
-              "url(https://github.com/Lukka14/Lukka14.github.io/blob/master/public/assets/movieplus-full-bg.png?raw=true)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            width: 285,
+            maxWidth: "85vw",
+            backgroundColor: "rgba(8, 12, 26, 0.96)",
+            backgroundImage: "none",
+            backdropFilter: "blur(22px)",
+            borderLeft: "1px solid rgba(255, 255, 255, 0.09)",
             color: "white",
-            width: 200, // Smaller width
-            padding: 2, // Add padding inside the drawer
           },
         }}
       >
-
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Button
-            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
-            onClick={() => navigate("/")}
-          >
-            Home
-          </Button>
-          <Button
-            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
-            onClick={() => navigate("/multiSearch")}
-          >
-            Search
-          </Button>
-          <Button
-            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
-            onClick={() => navigate("/multiSearch?type=movie")}
-          >
-            Movies
-          </Button>
-          <Button
-            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
-            onClick={() => navigate("/multiSearch?type=tv")}
-          >
-            TV Shows
-          </Button>
-          <Button
-            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
-            onClick={() => navigate("/help")}
-          >
-            Help
-          </Button>
-          <Button
-            sx={{ width: "100%", color: "white", fontSize: "1.2rem" }}
-            onClick={() => navigate("/settings")}
-          >
-            Settings
-          </Button>
-          {user?.username && (
-            <Button
-              sx={{
-                color: "#FF4C4C",
-                fontSize: "1.2rem",
-                display: "flex",
-                gap: "10px",
-              }}
-              onClick={() => handleLogout()}
+        <div className="mp-drawer">
+          <div className="mp-drawer-head">
+            <span className="mp-nav-brand-text">
+              Movie<span>Plus</span>
+            </span>
+            <button
+              type="button"
+              className="mp-nav-icon-btn"
+              onClick={() => toggleDrawer(false)}
+              aria-label="Close menu"
             >
-              <ExitToApp /> Logout
-            </Button>
+              <X size={19} />
+            </button>
+          </div>
+
+          {user?.username ? (
+            <button
+              type="button"
+              className="mp-drawer-user"
+              onClick={() => go(`/profile/${user.username}`)}
+            >
+              {renderAvatar()}
+              <span style={{ minWidth: 0 }}>
+                <span className="mp-drawer-user-name">{user.username}</span>
+                <span className="mp-drawer-user-sub">View profile</span>
+              </span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="mp-nav-signin w-100 justify-content-center mb-3"
+              onClick={() => {
+                setDrawerOpen(false);
+                handleUserBtn();
+              }}
+            >
+              <User2Icon size={17} />
+              Sign in
+            </button>
           )}
-        </Box>
+
+          <nav className="mp-drawer-nav">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                className={`mp-drawer-link${isActive(item.path) ? " is-active" : ""}`}
+                onClick={() => go(item.path)}
+              >
+                <item.icon size={18} />
+                {item.label}
+              </button>
+            ))}
+            <button
+              type="button"
+              className={`mp-drawer-link${isActive("/settings") ? " is-active" : ""}`}
+              onClick={() => go("/settings")}
+            >
+              <Settings size={18} />
+              Settings
+            </button>
+          </nav>
+
+          {user?.username && (
+            <div className="mp-drawer-foot">
+              <button
+                type="button"
+                className="mp-drawer-link is-danger"
+                onClick={handleLogout}
+              >
+                <LogOut size={18} />
+                Log out
+              </button>
+            </div>
+          )}
+        </div>
       </Drawer>
-    </Box >
+    </Box>
   );
 }

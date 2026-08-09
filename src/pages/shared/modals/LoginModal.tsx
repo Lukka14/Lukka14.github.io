@@ -181,7 +181,7 @@ export default function LoginModal() {
             <div className="auth-modal-head">
               <img
                 className="auth-modal-logo"
-                src="/assets/movieplus-logo-no-bg.png"
+                src="/assets/movieplus-mark.svg"
                 alt="MoviePlus"
               />
               <h5 className="auth-modal-title" id="loginModalLabel">

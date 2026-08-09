@@ -83,9 +83,9 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList, isLoading = false }) =
                   <th aria-label="Poster" />
                   <th>Title</th>
                   <th>Rating</th>
-                  <th>Year</th>
-                  <th>Language</th>
-                  <th>Genres</th>
+                  <th className="help-col-year">Year</th>
+                  <th className="help-col-lang">Language</th>
+                  <th className="help-col-genres">Genres</th>
                 </tr>
               </thead>
               <tbody>
@@ -128,13 +128,13 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList, isLoading = false }) =
                         <span className="help-muted">N/A</span>
                       )}
                     </td>
-                    <td className="help-muted">
+                    <td className="help-muted help-col-year">
                       {media.releaseYear?.split("-")[0] ?? "N/A"}
                     </td>
-                    <td className="help-muted">
+                    <td className="help-muted help-col-lang">
                       {media.originalLanguage?.toUpperCase() ?? "N/A"}
                     </td>
-                    <td>
+                    <td className="help-col-genres">
                       {media.genreList?.length ? (
                         <div className="help-genres">
                           {media.genreList.slice(0, 3).map((genre) => (

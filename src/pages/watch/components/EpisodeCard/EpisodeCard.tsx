@@ -1,4 +1,5 @@
 import React from "react";
+import { Play } from "lucide-react";
 import './EpisodeCard.css';
 
 interface Episode {
@@ -16,39 +17,55 @@ interface Episode {
 interface EpisodeCardProps {
     episode: Episode;
     isSelected: boolean;
+    hideSpoilers?: boolean;
     onClick: (seasonNumber: number, episodeNumber: number) => void
 }
 
-export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, isSelected, onClick: SelectEpisode }) => {
-    return (
-        <>
-            <div className="episode-card">
-                <div
-                    className={`episode-card-inner ${isSelected ? 'selected' : ''}`}
-                    onClick={() => SelectEpisode(episode.seasonNumber, episode.episodeNumber)}
-                >
-                    <span className="episode-number">EP {episode.episodeNumber}</span>
-                    {episode.runtime && (
-                        <span className="episode-runtime">{episode.runtime} min</span>
-                    )}
-                    <img
-                        src={episode.stillPath || "https://via.placeholder.com/300x170?text=No+Image"}
-                        alt={`Episode ${episode.episodeNumber}`}
-                        className="episode-image"
-                        onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "https://via.placeholder.com/300x170?text=No+Image";
-                        }}
-                    />
-                    <div className="play-icon-wrapper">
-                        <div className="play-icon" />
-                    </div>
-                </div>
+const FALLBACK_STILL = "https://via.placeholder.com/300x170?text=No+Image";
 
-                <p className="episode-title" title={episode.name}>
-                    {episode.name}
-                </p>
+export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, isSelected, hideSpoilers, onClick: SelectEpisode }) => {
+    const select = () => SelectEpisode(episode.seasonNumber, episode.episodeNumber);
+
+    return (
+        <div className="episode-card">
+            <div
+                className={`episode-card-inner ${isSelected ? 'selected' : ''}`}
+                onClick={select}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        select();
+                    }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Play episode ${episode.episodeNumber}: ${episode.name}`}
+            >
+                <img
+                    src={episode.stillPath || FALLBACK_STILL}
+                    alt={`Episode ${episode.episodeNumber}`}
+                    className={`episode-image${hideSpoilers ? ' is-blurred' : ''}`}
+                    loading="lazy"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = FALLBACK_STILL;
+                    }}
+                />
+
+                <span className="episode-number">EP {episode.episodeNumber}</span>
+                {episode.runtime > 0 && (
+                    <span className="episode-runtime">{episode.runtime}m</span>
+                )}
+                {isSelected && <span className="episode-now-playing">Now playing</span>}
+
+                <div className="play-icon-wrapper">
+                    <Play size={16} fill="currentColor" strokeWidth={0} />
+                </div>
             </div>
-        </>
+
+            <p className="episode-title" title={episode.name}>
+                {episode.name}
+            </p>
+        </div>
     );
 };

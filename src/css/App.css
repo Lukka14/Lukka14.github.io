@@ -139,12 +139,39 @@
    transform: scale(1.05);
  }
 
- @media screen and (max-width: 767px) {
-   .footer-dark .footer-logo {
-     height: 60px;
-   }
- }
-
  .dropdown-item:hover {
    background-color: #0f1e45 !important;
  }
+/* ---------------------------------------------------------------------------
+   Browser autofill (Chrome / Edge)
+
+   mdb-react-ui-kit ships a GLOBAL rule:
+     input:-webkit-autofill { box-shadow: #fff 0 0 20px 20px inset !important;
+                              background-clip: text; }
+   On this dark theme that turns every autofilled field into a solid white block
+   with unreadable text. It is !important and global, so per-form rules lose.
+
+   Beat it with higher specificity (html + type + pseudo-class) and !important.
+   Forms can tune the fill via --mp-autofill-bg / --mp-autofill-color.
+   animation-name is deliberately left alone: MDB relies on it to detect autofill
+   for its floating labels.
+   --------------------------------------------------------------------------- */
+html input:-webkit-autofill,
+html input:-webkit-autofill:hover,
+html input:-webkit-autofill:focus,
+html input:-webkit-autofill:active,
+html select:-webkit-autofill,
+html select:-webkit-autofill:hover,
+html select:-webkit-autofill:focus,
+html textarea:-webkit-autofill,
+html textarea:-webkit-autofill:hover,
+html textarea:-webkit-autofill:focus {
+  box-shadow: 0 0 0 100vmax var(--mp-autofill-bg, #141a32) inset !important;
+  -webkit-text-fill-color: var(--mp-autofill-color, #fff) !important;
+  background-clip: border-box !important;
+  border-radius: inherit;
+  caret-color: var(--mp-autofill-color, #fff);
+  /* Chrome re-applies its own background after the pseudo-class settles; an
+     absurdly long transition keeps ours on screen. */
+  transition: background-color 5000s ease-in-out 0s;
+}

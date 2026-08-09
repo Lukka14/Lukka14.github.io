@@ -2,12 +2,11 @@ import React, { Dispatch, useEffect, useState } from "react";
 import { ImdbMedia, TvSeries, MediaType, Season, Movie } from "../../../models/Movie";
 import { SeasonEpisode } from "../WatchPage";
 import { convertMinutes, fetchAllPages, formatMoney } from "../../../utils/Utils";
-import { BookmarkIcon, HeartIcon } from "lucide-react";
+import { BookmarkIcon, Clapperboard, Clock3, Globe, HeartIcon, Star, Tv } from "lucide-react";
 import axios from "axios";
 import { Endpoints } from "../../../config/Config";
 import Cookies from "js-cookie";
 import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardService";
-import { Snackbar, SnackbarCloseReason, Tooltip } from "@mui/material";
 import { CustomToast } from "../../shared/Toast";
 import EpisodeCarousel from "./EpisodeCarousel/EpisodeCarousel";
 import { getCurrentUser } from "../../../services/UserService";
@@ -36,8 +35,6 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [isHeartHovered, setIsHeartHovered] = useState(false);
-  const [isBookmarkIconHovered, setIsBookmarkIconHovered] = useState(false);
   const [isInWatchList, setIsInWatchList] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,12 +42,13 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
   const seasonFromQuery = Number(queryParams.get("s"));
   const episodeFromQuery = Number(queryParams.get("e"));
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
   useEffect(() => {
     async function userFetch() {
       setIsLoggedIn(!!(await getCurrentUser())?.username);
     }
     userFetch();
-  }, [isLoggedIn])
+  }, []);
 
   useEffect(() => {
     if (media && media.mediaType === MediaType.TV_SERIES) {
@@ -141,8 +139,8 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
 
   if (!media) {
     return (
-      <div className="container mt-5">
-        <div className="alert alert-danger" role="alert">
+      <div className="watch-panel">
+        <div className="watch-empty-note">
           Unable to display media information. Please try again later.
         </div>
       </div>
@@ -150,7 +148,6 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
   }
 
   const isTvSeries = media.mediaType === MediaType.TV_SERIES;
-  const genres = media.genreList?.join(", ") || "Unknown";
 
   const handleSeasonClick = (season: Season) => {
     setSelectedSeason(season);
@@ -167,172 +164,169 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media, setSeasonEpisode, isPlayin
     setIsPlaying(true)
   };
 
-  const textClass = "text-light fw-bold";
-
   const runtime = (media as Movie).runtime;
   const budget = (media as Movie).budget;
+  const releaseYear = media.releaseYear ? new Date(media.releaseYear).getFullYear() : null;
 
   let hours = 0, minutes = 0;
   if (!isTvSeries && runtime) {
     ({ hours, minutes } = convertMinutes(runtime));
   }
 
+  const runtimeLabel = runtime
+    ? [hours > 0 ? `${hours}h` : null, minutes > 0 ? `${minutes}m` : null]
+      .filter(Boolean)
+      .join(" ")
+    : null;
+
   return (
     <>
       <CustomToast open={toastOpen} setOpen={setToastOpen} />
 
-      <div className="container-xl" style={{ fontFamily: "Roboto" }}>
-        <div
-          className="card shadow-lg"
-          style={{
-            backgroundImage: `url(${media.backDropUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            color: "white",
-          }}
-        >
-          <div
-            className="card-body p-4"
-            style={{
-              backdropFilter: "blur(8px)",
-              background: "rgba(0, 0, 0, 0.7)",
-            }}
-          >
-            <div className="row">
-              <div className="col-md-4">
-                <img
-                  src={media.posterUrl}
-                  alt={media.title}
-                  className="img-fluid rounded shadow"
-                />
-              </div>
-              <div className="col-md-8">
-                <div className="d-flex align-items-center justify-content-between resHeader">
-                  <h1 style={{ paddingTop: '0px' }} className="mb-0">{media.title}</h1>
-                  <div className="d-flex align-items-center gap-3">
-                    <Tooltip title={isFavorite ? "Remove from favourites" : "Add to favourites"}>
-                      <HeartIcon
-                        size={36}
-                        style={{
-                          cursor: "pointer",
-                          fill: isFavorite ? isHeartHovered ? "none" : "orange" : isHeartHovered ? "orange" : "none",
-                          stroke: "#FFD580",
-                          transition: "all 0.2s ease-in-out"
-                        }}
-                        onClick={handleFavoriteClick}
-                        onMouseEnter={() => setIsHeartHovered(true)}
-                        onMouseLeave={() => setIsHeartHovered(false)}
-                      />
-                    </Tooltip>
-
-                    <Tooltip title={isInWatchList ? "Remove from watchlist" : "Add to watchlist"}>
-                      <BookmarkIcon
-                        size={36}
-                        style={{
-                          cursor: "pointer",
-                          fill: isInWatchList ? isBookmarkIconHovered ? "none" : "#00BFFF" : isBookmarkIconHovered ? "#00BFFF" : "none",
-                          stroke: "#87CEFA",
-                          transition: "all 0.2s ease-in-out"
-                        }}
-                        onClick={handleWatchlistClick}
-                        onMouseEnter={() => setIsBookmarkIconHovered(true)}
-                        onMouseLeave={() => setIsBookmarkIconHovered(false)}
-                      />
-                    </Tooltip>
-                  </div>
-                </div>
-
-                <p style={{
-                  color: "#dcd8d8"
-                }}>
-                  ({media.originalLanguage?.toUpperCase()})
-                </p>
-
-                <div>
-                  <span className={textClass}>Description:</span>
-                  <p className="text-light">
-                    {media.overview}
-                  </p>
-                </div>
-                <p>
-                  <strong className={textClass}>Genres:</strong> {genres}
-                </p>
-                <p>
-                  <strong className={textClass}>Release Year:</strong> {media.releaseYear ? new Date(media.releaseYear).getFullYear() : "N/A"}
-                </p>
-                {media.imdbId && (
-                  <p>
-                    <strong className={textClass}>IMDb: ⭐</strong>{" "}
-                    <a
-                      href={`https://www.imdb.com/title/${media.imdbId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-warning"
-                    >
-                      {media.imdbRating} ({media.imdbVotes} votes)
-                    </a>
-                  </p>
-                )}
-                {isTvSeries && (
-                  <>
-                    <p>
-                      <strong className={textClass}>Number of Seasons:</strong>{" "}
-                      {(media as TvSeries).numberOfSeasons}
-                    </p>
-                    <p>
-                      <strong className={textClass}>Number of Episodes:</strong>{" "}
-                      {(media as TvSeries).numberOfEpisodes}
-                    </p>
-                  </>
-                )}
-                {!isTvSeries && (
-                  <>
-                    <p>
-                      <strong>Duration:</strong>{" "}
-                      {runtime ? (
-                        <>
-                          {hours > 0 && <>{hours} Hours </>}
-                          {minutes > 0 && <>{minutes} Minutes</>}
-                        </>
-                      ) : (
-                        "N/A"
-                      )}
-                    </p>
-                    <p>
-                      <strong>Budget:</strong> {budget ? <>${formatMoney(budget)}</> : "N/A"}
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-            {selectedSeason && (
-              <div className="mt-4">
-                {episodes.length > 0 ? (
-                  <EpisodeCarousel
-                    episodes={episodes}
-                    selectedEpisode={selectedEpisode}
-                    onEpisodeClick={handleEpisodeClick}
-                    seasonNumber={selectedSeason.seasonNumber}
-                    seasonName={selectedSeason.name}
-                    media={media}
-                    selectedSeason={selectedSeason}
-                    handleSeasonClick={handleSeasonClick}
-                    loading={loading}
-                  />
-
-                ) : (
-                  <div className="alert alert-info">
-                    No episode data available for this season.
-                  </div>
-                )}
-              </div>
+      <div className="watch-panel">
+        <div className="watch-info-grid">
+          <div>
+            {media.posterUrl && (
+              <img
+                src={media.posterUrl}
+                alt={media.title}
+                className="watch-poster"
+                loading="lazy"
+              />
             )}
           </div>
 
+          <div>
+            <h1 className="watch-title">{media.title}</h1>
+
+            <div className="watch-meta-row">
+              <span className="watch-chip">
+                {isTvSeries ? <Tv size={14} /> : <Clapperboard size={14} />}
+                {isTvSeries ? "Series" : "Movie"}
+              </span>
+              {releaseYear && <span className="watch-chip">{releaseYear}</span>}
+              {runtimeLabel && (
+                <span className="watch-chip">
+                  <Clock3 size={14} />
+                  {runtimeLabel}
+                </span>
+              )}
+              {isTvSeries && (media as TvSeries).numberOfSeasons != null && (
+                <span className="watch-chip">
+                  {(media as TvSeries).numberOfSeasons} season
+                  {(media as TvSeries).numberOfSeasons === 1 ? "" : "s"}
+                </span>
+              )}
+              {media.originalLanguage && (
+                <span className="watch-chip">
+                  <Globe size={14} />
+                  {media.originalLanguage.toUpperCase()}
+                </span>
+              )}
+              {media.imdbId && media.imdbRating && (
+                <a
+                  href={`https://www.imdb.com/title/${media.imdbId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="watch-chip watch-chip--rating"
+                  title="View on IMDb"
+                >
+                  <Star size={14} fill="currentColor" />
+                  {media.imdbRating}
+                </a>
+              )}
+            </div>
+
+            {media.genreList && media.genreList.length > 0 && (
+              <div className="watch-genres">
+                {media.genreList.map((genre) => (
+                  <span key={genre} className="watch-genre-tag">
+                    {genre}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {media.overview && <p className="watch-overview">{media.overview}</p>}
+
+            <div className="watch-actions mb-4">
+              <button
+                type="button"
+                className={`watch-action-btn ${isFavorite ? "is-active-fav" : ""}`}
+                onClick={handleFavoriteClick}
+              >
+                <HeartIcon size={17} fill={isFavorite ? "currentColor" : "none"} />
+                {isFavorite ? "In favourites" : "Favourite"}
+              </button>
+              <button
+                type="button"
+                className={`watch-action-btn ${isInWatchList ? "is-active-list" : ""}`}
+                onClick={handleWatchlistClick}
+              >
+                <BookmarkIcon size={17} fill={isInWatchList ? "currentColor" : "none"} />
+                {isInWatchList ? "In watchlist" : "Watchlist"}
+              </button>
+            </div>
+
+            <div className="watch-stats">
+              {media.imdbVotes && (
+                <div className="watch-stat">
+                  <span className="watch-stat-label">IMDb votes</span>
+                  <span className="watch-stat-value">{media.imdbVotes}</span>
+                </div>
+              )}
+              {isTvSeries && (media as TvSeries).numberOfEpisodes != null && (
+                <div className="watch-stat">
+                  <span className="watch-stat-label">Episodes</span>
+                  <span className="watch-stat-value">
+                    {(media as TvSeries).numberOfEpisodes}
+                  </span>
+                </div>
+              )}
+              {!isTvSeries && budget != null && budget > 0 && (
+                <div className="watch-stat">
+                  <span className="watch-stat-label">Budget</span>
+                  <span className="watch-stat-value">${formatMoney(budget)}</span>
+                </div>
+              )}
+              {media.release_date && (
+                <div className="watch-stat">
+                  <span className="watch-stat-label">Released</span>
+                  <span className="watch-stat-value">
+                    {new Date(media.release_date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
+        {selectedSeason && (
+          <div className="watch-episodes">
+            {episodes.length > 0 ? (
+              <EpisodeCarousel
+                episodes={episodes}
+                selectedEpisode={selectedEpisode}
+                onEpisodeClick={handleEpisodeClick}
+                seasonNumber={selectedSeason.seasonNumber}
+                seasonName={selectedSeason.name}
+                media={media}
+                selectedSeason={selectedSeason}
+                handleSeasonClick={handleSeasonClick}
+                loading={loading}
+              />
+            ) : (
+              <div className="watch-empty-note">
+                No episode data available for this season.
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
     </>
   );
 };

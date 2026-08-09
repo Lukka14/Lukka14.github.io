@@ -204,6 +204,8 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
+  /* Autofill fill colour (see css/App.css) tuned to this panel's surface. */
+  --mp-autofill-bg: #1b2140;
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
@@ -247,6 +249,42 @@
   border-collapse: separate;
   border-spacing: 0;
   color: #fff;
+}
+
+/* Drop the low-signal columns on narrow screens rather than forcing a 760px
+   sideways scroll just to read a title. */
+@media (max-width: 991px) {
+  .help-table {
+    min-width: 0;
+  }
+
+  .help-table .help-col-genres,
+  .help-table .help-col-lang {
+    display: none;
+  }
+}
+
+@media (max-width: 575px) {
+  .help-table .help-col-year {
+    display: none;
+  }
+
+  .help-table .help-title-cell {
+    min-width: 0;
+  }
+
+  .help-table .help-poster {
+    width: 34px;
+    height: 51px;
+  }
+
+  .help-table .help-poster-cell {
+    width: 44px;
+  }
+
+  .help-table .help-rank {
+    width: 38px;
+  }
 }
 
 .help-table thead th {

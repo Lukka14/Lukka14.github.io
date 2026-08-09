@@ -41,22 +41,6 @@
   word-break: break-all;
 }
 
-.contact-soon-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  background: rgba(245, 158, 11, 0.16);
-  color: #fcd34d;
-  font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
 .contact-copy-btn {
   display: inline-flex;
   align-items: center;
@@ -95,4 +79,40 @@
   flex-shrink: 0;
   margin-top: 2px;
   color: rgba(165, 180, 252, 0.9);
+}
+
+.contact-address-label {
+  color: rgba(225, 232, 255, 0.55);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+a.contact-address-value {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a.contact-address-value:hover,
+a.contact-address-value:focus-visible {
+  color: #c7d2fe;
+  text-decoration: underline;
+}
+
+/* .auth-submit is styled for <button>; as an <a> it needs the flex centring back. */
+a.auth-submit.contact-mail-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  text-decoration: none;
+}
+
+.contact-dismiss {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+  text-align: center;
 }

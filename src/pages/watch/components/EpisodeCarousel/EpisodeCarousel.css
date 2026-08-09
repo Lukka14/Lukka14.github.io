@@ -1,79 +1,4 @@
-.custom-dropdown {
-    position: relative !important;
-    display: inline-block !important;
-}
-
-.custom-dropdown-button {
-    background-color: transparent !important;
-    border: 2px solid #f5f5f5 !important;
-    color: white !important;
-    padding-left: 36px !important;
-    font-family: 'Roboto', sans-serif !important;
-    font-size: 0.8rem !important;
-    width: 100% !important;
-    text-align: left !important;
-    position: relative !important;
-    padding: 7px !important;
-    display: flex !important;
-    align-items: center !important;
-}
-
-.custom-dropdown-button:hover,
-.custom-dropdown-button:focus,
-.custom-dropdown-button:active,
-.show>.custom-dropdown-button {
-    background-color: transparent !important;
-    border: 2px solid #f5f5f5 !important;
-    color: white !important;
-    box-shadow: none !important;
-}
-
-.custom-dropdown .icon-left {
-    position: absolute !important;
-    left: 12px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    pointer-events: none !important;
-}
-
-.custom-dropdown-menu {
-    background-color: #1a1a1a !important;
-    min-width: 100% !important;
-    border: none !important;
-    border-radius: 0 0 6px 6px !important;
-    padding: 0 !important;
-    max-height: 200px !important;
-    overflow-y: auto !important;
-}
-
-
-.custom-dropdown-menu .dropdown-item {
-    color: #f5f5f5 !important;
-    font-size: 0.9rem !important;
-    padding: 8px 16px !important;
-}
-
-.custom-dropdown-menu .dropdown-item:hover {
-    background-color: #2a2a2a !important;
-    color: #ffffff !important;
-}
-
-.icon-left,
-.icon-right {
-    position: absolute;
-    pointer-events: none;
-    width: 16px;
-    height: 16px;
-    fill: #f5f5f5;
-}
-
-.icon-left {
-    left: 10px;
-}
-
-.icon-right {
-    right: 10px;
-}
+/* Episode carousel + season selector. Scoped to episodes-* / season-* so nothing leaks. */
 
 .episodes-container {
     width: 100%;
@@ -85,57 +10,313 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.15rem;
+}
+
+.episodes-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
 }
 
 .episodes-title {
-    font-size: 24px;
-    font-weight: bold;
     margin: 0;
-    color: white;
-    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
 }
+
+.episodes-count {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(225, 232, 255, 0.7);
+    font-size: 0.76rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ---------- Spoiler blur toggle ---------- */
+
+.spoiler-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(225, 232, 255, 0.85);
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.spoiler-toggle:hover,
+.spoiler-toggle:focus-visible {
+    background: rgba(255, 255, 255, 0.13);
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #fff;
+    outline: none;
+}
+
+.spoiler-toggle.is-active {
+    border-color: rgba(129, 140, 248, 0.6);
+    background: rgba(99, 102, 241, 0.22);
+    color: #e0e7ff;
+}
+
+.spoiler-toggle.is-active:hover,
+.spoiler-toggle.is-active:focus-visible {
+    background: rgba(99, 102, 241, 0.32);
+    border-color: rgba(165, 180, 252, 0.8);
+    color: #fff;
+}
+
+/* ---------- Season selector ---------- */
+
+.season-select {
+    position: relative;
+}
+
+.btn.season-select-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(129, 140, 248, 0.55);
+    background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.32),
+        rgba(236, 72, 153, 0.22)
+    );
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.2;
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.28);
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn.season-select-btn svg {
+    color: #c7d2fe;
+    flex-shrink: 0;
+}
+
+.season-select-label {
+    color: rgba(225, 232, 255, 0.7);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.btn.season-select-btn:hover,
+.btn.season-select-btn:focus-visible,
+.season-select.show .btn.season-select-btn {
+    background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.5),
+        rgba(236, 72, 153, 0.34)
+    );
+    border-color: rgba(165, 180, 252, 0.85);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(99, 102, 241, 0.4);
+}
+
+.btn.season-select-btn::after {
+    /* Replace Bootstrap's default caret with a chevron that rotates when open. */
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-left: 0.15rem;
+    border: 0;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.season-select.show .btn.season-select-btn::after {
+    transform: translateY(1px) rotate(-135deg);
+}
+
+/* Raised specificity: Bootstrap's own .dropdown-menu rules would otherwise win on
+   min-width/padding since they carry the same specificity and load later. */
+.dropdown-menu.season-select-menu {
+    min-width: 230px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 0.4rem;
+    margin-top: 0.4rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(12, 17, 34, 0.97);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 22px 46px rgba(0, 0, 0, 0.55);
+}
+
+.dropdown-menu.season-select-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown-menu.season-select-menu::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.season-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(235, 240, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: left;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.season-option:hover,
+.season-option:focus-visible {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.season-option.is-selected {
+    background: rgba(99, 102, 241, 0.38);
+    color: #fff;
+    font-weight: 700;
+}
+
+.season-option-meta {
+    flex-shrink: 0;
+    color: rgba(225, 232, 255, 0.6);
+    font-size: 0.78rem;
+}
+
+.season-option.is-selected .season-option-meta {
+    color: rgba(199, 210, 254, 0.85);
+}
+
+/* ---------- Paging controls ---------- */
 
 .episodes-controls {
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.episodes-page-indicator {
+    color: rgba(225, 232, 255, 0.6);
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 .episodes-button {
-    width: 35px;
-    height: 35px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background-color:  rgba(23, 162, 184, 0.4);
-    border: none;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.3s;
     color: #fff;
+    transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 }
 
 .episodes-button:hover:not(:disabled) {
-    background-color:   rgba(23, 162, 184, 0.6);
+    background: rgba(99, 102, 241, 0.3);
+    border-color: rgba(129, 140, 248, 0.6);
 }
 
 .episodes-button:disabled {
-    opacity: 0.4;
+    opacity: 0.3;
     cursor: not-allowed;
 }
 
+/* ---------- Track ---------- */
+
 .episodes-track-container {
+    position: relative;
     overflow: visible;
 }
 
 .episodes-track {
     display: flex;
-    transition: transform 0.5s ease;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.episode-card {
+.episode-slide {
     flex: 0 0 auto;
-    padding: 0 10px;
+    padding: 0 8px;
     box-sizing: border-box;
 }
 
+.episodes-loading-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(8, 12, 26, 0.65);
+    backdrop-filter: blur(3px);
+}
+
+.episodes-empty {
+    padding: 1rem 1.15rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(225, 232, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 575px) {
+    .episodes-header {
+        justify-content: center;
+    }
+
+    .spoiler-toggle-text {
+        display: none;
+    }
+
+    .spoiler-toggle {
+        padding: 0.6rem 0.7rem;
+    }
+
+    .season-select {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .btn.season-select-btn {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .episodes-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

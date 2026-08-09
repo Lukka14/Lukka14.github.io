@@ -50,9 +50,9 @@ export enum RoutePaths {
 }
 
 /**
- * Registration is paused until the backend has a transactional email provider wired up
- * for verification emails. Flip this back to true once /auth/register can send them.
+ * Registration requires the backend to send verification emails. Flip this to false
+ * again if the transactional email provider ever goes down.
  */
 export const FeatureFlags = {
-  REGISTRATION_ENABLED: false,
+  REGISTRATION_ENABLED: true,
 };

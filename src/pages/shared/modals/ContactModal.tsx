@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Clock, Copy, LifeBuoy, Mail, XIcon } from "lucide-react";
+import { Check, Copy, LifeBuoy, Mail, Send, XIcon } from "lucide-react";
 import "./auth-modal.css";
 import "./contact-modal.css";
 
@@ -49,18 +49,20 @@ export default function ContactModal() {
                 Contact us
               </h5>
               <p className="auth-modal-subtitle">
-                Our support inbox is still being set up, so we cannot reply just
-                yet. This is the address it will live at.
+                Found a bug, a broken stream or a missing title? Email us and
+                we'll get back to you.
               </p>
             </div>
 
             <div className="contact-address">
               <div className="contact-address-main">
-                <span className="contact-address-value">{SUPPORT_EMAIL}</span>
-                <span className="contact-soon-pill">
-                  <Clock size={13} />
-                  Coming soon
-                </span>
+                <span className="contact-address-label">Support inbox</span>
+                <a
+                  className="contact-address-value"
+                  href={`mailto:${SUPPORT_EMAIL}`}
+                >
+                  {SUPPORT_EMAIL}
+                </a>
               </div>
               <button
                 type="button"
@@ -75,18 +77,29 @@ export default function ContactModal() {
             <div className="contact-note">
               <LifeBuoy size={17} />
               <span>
-                In the meantime, the FAQ on the help page covers the most common
-                questions about playback, accounts and missing titles.
+                The FAQ on the help page covers the most common questions about
+                playback, accounts and missing titles — it's often the fastest
+                answer.
               </span>
             </div>
 
+            <a
+              className="auth-submit contact-mail-btn"
+              href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+                "MoviePlus support"
+              )}`}
+            >
+              <Send size={16} />
+              Email support
+            </a>
+
             <button
               type="button"
-              className="auth-submit"
+              className="auth-link contact-dismiss"
               data-bs-dismiss="modal"
               onClick={() => setCopied(false)}
             >
-              Got it
+              Close
             </button>
           </div>
         </div>

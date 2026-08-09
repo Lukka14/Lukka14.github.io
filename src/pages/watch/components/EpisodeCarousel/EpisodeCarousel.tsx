@@ -1,8 +1,18 @@
-import React, { useState, useEffect, Dispatch } from "react";
-import { ImdbMedia, Media, Season, TvSeries } from "../../../../models/Movie";
-import { ListOrdered } from "lucide-react";
+import React, { useState, useEffect, useMemo } from "react";
+import { ImdbMedia, Season, TvSeries } from "../../../../models/Movie";
+import { ChevronLeft, ChevronRight, Eye, EyeOff, ListOrdered } from "lucide-react";
 import { EpisodeCard } from "../EpisodeCard/EpisodeCard";
 import './EpisodeCarousel.css';
+
+const SPOILER_STORAGE_KEY = "mp:hideEpisodeSpoilers";
+
+const readSpoilerPreference = (): boolean => {
+  try {
+    return localStorage.getItem(SPOILER_STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
+};
 
 interface Episode {
   id: number;
@@ -32,8 +42,6 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
   episodes,
   selectedEpisode,
   onEpisodeClick,
-  seasonNumber,
-  seasonName,
   media,
   selectedSeason,
   handleSeasonClick,
@@ -41,6 +49,19 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
 }) => {
   const [startIndex, setStartIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(4);
+  const [hideSpoilers, setHideSpoilers] = useState(readSpoilerPreference);
+
+  const toggleSpoilers = () => {
+    setHideSpoilers((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(SPOILER_STORAGE_KEY, String(next));
+      } catch {
+        /* storage unavailable (private mode) — keep the in-memory state */
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -56,7 +77,7 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const maxIndex = (Math.ceil(episodes.length / cardsToShow) - 1) * cardsToShow;
+  const maxIndex = Math.max(0, (Math.ceil(episodes.length / cardsToShow) - 1) * cardsToShow);
 
   const handlePrev = () => {
     setStartIndex(prev => Math.max(0, prev - cardsToShow));
@@ -79,106 +100,148 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
     }
   }, [selectedEpisode, episodes, cardsToShow]);
 
-  const handleSeasonClickWrapper = (season: any) => {
+  const handleSeasonClickWrapper = (season: Season) => {
     setStartIndex(0);
     handleSeasonClick?.(season);
-  }
+  };
+
+  const seasons = useMemo(
+    () =>
+      (media as TvSeries).seasonList?.filter(
+        (season) =>
+          season.seasonNumber !== 0 &&
+          !season.name?.toLowerCase().includes('special') &&
+          (season.episodeCount === undefined || season.episodeCount > 0)
+      ) ?? [],
+    [media]
+  );
+
+  const totalPages = Math.max(1, Math.ceil(episodes.length / cardsToShow));
+  const currentPage = Math.floor(startIndex / cardsToShow) + 1;
 
   return (
-    <>
-      <div className="episodes-container">
-        <div className="episodes-header">
-          <div className="dropdown custom-dropdown">
+    <div className="episodes-container">
+      <div className="episodes-header">
+        <div className="episodes-heading">
+          <h3 className="episodes-title">Episodes</h3>
+          {episodes.length > 0 && (
+            <span className="episodes-count">{episodes.length} total</span>
+          )}
+        </div>
+
+        <div className="d-flex align-items-center flex-wrap gap-2">
+          <button
+            type="button"
+            className={`spoiler-toggle${hideSpoilers ? ' is-active' : ''}`}
+            onClick={toggleSpoilers}
+            aria-pressed={hideSpoilers}
+            title={
+              hideSpoilers
+                ? 'Episode thumbnails are blurred — click to show them'
+                : 'Blur episode thumbnails to avoid spoilers'
+            }
+          >
+            {hideSpoilers ? <EyeOff size={16} /> : <Eye size={16} />}
+            <span className="spoiler-toggle-text">
+              {hideSpoilers ? 'Spoilers hidden' : 'Hide spoilers'}
+            </span>
+          </button>
+
+          <div className="dropdown season-select">
             <button
-              className="btn dropdown-toggle custom-dropdown-button"
+              className="btn season-select-btn"
               type="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <ListOrdered style={{
-                width: "16px",
-                marginRight: "9px"
-              }} />
-              {selectedSeason ? `Season ${selectedSeason.seasonNumber}` : 'Select Season'}
+              <ListOrdered size={17} />
+              <span className="season-select-label">Season</span>
+              {selectedSeason ? selectedSeason.seasonNumber : 'Select'}
             </button>
-            <ul className="dropdown-menu dropdown-menu-dark custom-dropdown-menu">
-              {(media as TvSeries).seasonList
-                ?.filter(season =>
-                  season.seasonNumber !== 0 &&
-                  !season.name?.toLowerCase().includes('special') &&
-                  (season.episodeCount === undefined || season.episodeCount > 0)
-                )
-                .map((season, index) => (
-                  <li key={season.id}>
-                    <button
-                      className="dropdown-item"
-                      onClick={() => handleSeasonClickWrapper?.(season)}
-                    >
-                      Season {index + 1}
-                    </button>
-                  </li>
-                ))}
+            <ul className="dropdown-menu season-select-menu">
+              {seasons.map((season) => (
+                <li key={season.id}>
+                  <button
+                    type="button"
+                    className={`season-option${
+                      season.seasonNumber === selectedSeason?.seasonNumber
+                        ? ' is-selected'
+                        : ''
+                    }`}
+                    onClick={() => handleSeasonClickWrapper(season)}
+                  >
+                    {/* Label from seasonNumber, not the filtered array index — specials
+                        are filtered out, so an index would drift from the real season. */}
+                    <span>Season {season.seasonNumber}</span>
+                    {season.episodeCount != null && (
+                      <span className="season-option-meta">
+                        {season.episodeCount} ep
+                        {season.episodeCount === 1 ? '' : 's'}
+                      </span>
+                    )}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
-          <div className="episodes-controls d-flex align-items-center">
-            <span className="page-indicator h5 mb-0" style={{
-              color: "#f5f5f5",
-              marginRight: "10px"
-            }}>
-              {Math.floor(startIndex / cardsToShow) + 1} / {Math.ceil(episodes.length / cardsToShow)}
-            </span>
-            <button onClick={handlePrev} disabled={startIndex === 0} className="episodes-button">
-              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-            <button onClick={handleNext} disabled={startIndex >= maxIndex} className="episodes-button">
-              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
-          </div>
-        </div>
 
-        <div className="episodes-track-container" style={{
-          position: "relative"
-        }}>
-          {loading && (
-            <div style={{
-              position: 'absolute',
-              top: 0, left: 0, right: 0, bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.6)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 2
-            }}>
-              <div className="spinner-border text-info" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
+          {episodes.length > cardsToShow && (
+            <div className="episodes-controls">
+              <span className="episodes-page-indicator">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                onClick={handlePrev}
+                disabled={startIndex === 0}
+                className="episodes-button"
+                aria-label="Previous episodes"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={startIndex >= maxIndex}
+                className="episodes-button"
+                aria-label="Next episodes"
+              >
+                <ChevronRight size={20} />
+              </button>
             </div>
           )}
-          <div
-            className="episodes-track"
-            style={{
-              transform: `translateX(-${startIndex * (100 / cardsToShow)}%)`
-
-            }}
-          >
-
-            {episodes.map((episode) => {
-              return <div
-                key={episode.id}
-                className="episode-card"
-                style={{ width: `${100 / cardsToShow}%` }}
-              >
-                <EpisodeCard episode={episode} isSelected={episode.episodeNumber == selectedEpisode} onClick={onEpisodeClick} />
-              </div>
-            })}
-          </div>
         </div>
       </div>
-    </>
+
+      <div className="episodes-track-container">
+        {loading && (
+          <div className="episodes-loading-overlay">
+            <div className="spinner-border text-info" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        )}
+        <div
+          className="episodes-track"
+          style={{
+            transform: `translateX(-${startIndex * (100 / cardsToShow)}%)`,
+          }}
+        >
+          {episodes.map((episode) => (
+            <div
+              key={episode.id}
+              className="episode-slide"
+              style={{ width: `${100 / cardsToShow}%` }}
+            >
+              <EpisodeCard
+                episode={episode}
+                isSelected={episode.episodeNumber === selectedEpisode}
+                hideSpoilers={hideSpoilers}
+                onClick={onEpisodeClick}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

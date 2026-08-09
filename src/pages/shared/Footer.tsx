@@ -33,8 +33,8 @@ export function Footer() {
                     <div className="row gy-3 align-items-center justify-content-between text-center text-md-start flex-column flex-md-row">
                         <div className="col d-flex flex-column flex-md-row align-items-center justify-content-center justify-content-md-start">
                             <img
-                                src="/assets/movieplus-logo-no-bg.png?raw=true"
-                                alt="Movie Plus Logo"
+                                src="/assets/movieplus-logo.svg"
+                                alt="MoviePlus"
                                 style={{ height: "40px", cursor: "pointer", transition: "transform 0.2s ease" }}
                                 onClick={() => navigate("/")}
                                 className="me-md-2 mb-2 mb-md-0 footer-logo"
