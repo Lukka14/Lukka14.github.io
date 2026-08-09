@@ -427,3 +427,67 @@
     font-size: 1.35rem;
   }
 }
+
+/* --- Authorization required modal --- */
+
+.auth-required-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: 0.9rem;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  box-shadow: 0 12px 28px rgba(99, 102, 241, 0.35);
+}
+
+.auth-required-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 1.6rem;
+}
+
+.auth-required-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 0.8rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #e1e8ff;
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.auth-required-secondary:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.24);
+  transform: translateY(-1px);
+}
+
+.auth-required-note {
+  margin: 1.1rem 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(225, 232, 255, 0.5);
+}
+
+.auth-submit:focus-visible,
+.auth-required-secondary:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-required-secondary,
+  .auth-submit {
+    transition: none;
+  }
+}

@@ -4,20 +4,13 @@ import { Endpoints } from "../config/Config";
 import { MediaType } from "../models/Movie";
 import { fetchAllPages } from "../utils/Utils";
 import { getCurrentUser } from "./UserService";
+import { requestAuth } from "../pages/shared/modals/modal-utils";
 
 export const showLoginModal = (type: "fav" | "watch", mediaType: any): void => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.setAttribute("data-bs-toggle", "modal");
-    button.setAttribute("data-bs-target", "#authRequiredModal");
-    button.style.display = "none";
-    document.body.appendChild(button);
-    button.click();
-    document.body.removeChild(button);
-    const contentEl = document.querySelector("#content");
-    if (contentEl) {
-        contentEl.innerHTML = `You need to be logged in to add ${mediaType == MediaType.MOVIE ? "this movie" : "this TV show"} to your ${type === "fav" ? "favourites" : "watchlist"}.`;
-    }
+    requestAuth({
+        intent: type,
+        subject: mediaType == MediaType.MOVIE ? "this movie" : "this TV show",
+    });
 };
 
 export const toggleFavorite = async (mediaId: any, mediaType: any, setIsFavorite: any): Promise<boolean> => {

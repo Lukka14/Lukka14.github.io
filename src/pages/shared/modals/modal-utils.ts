@@ -39,3 +39,21 @@ export const switchModal = (fromModalId: string, toModalId: string): void => {
     openModal(toModalId);
   }
 };
+
+export type AuthRequiredIntent = "fav" | "watch";
+
+export interface AuthRequiredDetail {
+  intent: AuthRequiredIntent;
+  /** Already humanised by the caller, e.g. "this movie". */
+  subject: string;
+}
+
+export const AUTH_REQUIRED_EVENT = "movieplus:auth-required";
+
+/** Opens the auth-required modal, handing it context through an event. */
+export const requestAuth = (detail: AuthRequiredDetail): void => {
+  window.dispatchEvent(
+    new CustomEvent<AuthRequiredDetail>(AUTH_REQUIRED_EVENT, { detail })
+  );
+  openModal("authRequiredModal");
+};
