@@ -13,6 +13,7 @@ import { saveRecentlyWatched, saveResumePoint } from "../shared/RecentlyWatchSer
 import MoviesCarouselV2 from "./components/MovieCarouselV2/MoviesCarouselV2";
 import NotFoundPage from "../shared/NotFoundPage";
 import { CalendarDays } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import "./css/watch.css";
 
 export class SeasonEpisode {
@@ -106,6 +107,57 @@ const WatchPage: React.FC = () => {
   const [seasonEpisode, setSeasonEpisode] = useState<SeasonEpisode>(
     new SeasonEpisode(1, episode!)
   );
+
+  const availableSeasons =
+    mediaType === MediaType.TV_SERIES
+      ? ((media as TvSeries | null)?.seasonList?.filter(
+        (tvSeason) =>
+          tvSeason.seasonNumber !== undefined &&
+          tvSeason.seasonNumber !== 0 &&
+          !tvSeason.name?.toLowerCase().includes("special") &&
+          (tvSeason.episodeCount === undefined || tvSeason.episodeCount > 0)
+      ) ?? [])
+      : [];
+
+  const sortedSeasons = [...availableSeasons].sort(
+    (a, b) => (a.seasonNumber ?? 0) - (b.seasonNumber ?? 0)
+  );
+
+  const currentSeasonIndex = sortedSeasons.findIndex(
+    (tvSeason) => tvSeason.seasonNumber === seasonEpisode.season
+  );
+  const currentSeason = currentSeasonIndex >= 0 ? sortedSeasons[currentSeasonIndex] : null;
+  const currentEpisodeCount = currentSeason?.episodeCount ?? 0;
+  const isLastEpisodeInSeason =
+    currentEpisodeCount > 0 && seasonEpisode.episode >= currentEpisodeCount;
+  const nextSeason = currentSeasonIndex >= 0 ? sortedSeasons[currentSeasonIndex + 1] : null;
+  const hasNextEpisode =
+    mediaType === MediaType.TV_SERIES &&
+    (currentEpisodeCount === 0 || !isLastEpisodeInSeason || Boolean(nextSeason));
+  const hasPreviousEpisode =
+    mediaType === MediaType.TV_SERIES && (seasonEpisode.episode ?? 1) > 1;
+
+  const handlePreviousEpisode = () => {
+    if (mediaType !== MediaType.TV_SERIES || !hasPreviousEpisode) return;
+    updateSeasonEpisode(
+      new SeasonEpisode(seasonEpisode.season, (seasonEpisode.episode ?? 1) - 1)
+    );
+    setIsPlaying(true);
+  };
+
+  const handleNextEpisode = () => {
+    if (mediaType !== MediaType.TV_SERIES || !hasNextEpisode) return;
+
+    if (currentEpisodeCount > 0 && isLastEpisodeInSeason && nextSeason?.seasonNumber) {
+      updateSeasonEpisode(new SeasonEpisode(nextSeason.seasonNumber, 1));
+    } else {
+      updateSeasonEpisode(
+        new SeasonEpisode(seasonEpisode.season, (seasonEpisode.episode ?? 1) + 1)
+      );
+    }
+
+    setIsPlaying(true);
+  };
 
   const selectServer = (server: Server) => {
     let url;
@@ -226,12 +278,32 @@ const WatchPage: React.FC = () => {
                 <div className="watch-bar">
                   <h2 className="watch-bar-title">
                     <span>{media.title}</span>
-                    {mediaType === MediaType.TV_SERIES && (
+                  </h2>
+                  {mediaType === MediaType.TV_SERIES && (
+                    <div className="watch-ep-actions">
                       <span className="watch-ep-badge">
                         S{seasonEpisode?.season} · E{seasonEpisode?.episode}
                       </span>
-                    )}
-                  </h2>
+                      <button
+                        type="button"
+                        className="watch-next-ep-btn"
+                        onClick={handlePreviousEpisode}
+                        disabled={!hasPreviousEpisode}
+                      >
+                        <ChevronLeft size={14} />
+                        Previous episode
+                      </button>
+                      <button
+                        type="button"
+                        className="watch-next-ep-btn"
+                        onClick={handleNextEpisode}
+                        disabled={!hasNextEpisode}
+                      >
+                        Next episode
+                        <ChevronRight size={14} />
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

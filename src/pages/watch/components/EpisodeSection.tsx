@@ -69,7 +69,7 @@ const EpisodeSection: React.FC<EpisodeSectionProps> = ({
         }
       }
     }
-  }, [media]);
+  }, [media, seasonFromQuery, episodeFromQuery]);
 
   if (!media || media.mediaType !== MediaType.TV_SERIES || !selectedSeason) {
     return null;
