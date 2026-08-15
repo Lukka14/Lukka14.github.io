@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { ImdbMedia, Season, TvSeries } from "../../../../models/Movie";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, ListOrdered } from "lucide-react";
 import { EpisodeCard } from "../EpisodeCard/EpisodeCard";
@@ -50,6 +51,10 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
   const [startIndex, setStartIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(4);
   const [hideSpoilers, setHideSpoilers] = useState(readSpoilerPreference);
+  const [seasonMenuOpen, setSeasonMenuOpen] = useState(false);
+  const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({});
+  const seasonButtonRef = useRef<HTMLButtonElement>(null);
+  const seasonMenuRef = useRef<HTMLUListElement>(null);
 
   const toggleSpoilers = () => {
     setHideSpoilers((prev) => {
@@ -102,8 +107,73 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
 
   const handleSeasonClickWrapper = (season: Season) => {
     setStartIndex(0);
+    setSeasonMenuOpen(false);
     handleSeasonClick?.(season);
   };
+
+  /* The menu is portalled to <body> with fixed positioning: any ancestor with
+     overflow:hidden (like .episodes-container) would otherwise clip long season
+     lists, and the height is capped to whatever space the viewport actually has. */
+  const positionSeasonMenu = useCallback(() => {
+    const button = seasonButtonRef.current;
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+    const gap = 8;
+    const margin = 12;
+    const spaceBelow = window.innerHeight - rect.bottom - gap - margin;
+    const spaceAbove = rect.top - gap - margin;
+    const openUpwards = spaceBelow < 200 && spaceAbove > spaceBelow;
+    const maxHeight = Math.max(160, Math.min(340, openUpwards ? spaceAbove : spaceBelow));
+    const width = Math.max(rect.width, 230);
+    const left = Math.min(
+      Math.max(margin, rect.right - width),
+      window.innerWidth - width - margin
+    );
+
+    setMenuStyle({
+      position: 'fixed',
+      left,
+      top: openUpwards ? undefined : rect.bottom + gap,
+      bottom: openUpwards ? window.innerHeight - rect.top + gap : undefined,
+      width,
+      maxHeight,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!seasonMenuOpen) return;
+
+    positionSeasonMenu();
+
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node;
+      if (
+        seasonMenuRef.current?.contains(target) ||
+        seasonButtonRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setSeasonMenuOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSeasonMenuOpen(false);
+    };
+
+    window.addEventListener('mousedown', handlePointerDown);
+    window.addEventListener('touchstart', handlePointerDown);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('resize', positionSeasonMenu);
+    window.addEventListener('scroll', positionSeasonMenu, true);
+
+    return () => {
+      window.removeEventListener('mousedown', handlePointerDown);
+      window.removeEventListener('touchstart', handlePointerDown);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('resize', positionSeasonMenu);
+      window.removeEventListener('scroll', positionSeasonMenu, true);
+    };
+  }, [seasonMenuOpen, positionSeasonMenu]);
 
   const seasons = useMemo(
     () =>
@@ -147,42 +217,57 @@ const EpisodeCarousel: React.FC<EpisodeCarouselProps> = ({
             </span>
           </button>
 
-          <div className="dropdown season-select">
+          <div className={`season-select${seasonMenuOpen ? ' show' : ''}`}>
             <button
               className="btn season-select-btn"
               type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+              ref={seasonButtonRef}
+              onClick={() => setSeasonMenuOpen((open) => !open)}
+              aria-expanded={seasonMenuOpen}
+              aria-haspopup="listbox"
             >
               <ListOrdered size={17} />
               <span className="season-select-label">Season</span>
               {selectedSeason ? selectedSeason.seasonNumber : 'Select'}
             </button>
-            <ul className="dropdown-menu season-select-menu">
-              {seasons.map((season) => (
-                <li key={season.id}>
-                  <button
-                    type="button"
-                    className={`season-option${
-                      season.seasonNumber === selectedSeason?.seasonNumber
-                        ? ' is-selected'
-                        : ''
-                    }`}
-                    onClick={() => handleSeasonClickWrapper(season)}
-                  >
-                    {/* Label from seasonNumber, not the filtered array index — specials
-                        are filtered out, so an index would drift from the real season. */}
-                    <span>Season {season.seasonNumber}</span>
-                    {season.episodeCount != null && (
-                      <span className="season-option-meta">
-                        {season.episodeCount} ep
-                        {season.episodeCount === 1 ? '' : 's'}
-                      </span>
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {seasonMenuOpen &&
+              createPortal(
+                <ul
+                  className="season-select-menu"
+                  ref={seasonMenuRef}
+                  style={menuStyle}
+                  role="listbox"
+                >
+                  {seasons.map((season) => (
+                    <li key={season.id}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={
+                          season.seasonNumber === selectedSeason?.seasonNumber
+                        }
+                        className={`season-option${
+                          season.seasonNumber === selectedSeason?.seasonNumber
+                            ? ' is-selected'
+                            : ''
+                        }`}
+                        onClick={() => handleSeasonClickWrapper(season)}
+                      >
+                        {/* Label from seasonNumber, not the filtered array index — specials
+                            are filtered out, so an index would drift from the real season. */}
+                        <span>Season {season.seasonNumber}</span>
+                        {season.episodeCount != null && (
+                          <span className="season-option-meta">
+                            {season.episodeCount} ep
+                            {season.episodeCount === 1 ? '' : 's'}
+                          </span>
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>,
+                document.body
+              )}
           </div>
 
           {episodes.length > cardsToShow && (

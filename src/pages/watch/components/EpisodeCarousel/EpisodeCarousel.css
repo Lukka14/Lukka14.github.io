@@ -150,14 +150,16 @@
     transform: translateY(1px) rotate(-135deg);
 }
 
-/* Raised specificity: Bootstrap's own .dropdown-menu rules would otherwise win on
-   min-width/padding since they carry the same specificity and load later. */
-.dropdown-menu.season-select-menu {
-    min-width: 230px;
-    max-height: 280px;
+/* Portalled to <body> with fixed positioning (see EpisodeCarousel.tsx) so the
+   ancestor overflow:hidden on .episodes-container can't clip long season lists.
+   Height/placement come from inline styles computed against the viewport. */
+.season-select-menu {
+    z-index: 1080;
+    margin: 0;
+    list-style: none;
     overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 0.4rem;
-    margin-top: 0.4rem;
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(12, 17, 34, 0.97);
@@ -165,11 +167,11 @@
     box-shadow: 0 22px 46px rgba(0, 0, 0, 0.55);
 }
 
-.dropdown-menu.season-select-menu::-webkit-scrollbar {
+.season-select-menu::-webkit-scrollbar {
     width: 6px;
 }
 
-.dropdown-menu.season-select-menu::-webkit-scrollbar-thumb {
+.season-select-menu::-webkit-scrollbar-thumb {
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.18);
 }
@@ -188,6 +190,7 @@
     font-size: 0.9rem;
     font-weight: 500;
     text-align: left;
+    cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease;
 }
 
