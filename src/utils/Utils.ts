@@ -41,6 +41,26 @@ export const formatMoney = (amount: number): string => {
   });
 }
 
+/**
+ * The backend never returns a null `profileUrl`; actors without a photo get a
+ * shared Wikimedia placeholder image instead. Detect it so we can render our
+ * own initials avatar rather than a generic grey box.
+ */
+export function isPlaceholderProfileUrl(url?: string | null): boolean {
+  if (!url) return true;
+  return url.toLowerCase().includes("no-image-placeholder");
+}
+
+export function getInitials(name?: string | null): string {
+  if (!name) return "?";
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  return parts
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+}
+
 export async function fetchAllPages(endpoint: string) {
   const firstResp = await axios.get(endpoint);
   const totalPages = firstResp.data.page.totalPages

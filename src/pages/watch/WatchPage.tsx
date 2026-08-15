@@ -5,6 +5,7 @@ import { MediaType, ImdbMedia, TvSeries, ReleaseStatus } from "../../models/Movi
 import { fetchMovie, fetchTvSeries } from "../../services/MediaService";
 import PrimarySearchAppBar from "../shared/TopNavBar";
 import MediaInfo from "./components/MediaInfo";
+import CastSection from "./components/CastSection";
 import EpisodeSection from "./components/EpisodeSection";
 import StreamingServerSelector from "./components/StreamingServerSelector";
 import { Server } from "./models/Server";
@@ -13,7 +14,7 @@ import { saveRecentlyWatched, saveResumePoint } from "../shared/RecentlyWatchSer
 import MoviesCarouselV2 from "./components/MovieCarouselV2/MoviesCarouselV2";
 import NotFoundPage from "../shared/NotFoundPage";
 import { CalendarDays } from "lucide-react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Shuffle, X } from "lucide-react";
 import "./css/watch.css";
 
 export class SeasonEpisode {
@@ -137,6 +138,39 @@ const WatchPage: React.FC = () => {
   const hasPreviousEpisode =
     mediaType === MediaType.TV_SERIES && (seasonEpisode.episode ?? 1) > 1;
 
+  // --- "Up next" prompt near the end of an episode -------------------------
+  // Playback happens inside a third party iframe, so there is no reliable
+  // currentTime to read. Progress is approximated by counting the seconds the
+  // player has been active and comparing that with the episode runtime.
+  const NEXT_EPISODE_PROMPT_SECONDS = 120;
+  const [episodeRuntime, setEpisodeRuntime] = useState<number | null>(null);
+  const [watchedSeconds, setWatchedSeconds] = useState(0);
+  const [promptDismissed, setPromptDismissed] = useState(false);
+
+  useEffect(() => {
+    setWatchedSeconds(0);
+    setPromptDismissed(false);
+  }, [id, seasonEpisode.season, seasonEpisode.episode]);
+
+  useEffect(() => {
+    if (!isPlaying || mediaType !== MediaType.TV_SERIES) return;
+
+    const interval = setInterval(() => {
+      setWatchedSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, mediaType, id, seasonEpisode.season, seasonEpisode.episode]);
+
+  const runtimeSeconds = episodeRuntime ? episodeRuntime * 60 : null;
+  const showNextEpisodePrompt =
+    mediaType === MediaType.TV_SERIES &&
+    hasNextEpisode &&
+    isPlaying &&
+    !promptDismissed &&
+    runtimeSeconds !== null &&
+    runtimeSeconds - watchedSeconds <= NEXT_EPISODE_PROMPT_SECONDS;
+
   const handlePreviousEpisode = () => {
     if (mediaType !== MediaType.TV_SERIES || !hasPreviousEpisode) return;
     updateSeasonEpisode(
@@ -157,6 +191,48 @@ const WatchPage: React.FC = () => {
     }
 
     setIsPlaying(true);
+  };
+
+  // Seasons with an unknown episode count can't be sampled safely, so a random
+  // pick is only offered once at least one season has a usable count.
+  const randomizableSeasons = sortedSeasons.filter(
+    (tvSeason) => tvSeason.seasonNumber !== undefined && (tvSeason.episodeCount ?? 0) > 0
+  );
+  const hasRandomEpisode =
+    mediaType === MediaType.TV_SERIES && randomizableSeasons.length > 0;
+
+  const handleRandomEpisode = () => {
+    if (!hasRandomEpisode) return;
+
+    const pick = (): SeasonEpisode => {
+      const tvSeason =
+        randomizableSeasons[Math.floor(Math.random() * randomizableSeasons.length)];
+      const episodeNumber = Math.floor(Math.random() * (tvSeason.episodeCount ?? 1)) + 1;
+      return new SeasonEpisode(tvSeason.seasonNumber!, episodeNumber);
+    };
+
+    const totalEpisodes = randomizableSeasons.reduce(
+      (sum, tvSeason) => sum + (tvSeason.episodeCount ?? 0),
+      0
+    );
+
+    let next = pick();
+    // Re-roll a few times so the button doesn't appear dead by landing on the
+    // episode already playing. Pointless when there is only one to choose from.
+    for (
+      let attempt = 0;
+      attempt < 5 &&
+      totalEpisodes > 1 &&
+      next.season === seasonEpisode.season &&
+      next.episode === seasonEpisode.episode;
+      attempt++
+    ) {
+      next = pick();
+    }
+
+    updateSeasonEpisode(next);
+    setIsPlaying(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const selectServer = (server: Server) => {
@@ -271,6 +347,37 @@ const WatchPage: React.FC = () => {
                 setIsPlaying={setIsPlaying}
                 sandboxed={sandboxed}
               />
+
+              {showNextEpisodePrompt && (
+                <div className="watch-up-next">
+                  <div className="watch-up-next-card">
+                    <div className="watch-up-next-text">
+                      <span className="watch-up-next-label">Up next</span>
+                      <span className="watch-up-next-value">
+                        {isLastEpisodeInSeason && nextSeason?.seasonNumber
+                          ? `S${nextSeason.seasonNumber} · E1`
+                          : `S${seasonEpisode.season} · E${seasonEpisode.episode + 1}`}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      className="watch-next-ep-btn"
+                      onClick={handleNextEpisode}
+                    >
+                      Play next
+                      <ChevronRight size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      className="watch-up-next-close"
+                      onClick={() => setPromptDismissed(true)}
+                      aria-label="Dismiss up next"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="watch-console">
@@ -302,6 +409,16 @@ const WatchPage: React.FC = () => {
                         Next episode
                         <ChevronRight size={14} />
                       </button>
+                      <button
+                        type="button"
+                        className="watch-next-ep-btn watch-random-ep-btn"
+                        onClick={handleRandomEpisode}
+                        disabled={!hasRandomEpisode}
+                        title="Play a random episode"
+                      >
+                        <Shuffle size={14} />
+                        Random episode
+                      </button>
                     </div>
                   )}
                 </div>
@@ -311,6 +428,7 @@ const WatchPage: React.FC = () => {
                 media={media}
                 setSeasonEpisode={updateSeasonEpisode}
                 setIsPlaying={setIsPlaying}
+                onEpisodeRuntimeChange={setEpisodeRuntime}
               />
 
               <StreamingServerSelector selectServer={selectServer} />
@@ -319,6 +437,8 @@ const WatchPage: React.FC = () => {
         )}
 
         {media && <MediaInfo media={media} />}
+
+        {media && <CastSection cast={media.cast} />}
 
         {media?.similar && media.similar.length > 0 && (
           <div className="watch-recommended">

@@ -150,7 +150,7 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media }) => {
                   {media.originalLanguage.toUpperCase()}
                 </span>
               )}
-              {media.imdbId && media.imdbRating && (
+              {media.imdbId && (
                 <a
                   href={`https://www.imdb.com/title/${media.imdbId}`}
                   target="_blank"
@@ -159,7 +159,9 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media }) => {
                   title="View on IMDb"
                 >
                   <Star size={14} fill="currentColor" />
-                  {media.imdbRating}
+                  {/* imdbRating can come back null when the IMDb provider is
+                      unavailable; TMDB data still renders fine. */}
+                  {media.imdbRating ?? "N/A"}
                 </a>
               )}
             </div>

@@ -36,10 +36,25 @@ export interface MediaListProps {
   mediaList: Media[];
 }
 
+export interface CastMember {
+  /** TMDB person id — not a movie/series id. */
+  id: number;
+  name: string;
+  character: string | null;
+  /** Already a full URL. Never null: actors without a photo get a placeholder. */
+  profileUrl: string;
+  /** Series only, always null for movies. */
+  episodeCount: number | null;
+}
+
 export class ImdbMedia extends Media {
   imdbId?: string;
-  imdbRating?: string;
-  imdbVotes?: string;
+  /** Null when the IMDb data provider is unavailable. Always a string, never a number. */
+  imdbRating?: string | null;
+  /** Null when the IMDb data provider is unavailable. */
+  imdbVotes?: string | null;
+  /** Never null — an empty array when TMDB has no credits. Pre-sorted by billing order. */
+  cast?: CastMember[];
 
   constructor(data?: Partial<ImdbMedia>) {
     super(data); // Call the parent class constructor

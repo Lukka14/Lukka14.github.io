@@ -10,6 +10,7 @@ interface EpisodeSectionProps {
   media: ImdbMedia | TvSeries | null;
   setSeasonEpisode: (seasonEpisode: SeasonEpisode) => void;
   setIsPlaying: Dispatch<React.SetStateAction<boolean>>;
+  onEpisodeRuntimeChange?: (runtimeMinutes: number | null) => void;
 }
 
 interface Episode {
@@ -28,6 +29,7 @@ const EpisodeSection: React.FC<EpisodeSectionProps> = ({
   media,
   setSeasonEpisode,
   setIsPlaying,
+  onEpisodeRuntimeChange,
 }) => {
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null);
@@ -70,6 +72,18 @@ const EpisodeSection: React.FC<EpisodeSectionProps> = ({
       }
     }
   }, [media, seasonFromQuery, episodeFromQuery]);
+
+  // The watch page needs the running length of the episode being played so it
+  // can show the "next episode" prompt near the end. Only the episode list
+  // carries per-episode runtime, so it is reported upwards from here.
+  useEffect(() => {
+    if (!onEpisodeRuntimeChange) return;
+
+    const current = episodes.find(
+      (ep) => ep.episodeNumber === selectedEpisode
+    );
+    onEpisodeRuntimeChange(current?.runtime ?? null);
+  }, [episodes, selectedEpisode]);
 
   if (!media || media.mediaType !== MediaType.TV_SERIES || !selectedSeason) {
     return null;
