@@ -37,6 +37,9 @@ export const Endpoints = {
   HANDLE_WATCHLIST: `${API_URL}/user/watchlist`,
   HANDLE_FAVOURITES: `${API_URL}/user/favourites`,
 
+  // 📺 Streaming
+  STREAMING_SERVERS: `${API_URL}/streaming-servers`,
+
   // 🖼️ Image Upload/View
   IMG_UPLOAD: `${API_URL}/image/upload`,
   IMG_VIEW: `${API_URL}/image/view`,

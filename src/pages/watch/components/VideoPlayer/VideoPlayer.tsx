@@ -90,7 +90,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     fetchUserData();
   }, [id, user.username]);
 
-  const mediaURL = playerUrl
+  const mediaURL = (playerUrl ?? "")
     .replace("{id}", id)
     .replace("{season}", season?.toString() || "")
     .replace("{episode}", episode?.toString() || "");

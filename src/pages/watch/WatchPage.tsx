@@ -8,7 +8,7 @@ import MediaInfo from "./components/MediaInfo";
 import CastSection from "./components/CastSection";
 import EpisodeSection from "./components/EpisodeSection";
 import StreamingServerSelector from "./components/StreamingServerSelector";
-import { Server } from "./models/Server";
+import { Server, getServerUrl } from "./models/Server";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { saveRecentlyWatched, saveResumePoint } from "../shared/RecentlyWatchService";
 import MoviesCarouselV2 from "./components/MovieCarouselV2/MoviesCarouselV2";
@@ -236,15 +236,11 @@ const WatchPage: React.FC = () => {
   };
 
   const selectServer = (server: Server) => {
-    let url;
+    const url = getServerUrl(server, mediaType === MediaType.MOVIE);
 
-    if (mediaType === MediaType.MOVIE) {
-      url = server.movie_url;
-    } else {
-      url = server.series_url;
-    }
-
-    setPlayerUrl(url);
+    // Sources that can't serve this media type are filtered out upstream, so a
+    // null here just means there is nothing to play.
+    setPlayerUrl(url ?? "");
     // Opt-in: current providers detect and reject any sandbox, so this stays
     // off unless a server explicitly sets "sandbox": true.
     setSandboxed(server.sandbox === true);
@@ -431,7 +427,10 @@ const WatchPage: React.FC = () => {
                 onEpisodeRuntimeChange={setEpisodeRuntime}
               />
 
-              <StreamingServerSelector selectServer={selectServer} />
+              <StreamingServerSelector
+                selectServer={selectServer}
+                isMovie={mediaType === MediaType.MOVIE}
+              />
             </div>
           </>
         )}

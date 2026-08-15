@@ -425,6 +425,21 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+.watch-server-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(252, 211, 77, 0.4);
+  background: rgba(252, 211, 77, 0.14);
+  color: #fcd34d;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 .watch-servers-empty {
   display: flex;
   align-items: center;
