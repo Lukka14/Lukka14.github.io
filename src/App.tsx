@@ -18,6 +18,7 @@ const PasswordResetPage = lazy(() => import("./pages/password-reset/PasswordRese
 const NotFoundPage = lazy(() => import("./pages/shared/NotFoundPage"));
 const SettingsPage = lazy(() => import("./pages/account/SettingsPage"));
 const ListSearch = lazy(() => import("./pages/account/ListSearch/ListSearch"));
+const RandomizerPage = lazy(() => import("./pages/randomizer/RandomizerPage"));
 
 const App: React.FC = () => {
   return (
@@ -30,6 +31,7 @@ const App: React.FC = () => {
             <Route path="/movies" element={<Navigate to="/multiSearch?type=movie" replace />} />
             <Route path="/tv-shows" element={<Navigate to="/multiSearch?type=tv" replace />} />
             <Route path="/multiSearch" element={<MultiSearchPage />} />
+            <Route path="/randomizer" element={<RandomizerPage />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/register" element={<RegisterRedirect />} />
             <Route path="/profile/:username" element={<AccountPage />} />

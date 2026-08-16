@@ -14,6 +14,8 @@ export const Endpoints = {
   TOP_RATED_MOVIES: `${URL_SEARCH}/topRatedMovies`,
   DETAILED_MOVIE: `${URL_SEARCH}/movieDetails`,
   DETAILED_SERIES: `${URL_SEARCH}/seriesDetails`,
+  RANDOM: `${URL_SEARCH}/random`,
+  GENRES: `${URL_SEARCH}/genres`,
   // FULL_MOVIE_INFO: `${URL_SEARCH}/fullMovieInfo`,
   EPISODES: `${URL_SEARCH}/episodes`,
   
@@ -50,6 +52,7 @@ export enum RoutePaths {
   HOME = '/',
   WATCH = '/watch',
   LOGIN = '/login',
+  RANDOMIZER = '/randomizer',
 }
 
 /**

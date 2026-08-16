@@ -11,6 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import {
   ChevronDown,
   Clapperboard,
+  Dices,
   HelpCircle,
   Home,
   LogOut,
@@ -99,6 +100,7 @@ const NAV_ITEMS = [
   { label: "Search", path: "/multiSearch", icon: SearchLucide },
   { label: "Movies", path: "/multiSearch?type=movie", icon: Clapperboard },
   { label: "TV Shows", path: "/multiSearch?type=tv", icon: Tv },
+  { label: "Randomizer", path: "/randomizer", icon: Dices },
   { label: "Help", path: "/help", icon: HelpCircle },
 ];
 

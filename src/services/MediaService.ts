@@ -313,3 +313,105 @@ const fetchMediaFromUrl = (url: string): Promise<Media[]> => {
       throw error;
     });
 }
+
+/** Mirrors the backend's RandomMediaRequest. Every field is optional. */
+export interface RandomMediaFilters {
+  /** MOVIE, TV_SERIES or ALL. Defaults to ALL server-side. */
+  type?: "MOVIE" | "TV_SERIES" | "ALL";
+  /** Genre names ("Science Fiction") or TMDB genre ids. Sent comma separated. */
+  genres?: string[];
+  /** true = a result must match every genre, false = any of them. */
+  matchAllGenres?: boolean;
+  minRating?: number;
+  maxRating?: number;
+  /** Guards against obscure titles with a single 10/10 vote. Server default is 200. */
+  minVotes?: number;
+  /** Exact year. Overrides minYear/maxYear server-side. */
+  year?: number;
+  minYear?: number;
+  maxYear?: number;
+  /** ISO 639-1, e.g. "en". */
+  originalLanguage?: string;
+  minRuntime?: number;
+  maxRuntime?: number;
+  includeAdult?: boolean;
+}
+
+/** Genre id -> genre name, keyed by media type. */
+export interface GenresByMediaType {
+  MOVIE: Record<string, string>;
+  TV_SERIES: Record<string, string>;
+}
+
+export class RandomMediaError extends Error {
+  constructor(message: string, readonly status?: number) {
+    super(message);
+    this.name = "RandomMediaError";
+  }
+}
+
+const toQueryParams = (filters: RandomMediaFilters): Record<string, string> => {
+  const params: Record<string, string> = {};
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+    // The backend accepts a comma separated list for `genres`.
+    if (Array.isArray(value)) {
+      if (value.length === 0) return;
+      params[key] = value.join(",");
+      return;
+    }
+    params[key] = String(value);
+  });
+
+  return params;
+};
+
+const toRandomMediaError = (error: any): RandomMediaError => {
+  const status = error?.response?.status;
+  const message =
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    (status === 404
+      ? "No title matches those filters. Try loosening them."
+      : "Could not fetch a random title. Please try again.");
+
+  return new RandomMediaError(message, status);
+};
+
+/**
+ * Picks one random title. Returns null when nothing matches (backend 404), so
+ * an empty result can be rendered as a message rather than an error.
+ *
+ * `detailed` makes the backend follow up with a full details lookup, which adds
+ * cast, runtime and the IMDb rating to the response.
+ */
+export const fetchRandomMedia = async (
+  filters: RandomMediaFilters = {},
+  detailed: boolean = false
+): Promise<ImdbMedia | null> => {
+  try {
+    const response = await axios.get(Endpoints.RANDOM, {
+      params: { ...toQueryParams(filters), detailed },
+    });
+    return Object.assign(new ImdbMedia(), response.data);
+  } catch (error: any) {
+    if (error?.response?.status === 404) return null;
+    console.error("Error fetching random media:", error);
+    throw toRandomMediaError(error);
+  }
+};
+
+/** Genres usable in the `genres` filter, per media type. */
+export const fetchGenres = async (): Promise<GenresByMediaType> => {
+  try {
+    const response = await axios.get(Endpoints.GENRES);
+    return {
+      MOVIE: response.data?.MOVIE ?? {},
+      TV_SERIES: response.data?.TV_SERIES ?? {},
+    };
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+    return { MOVIE: {}, TV_SERIES: {} };
+  }
+};
