@@ -11,13 +11,10 @@ import PrimarySearchAppBar from "../shared/TopNavBar";
 import { getRecentlyWatched, getResumeQuery } from "../shared/RecentlyWatchService";
 import { LoadingSpinner } from "./LoadingSpinner";
 import {
-  Clapperboard,
-  Flame,
   Play,
   Search,
   Sparkles,
   Star,
-  Tv2,
   Clock3,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -181,21 +178,6 @@ const MainPage: React.FC = () => {
   const seriesTitles = mediaList.filter((m) => m.mediaType === MediaType.TV_SERIES);
   const recentTitles = recentlyWatched.slice(0, 10);
 
-  // Estimate movie/series totals from the loaded ratio applied to total
-  const loadedTotal = movieTitles.length + seriesTitles.length || 1;
-  const totalMovies = totalResults > 0
-    ? Math.round((movieTitles.length / loadedTotal) * totalResults)
-    : movieTitles.length;
-  const totalSeries = totalResults > 0
-    ? Math.round((seriesTitles.length / loadedTotal) * totalResults)
-    : seriesTitles.length;
-
-  const heroStats = [
-    { label: "Trending titles", value: totalResults > 0 ? String(totalResults) : "—", icon: Flame },
-    { label: "Movies",          value: totalMovies > 0  ? String(totalMovies)  : "—", icon: Clapperboard },
-    { label: "Series",          value: totalSeries > 0  ? String(totalSeries)  : "—", icon: Tv2 },
-  ];
-
   const handleSelectMedia = (media: Media) => {
     navigate(buildWatchUrl(media));
   };
@@ -290,26 +272,6 @@ const MainPage: React.FC = () => {
                 <p>We're preparing the latest trending titles for your homepage.</p>
               </div>
             )}
-          </section>
-
-          {/* ── Modern streaming experience stats row ── */}
-          <section className="home-stats-bar">
-            <span className="home-kicker">
-              <Sparkles size={15} />
-              Modern streaming experience
-            </span>
-            <div className="home-stats-row">
-              {heroStats.map((stat) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={stat.label} className="home-stat-card">
-                    <Icon size={18} />
-                    <strong>{stat.value}</strong>
-                    <span>{stat.label}</span>
-                  </div>
-                );
-              })}
-            </div>
           </section>
 
           <MovieCarousel
