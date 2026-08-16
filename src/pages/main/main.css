@@ -762,6 +762,84 @@
   color: rgba(225, 232, 255, 0.75);
 }
 
+/* Typeahead results, anchored under the rounded search bar. */
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin: 0;
+  padding: 0.4rem;
+  list-style: none;
+  max-height: 26rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  text-align: left;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 17, 34, 0.97);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.5);
+}
+
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.search-suggestion.is-active,
+.search-suggestion:focus-visible {
+  background: rgba(99, 102, 241, 0.22);
+  outline: none;
+}
+
+.search-suggestion-poster {
+  flex-shrink: 0;
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.search-suggestion-poster--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(225, 232, 255, 0.5);
+}
+
+.search-suggestion-text {
+  min-width: 0;
+}
+
+.search-suggestion-title {
+  display: block;
+  color: #f5f7ff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-suggestion-meta {
+  display: block;
+  margin-top: 0.15rem;
+  color: rgba(225, 232, 255, 0.62);
+  font-size: 0.8rem;
+}
+
 .search-hero-input {
   flex: 1 1 auto;
   min-width: 0;

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Media, MediaType } from "../../models/Movie";
+import { getResumeQuery } from "../shared/RecentlyWatchService";
 import {
   fetchMedia,
   fetchOnlyMovies,
@@ -62,9 +63,12 @@ const fetchPage = (
   });
 };
 
+const MAX_SUGGESTIONS = 7;
+
 const MultiSearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const filter = normalizeFilter(searchParams.get("type"));
+  const navigate = useNavigate();
 
   const [medias, setMedias] = useState<Media[]>([]);
   const [query, setQuery] = useState("");
@@ -74,11 +78,17 @@ const MultiSearchPage: React.FC = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
+  const [suggestions, setSuggestions] = useState<Media[]>([]);
+  const [isSuggestOpen, setIsSuggestOpen] = useState(false);
+  const [activeSuggestion, setActiveSuggestion] = useState(-1);
+
   const pageRef = useRef(1);
   const queryRef = useRef("");
   const filterRef = useRef<SearchFilter>(filter);
   const isLoadingMoreRef = useRef(false);
   const requestIdRef = useRef(0);
+  const suggestRequestIdRef = useRef(0);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const loadFirstPage = useCallback(
     (searchQuery: string, activeFilter: SearchFilter) => {
@@ -197,6 +207,87 @@ const MultiSearchPage: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [inputValue, query, handleSearch]);
 
+  /* Typeahead: a short debounce so suggestions land while typing, ahead of the
+     slower full-page search above. Requests are versioned so a slow response for
+     an earlier keystroke can't overwrite a newer one. */
+  useEffect(() => {
+    const term = inputValue.trim();
+
+    if (term.length < 2) {
+      suggestRequestIdRef.current++;
+      setSuggestions([]);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      const requestId = ++suggestRequestIdRef.current;
+
+      fetchPage(term, filter, 1)
+        .then((items) => {
+          if (requestId !== suggestRequestIdRef.current) return;
+          setSuggestions(dedupeMedia(items).slice(0, MAX_SUGGESTIONS));
+          setActiveSuggestion(-1);
+        })
+        .catch((err) => {
+          if (requestId !== suggestRequestIdRef.current) return;
+          console.error(err);
+          setSuggestions([]);
+        });
+    }, 220);
+
+    return () => window.clearTimeout(timer);
+  }, [inputValue, filter]);
+
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      if (formRef.current?.contains(event.target as Node)) return;
+      setIsSuggestOpen(false);
+    };
+
+    window.addEventListener("mousedown", handlePointerDown);
+    window.addEventListener("touchstart", handlePointerDown);
+    return () => {
+      window.removeEventListener("mousedown", handlePointerDown);
+      window.removeEventListener("touchstart", handlePointerDown);
+    };
+  }, []);
+
+  const openSuggestion = useCallback(
+    (media: Media) => {
+      setIsSuggestOpen(false);
+      const suffix =
+        media.mediaType === MediaType.TV_SERIES ? getResumeQuery(media.id) : "";
+      navigate(`/watch?id=${media.id}${suffix}`);
+    },
+    [navigate]
+  );
+
+  const showSuggestions = isSuggestOpen && suggestions.length > 0;
+
+  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Escape") {
+      setIsSuggestOpen(false);
+      return;
+    }
+
+    if (!showSuggestions) return;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveSuggestion((prev) => (prev + 1) % suggestions.length);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveSuggestion((prev) =>
+        prev <= 0 ? suggestions.length - 1 : prev - 1
+      );
+    } else if (event.key === "Enter" && activeSuggestion >= 0) {
+      // Only hijack Enter when a suggestion is highlighted; otherwise the form
+      // submits and runs a normal full search.
+      event.preventDefault();
+      openSuggestion(suggestions[activeSuggestion]);
+    }
+  };
+
   const filterLabel = useMemo(
     () => FILTER_OPTIONS.find((option) => option.value === filter)?.label ?? "All",
     [filter]
@@ -248,8 +339,10 @@ const MultiSearchPage: React.FC = () => {
             <form
               className="search-hero-form"
               role="search"
+              ref={formRef}
               onSubmit={(event) => {
                 event.preventDefault();
+                setIsSuggestOpen(false);
                 handleSearch(inputValue);
               }}
             >
@@ -261,12 +354,77 @@ const MultiSearchPage: React.FC = () => {
                 placeholder={searchPlaceholder}
                 value={inputValue}
                 autoComplete="off"
-                onChange={(event) => setInputValue(event.target.value)}
+                onChange={(event) => {
+                  setInputValue(event.target.value);
+                  setIsSuggestOpen(true);
+                }}
+                onFocus={() => setIsSuggestOpen(true)}
+                onKeyDown={handleSearchKeyDown}
+                role="combobox"
+                aria-expanded={showSuggestions}
+                aria-controls="search-suggestion-list"
+                aria-autocomplete="list"
+                aria-activedescendant={
+                  activeSuggestion >= 0
+                    ? `search-suggestion-${activeSuggestion}`
+                    : undefined
+                }
                 aria-label="Search movies and series"
               />
               <button type="submit" className="search-hero-submit">
                 Search
               </button>
+
+              {showSuggestions && (
+                <ul
+                  className="search-suggestions"
+                  id="search-suggestion-list"
+                  role="listbox"
+                >
+                  {suggestions.map((media, index) => (
+                    <li key={media.id ?? media.title}>
+                      <button
+                        type="button"
+                        id={`search-suggestion-${index}`}
+                        role="option"
+                        aria-selected={index === activeSuggestion}
+                        className={`search-suggestion${
+                          index === activeSuggestion ? " is-active" : ""
+                        }`}
+                        onMouseEnter={() => setActiveSuggestion(index)}
+                        onClick={() => openSuggestion(media)}
+                      >
+                        {media.posterUrl ? (
+                          <img
+                            src={media.posterUrl}
+                            alt=""
+                            aria-hidden="true"
+                            className="search-suggestion-poster"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span className="search-suggestion-poster search-suggestion-poster--empty">
+                            <Film size={16} />
+                          </span>
+                        )}
+
+                        <span className="search-suggestion-text">
+                          <span className="search-suggestion-title">
+                            {media.title}
+                          </span>
+                          <span className="search-suggestion-meta">
+                            {media.mediaType === MediaType.TV_SERIES
+                              ? "Series"
+                              : "Movie"}
+                            {media.releaseYear ? ` • ${media.releaseYear}` : ""}
+                            {media.rating ? ` • ★ ${media.rating}` : ""}
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </form>
 
             <div
