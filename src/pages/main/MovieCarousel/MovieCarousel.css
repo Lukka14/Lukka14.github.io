@@ -1,5 +1,5 @@
 .movie-carousel-container {
-  width: min(1420px, 100%);
+  width: var(--home-content-width, min(1420px, 100%));
   margin: 1.25rem auto 0;
   color: #f5f7ff;
 }

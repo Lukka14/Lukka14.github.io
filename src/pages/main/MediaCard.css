@@ -1,3 +1,36 @@
+.media-grid-wrapper {
+  padding: 1.5rem 0;
+}
+
+/* Auto-fill instead of a fixed column count: cards keep a consistent width that
+   matches the carousels, and the row count adapts to the container. The minimum
+   is tuned so a standard desktop (~1920px) lands on 6 cards per row. */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 1499.98px) {
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  }
+}
+
+@media (max-width: 991.98px) {
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.15rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.85rem;
+  }
+}
+
 .media-card {
   position: relative;
   display: block;

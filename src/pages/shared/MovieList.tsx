@@ -44,12 +44,12 @@ export const MovieList = ({ mediaList }: MediaListProps) => {
   }, [mediaList]);
 
   return (
-    <div className="container py-4">
-      <div className="row g-4 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 justify-content-center">
+    <div className="media-grid-wrapper">
+      <div className="media-grid">
         {mediaList.map((media: Media) => {
           let isFav = fav.some((item: any) => item.tmdbId == media?.id);
           let isWatch = watch.some((item: any) => item.tmdbId == media?.id);
-          return <div key={media.id || media.title} className="col">
+          return <div key={media.id || media.title}>
             <MediaCard mediaInfo={media} href={generateHref(media)} isFav={isFav} isWatch={isWatch} isLoggedIn={isLoggedIn}
             />
           </div>

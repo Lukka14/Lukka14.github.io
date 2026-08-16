@@ -14,7 +14,10 @@
 .home-page {
   position: relative;
   z-index: 1;
-  padding: 1rem clamp(1rem, 2.4vw, 2rem) 4rem;
+  /* Content spans ~90% of the viewport: 5vw of padding on each side, with the
+     sections filling what's left. Capped so it stays readable on ultrawides. */
+  --home-content-width: min(2400px, 100%);
+  padding: 1rem clamp(1rem, 5vw, 7rem) 4rem;
   color: #f5f7ff;
 }
 
@@ -31,7 +34,7 @@
 }
 
 .home-featured-section {
-  width: min(1420px, 100%);
+  width: var(--home-content-width, min(1420px, 100%));
   margin: 0 auto;
   padding: 1.25rem 0 0;
 }
@@ -140,7 +143,7 @@
 }
 
 .home-section {
-  width: min(1420px, 100%);
+  width: var(--home-content-width, min(1420px, 100%));
   margin: 0 auto;
   background: rgba(8, 13, 33, 0.66);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -708,7 +711,7 @@
 
 .search-hero-panel,
 .search-results-panel {
-  width: min(1420px, 100%);
+  width: var(--home-content-width, min(1420px, 100%));
   margin-left: auto;
   margin-right: auto;
   border-radius: 28px;
@@ -958,7 +961,7 @@
 
 .home-discord {
   position: relative;
-  width: min(1420px, 100%);
+  width: var(--home-content-width, min(1420px, 100%));
   margin: 1.25rem auto 0;
   padding: 1.6rem 1.75rem;
   border-radius: 28px;

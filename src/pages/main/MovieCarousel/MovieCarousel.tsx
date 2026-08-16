@@ -27,15 +27,28 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({
   const isDragging = useRef(false);
   const startX = useRef(0);
   const didDrag = useRef(false);
+  const trackContainerRef = useRef<HTMLDivElement>(null);
 
+  /* Card count is derived from the container's real width against a target card
+     size that mirrors the .media-grid breakpoints, so carousel cards and grid
+     cards stay the same size. A ~1920px desktop lands on 6 cards. */
   useEffect(() => {
+    const targetCardWidth = () => {
+      const vw = window.innerWidth;
+      if (vw >= 2200) return 290;
+      if (vw >= 1500) return 268;
+      if (vw >= 992) return 228;
+      return 190;
+    };
+
     const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 411) setCardsToShow(1);
-      else if (width < 668) setCardsToShow(2);
-      else if (width < 992) setCardsToShow(3);
-      else if (width < 1200) setCardsToShow(4);
-      else setCardsToShow(5);
+      const width =
+        trackContainerRef.current?.getBoundingClientRect().width ||
+        window.innerWidth;
+
+      if (window.innerWidth < 411) setCardsToShow(1);
+      else if (window.innerWidth < 620) setCardsToShow(2);
+      else setCardsToShow(Math.max(2, Math.round(width / targetCardWidth())));
     };
 
     handleResize();
@@ -130,7 +143,7 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({
         </div>
       </div>
 
-      <div className="movie-carousel-track-container">
+      <div className="movie-carousel-track-container" ref={trackContainerRef}>
         <div
           className={`movie-carousel-track${isDragging.current ? " dragging" : ""}`}
           style={{
