@@ -3,10 +3,42 @@
     cursor: pointer;
     margin-bottom: 6px;
     width: 100%;
+    position: relative;
+}
+
+/* "Ambient mode": a blurred, saturated copy of the still sits behind the selected
+   card so its outer glow picks up the episode's real colors. */
+.episode-ambient-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 16/9;
+    z-index: 0;
+    object-fit: cover;
+    border-radius: 12px;
+    pointer-events: none;
+    filter: blur(20px) saturate(2.6) brightness(1.15);
+    transform: scale(1.04) translateY(4px);
+    opacity: 0;
+    animation: episode-ambient-in 0.5s ease forwards;
+}
+
+@keyframes episode-ambient-in {
+    from { opacity: 0; }
+    to { opacity: 0.85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .episode-ambient-glow {
+        animation: none;
+        opacity: 0.85;
+    }
 }
 
 .episode-card-inner {
     position: relative;
+    z-index: 1;
     background-color: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     overflow: hidden;

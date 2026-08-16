@@ -28,6 +28,17 @@ export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, isSelected, h
 
     return (
         <div className="episode-card">
+            {isSelected && (
+                <img
+                    src={episode.stillPath || FALLBACK_STILL}
+                    alt=""
+                    aria-hidden="true"
+                    className="episode-ambient-glow"
+                    onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                />
+            )}
             <div
                 className={`episode-card-inner ${isSelected ? 'selected' : ''}`}
                 onClick={select}

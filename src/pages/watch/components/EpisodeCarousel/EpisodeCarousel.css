@@ -258,9 +258,13 @@
 
 /* ---------- Track ---------- */
 
+/* Room for the selected card's ambient glow, which would otherwise be clipped by
+   .episodes-container's overflow:hidden. */
 .episodes-track-container {
     position: relative;
     overflow: visible;
+    padding: 16px 0;
+    margin: -10px 0;
 }
 
 .episodes-track {
