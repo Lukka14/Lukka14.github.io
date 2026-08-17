@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { Clapperboard, Palette, Sparkles, UserPlus, Wrench, X } from "lucide-react";
+import { Home, Palette, Search, Sparkles, Wrench, X } from "lucide-react";
 import "./UpdateNotifier.css";
 
 declare const APP_VERSION: string;
@@ -9,38 +9,37 @@ const CURRENT_UPDATE_CODE = `v${APP_VERSION}`;
 
 const updateSections = [
   {
+    icon: Search,
+    title: "Search suggests as you type",
+    items: [
+      "Start typing and matching movies and series appear right under the box — pick one to jump straight to it.",
+      "Move through the suggestions with the arrow keys and press Escape to close them.",
+      "Suggestions follow the filter you picked, so a search set to Series only suggests series.",
+    ],
+  },
+  {
+    icon: Home,
+    title: "Search from the home page",
+    items: [
+      "A new search section sits under the featured card, with the same instant suggestions.",
+      "Press enter and your search carries over to the full search page.",
+    ],
+  },
+  {
     icon: Palette,
-    title: "A brand new look",
+    title: "Tidier look",
     items: [
-      "The whole site has been redesigned — new home page, search, help centre and navigation bar.",
-      "A new MoviePlus logo and app icon.",
-      "Every page now adapts properly to phones and tablets.",
-    ],
-  },
-  {
-    icon: Clapperboard,
-    title: "Better watching",
-    items: [
-      "Rebuilt watch page with a clearer player, server picker and season selector.",
-      "New spoiler-free mode blurs episode thumbnails, and remembers your choice.",
-      "Carousels scroll smoothly, and search keeps loading as you scroll.",
-    ],
-  },
-  {
-    icon: UserPlus,
-    title: "Accounts are open again",
-    items: [
-      "Sign-ups are back — confirmation emails are working again.",
-      "Signing in and creating an account now happen in a quick pop-up instead of a separate page.",
-      "Reach us any time from the new Contact us option.",
+      "Scrollbars now match the site theme instead of the browser's default grey.",
+      "The navigation bar has been slimmed down — Movies and TV Shows are gone now that search covers them.",
     ],
   },
   {
     icon: Wrench,
     title: "Fixes",
     items: [
-      "Saved logins no longer turn form fields into a white block.",
-      "Fixed layouts that overlapped or cut off text on smaller screens.",
+      "Suggestions are no longer cut off or hidden behind the results below them.",
+      "Near the bottom of the screen the suggestion list opens upwards so it always fits.",
+      "The filter buttons on the randomizer no longer stretch across the page.",
     ],
   },
 ];
@@ -103,7 +102,7 @@ export default function UpdateNotifier() {
             <Sparkles size={16} />
           </span>
           <span className="update-banner-text">
-            MoviePlus just got a big update
+            MoviePlus search just got smarter
           </span>
 
           <span className="update-banner-actions">
