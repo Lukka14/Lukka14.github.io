@@ -16,6 +16,16 @@
   min-width: 0;
 }
 
+/* The pill group is shared with the search hero, where it sits centred as an
+   inline-flex box. As a flex item here it would be blockified and stretched to
+   the whole column, so it is pinned back to its content width. Its hero
+   margin is dropped too: this column already spaces its children with a gap. */
+.randomizer-field .search-filter-group {
+  align-self: center;
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
 .randomizer-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
