@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Media, MediaType } from "../../models/Movie";
 import {
   fetchMedia,
@@ -10,6 +10,8 @@ import {
 import { MovieList } from "../shared/MovieList";
 import { Background } from "../main/Background";
 import PrimarySearchAppBar from "../shared/TopNavBar";
+import { RoutePaths } from "../../config/Config";
+import { getResumeQuery } from "../shared/RecentlyWatchService";
 import { Clapperboard, Film, Flame, Layers, Search, Sparkles, Tv } from "lucide-react";
 
 type SearchFilter = "all" | "movie" | "tv";
@@ -62,8 +64,11 @@ const fetchPage = (
   });
 };
 
+const SUGGESTION_LIMIT = 8;
+
 const MultiSearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const filter = normalizeFilter(searchParams.get("type"));
 
   const [medias, setMedias] = useState<Media[]>([]);
@@ -73,12 +78,17 @@ const MultiSearchPage: React.FC = () => {
   const [isTrending, setIsTrending] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [suggestions, setSuggestions] = useState<Media[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeSuggestion, setActiveSuggestion] = useState(-1);
 
   const pageRef = useRef(1);
   const queryRef = useRef("");
   const filterRef = useRef<SearchFilter>(filter);
   const isLoadingMoreRef = useRef(false);
   const requestIdRef = useRef(0);
+  const suggestRequestIdRef = useRef(0);
+  const searchBoxRef = useRef<HTMLDivElement | null>(null);
 
   const loadFirstPage = useCallback(
     (searchQuery: string, activeFilter: SearchFilter) => {
@@ -197,6 +207,89 @@ const MultiSearchPage: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [inputValue, query, handleSearch]);
 
+  // Suggestions run on a shorter debounce than the full search so the dropdown
+  // feels responsive while typing.
+  useEffect(() => {
+    const term = inputValue.trim();
+
+    if (term.length < 2) {
+      suggestRequestIdRef.current++;
+      setSuggestions([]);
+      setActiveSuggestion(-1);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      const requestId = ++suggestRequestIdRef.current;
+
+      fetchPage(term, filter, 1)
+        .then((items) => {
+          if (requestId !== suggestRequestIdRef.current) return;
+          const usable = dedupeMedia(items).filter(
+            (item) => item.mediaType !== MediaType.PERSON && item.id
+          );
+          setSuggestions(usable.slice(0, SUGGESTION_LIMIT));
+          setActiveSuggestion(-1);
+        })
+        .catch(() => {
+          if (requestId !== suggestRequestIdRef.current) return;
+          setSuggestions([]);
+        });
+    }, 220);
+
+    return () => window.clearTimeout(timer);
+  }, [inputValue, filter]);
+
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!searchBoxRef.current?.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, []);
+
+  const goToMedia = (media: Media) => {
+    const seriesSuffix =
+      media.mediaType === MediaType.TV_SERIES ? getResumeQuery(media.id) : "";
+    setShowSuggestions(false);
+    navigate(`${RoutePaths.WATCH}?id=${media.id}${seriesSuffix}`);
+  };
+
+  const handleSuggestionKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Escape") {
+      setShowSuggestions(false);
+      return;
+    }
+
+    if (!suggestions.length) return;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setShowSuggestions(true);
+      setActiveSuggestion((prev) => (prev + 1) % suggestions.length);
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setShowSuggestions(true);
+      setActiveSuggestion((prev) =>
+        prev <= 0 ? suggestions.length - 1 : prev - 1
+      );
+      return;
+    }
+
+    if (event.key === "Enter" && showSuggestions && activeSuggestion >= 0) {
+      event.preventDefault();
+      goToMedia(suggestions[activeSuggestion]);
+    }
+  };
+
+  const suggestionsVisible = showSuggestions && suggestions.length > 0;
+
   const filterLabel = useMemo(
     () => FILTER_OPTIONS.find((option) => option.value === filter)?.label ?? "All",
     [filter]
@@ -245,29 +338,86 @@ const MultiSearchPage: React.FC = () => {
               Start with trending titles or use the search bar to jump straight to what you want.
             </p>
 
-            <form
-              className="search-hero-form"
-              role="search"
-              onSubmit={(event) => {
-                event.preventDefault();
-                handleSearch(inputValue);
-              }}
-            >
-              <Search size={20} className="search-hero-form-icon" />
-              <input
-                id="movieSearchInput"
-                type="search"
-                className="search-hero-input"
-                placeholder={searchPlaceholder}
-                value={inputValue}
-                autoComplete="off"
-                onChange={(event) => setInputValue(event.target.value)}
-                aria-label="Search movies and series"
-              />
-              <button type="submit" className="search-hero-submit">
-                Search
-              </button>
-            </form>
+            <div className="search-hero-search" ref={searchBoxRef}>
+              <form
+                className="search-hero-form"
+                role="search"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setShowSuggestions(false);
+                  handleSearch(inputValue);
+                }}
+              >
+                <Search size={20} className="search-hero-form-icon" />
+                <input
+                  id="movieSearchInput"
+                  type="search"
+                  className="search-hero-input"
+                  placeholder={searchPlaceholder}
+                  value={inputValue}
+                  autoComplete="off"
+                  role="combobox"
+                  aria-expanded={suggestionsVisible}
+                  aria-controls="searchSuggestions"
+                  aria-autocomplete="list"
+                  onChange={(event) => {
+                    setInputValue(event.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onKeyDown={handleSuggestionKeyDown}
+                  aria-label="Search movies and series"
+                />
+                <button type="submit" className="search-hero-submit">
+                  Search
+                </button>
+              </form>
+
+              {suggestionsVisible && (
+                <ul
+                  className="search-suggestions"
+                  id="searchSuggestions"
+                  role="listbox"
+                  aria-label="Search suggestions"
+                >
+                  {suggestions.map((item, index) => (
+                    <li key={item.id} role="presentation">
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={index === activeSuggestion}
+                        className={`search-suggestion${
+                          index === activeSuggestion ? " is-active" : ""
+                        }`}
+                        onMouseEnter={() => setActiveSuggestion(index)}
+                        onClick={() => goToMedia(item)}
+                      >
+                        {item.posterUrl ? (
+                          <img
+                            className="search-suggestion-poster"
+                            src={item.posterUrl}
+                            alt=""
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span className="search-suggestion-poster search-suggestion-poster--empty">
+                            <Film size={16} />
+                          </span>
+                        )}
+                        <span className="search-suggestion-body">
+                          <span className="search-suggestion-title">{item.title}</span>
+                          <span className="search-suggestion-meta">
+                            {item.mediaType === MediaType.TV_SERIES ? "Series" : "Movie"}
+                            {item.releaseYear ? ` • ${item.releaseYear}` : ""}
+                            {item.rating ? ` • ★ ${Number(item.rating).toFixed(1)}` : ""}
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
             <div
               className="search-filter-group"
