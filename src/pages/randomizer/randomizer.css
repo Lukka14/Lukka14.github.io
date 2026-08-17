@@ -88,12 +88,16 @@
 }
 
 /* Custom scrollbars: the browser default is a jarring light bar on these
-   dark translucent panels. */
-.randomizer-scroll,
-.randomizer-genre-grid,
-.randomizer-cast-row {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(129, 140, 248, 0.55) transparent;
+   dark translucent panels. The standard properties are scoped away from
+   WebKit/Blink because Chromium drops the ::-webkit-scrollbar rules below
+   for any scroller that `scrollbar-width`/`scrollbar-color` applies to. */
+@supports not selector(::-webkit-scrollbar) {
+  .randomizer-scroll,
+  .randomizer-genre-grid,
+  .randomizer-cast-row {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(129, 140, 248, 0.55) transparent;
+  }
 }
 
 .randomizer-genre-grid::-webkit-scrollbar,
