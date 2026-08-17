@@ -20,6 +20,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import MovieCarousel from "./MovieCarousel/MovieCarousel";
 import { DiscordBanner } from "./DiscordBanner";
+import { SearchSuggest } from "../shared/SearchSuggest";
 
 const featuredFallbackImage =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019";
@@ -160,6 +161,7 @@ const MainPage: React.FC = () => {
   }, [initialLoading]);
 
   const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const recentlyWatched = getRecentlyWatched();
 
@@ -180,6 +182,15 @@ const MainPage: React.FC = () => {
 
   const handleSelectMedia = (media: Media) => {
     navigate(buildWatchUrl(media));
+  };
+
+  // Anything not picked straight from the suggestions is handed to the full
+  // search page, which knows how to page through and filter the results.
+  const handleSubmitSearch = (term: string) => {
+    const normalized = term.trim();
+    navigate(
+      normalized ? `/multiSearch?q=${encodeURIComponent(normalized)}` : "/multiSearch"
+    );
   };
 
   return (
@@ -272,6 +283,20 @@ const MainPage: React.FC = () => {
                 <p>We're preparing the latest trending titles for your homepage.</p>
               </div>
             )}
+          </section>
+
+          <section className="home-search-section">
+            <div className="home-search-header">
+              <p className="movie-carousel-kicker">Search</p>
+              <h2 className="movie-carousel-title">Looking for something specific?</h2>
+            </div>
+            <SearchSuggest
+              value={searchTerm}
+              onChange={setSearchTerm}
+              onSubmit={handleSubmitSearch}
+              placeholder="Search for a movie or series..."
+              className="home-search-box"
+            />
           </section>
 
           <MovieCarousel
