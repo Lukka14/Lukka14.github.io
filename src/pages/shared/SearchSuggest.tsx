@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Film, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Media, MediaType } from "../../models/Movie";
 import {
   fetchMedia,
@@ -9,6 +9,7 @@ import {
 } from "../../services/MediaService";
 import { RoutePaths } from "../../config/Config";
 import { getResumeQuery } from "./RecentlyWatchService";
+import { MediaImage } from "./MediaImage";
 
 export type SearchScope = "all" | "movie" | "tv";
 
@@ -250,18 +251,12 @@ export const SearchSuggest: React.FC<SearchSuggestProps> = ({
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => goToMedia(item)}
               >
-                {item.posterUrl ? (
-                  <img
-                    className="search-suggestion-poster"
-                    src={item.posterUrl}
-                    alt=""
-                    loading="lazy"
-                  />
-                ) : (
-                  <span className="search-suggestion-poster search-suggestion-poster--empty">
-                    <Film size={16} />
-                  </span>
-                )}
+                <MediaImage
+                  className="search-suggestion-poster"
+                  src={item.posterUrl}
+                  alt=""
+                  kind="poster"
+                />
                 <span className="search-suggestion-body">
                   <span className="search-suggestion-title">{item.title}</span>
                   <span className="search-suggestion-meta">

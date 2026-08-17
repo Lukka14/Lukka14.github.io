@@ -7,6 +7,7 @@ import PrimarySearchAppBar from "./TopNavBar";
 import quotesData from "../../dict/404_quotes.json";
 import { generateHref } from "../../utils/Utils";
 import { Background } from "../watch/components/Background";
+import { MediaImage } from "./MediaImage";
 import "./not-found.css";
 
 interface Quote {
@@ -89,14 +90,12 @@ export default function NotFoundPage() {
               </span>
 
               <Link to={generateHref(randomMedia)} className="not-found-pick">
-                {randomMedia.posterUrl && (
-                  <img
-                    className="not-found-pick-poster"
-                    src={randomMedia.posterUrl}
-                    alt=""
-                    loading="lazy"
-                  />
-                )}
+                <MediaImage
+                  className="not-found-pick-poster"
+                  src={randomMedia.posterUrl}
+                  alt=""
+                  kind="poster"
+                />
 
                 <div className="not-found-pick-body">
                   <h2 className="not-found-pick-title">{randomMedia.title}</h2>

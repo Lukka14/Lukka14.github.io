@@ -6,9 +6,7 @@ import { toggleFavorite, toggleWatchlist } from "../../services/MediaCardService
 import "./MediaCard.css";
 import { Tooltip } from "@mui/material";
 import { CustomToast } from "../shared/Toast";
-
-const FALLBACK_POSTER =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019";
+import { MediaImage } from "../shared/MediaImage";
 
 interface MediaCardProps {
   mediaInfo: Media;
@@ -38,8 +36,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
     setIsOddRatio(false);
 
     if (!posterUrl) {
-      setImageUrl(FALLBACK_POSTER);
-      setIsOddRatio(true);
+      setImageUrl("");
       setImageLoaded(true);
       return;
     }
@@ -54,8 +51,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
       setImageLoaded(true);
     };
     img.onerror = () => {
-      setImageUrl(FALLBACK_POSTER);
-      setIsOddRatio(true);
+      setImageUrl("");
       setImageLoaded(true);
     };
     img.src = posterUrl;
@@ -125,10 +121,11 @@ export const MediaCard: React.FC<MediaCardProps> = ({ mediaInfo, href, isFav, is
             />
           )}
 
-          <img
+          <MediaImage
             src={imageUrl}
             alt=""
-            loading="lazy"
+            kind="poster"
+            label={title}
             className={`media-card-poster ${isOddRatio ? "is-contained" : ""}`}
           />
 

@@ -3,6 +3,7 @@ import { Media } from "../../models/Movie";
 import "./about.css";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Search, Star } from "lucide-react";
+import { MediaImage } from "../shared/MediaImage";
 
 interface DataTableProps {
   mediaList: Media[];
@@ -106,16 +107,12 @@ const DataTable: React.FC<DataTableProps> = ({ mediaList, isLoading = false }) =
                       {String(rank).padStart(2, "0")}
                     </td>
                     <td className="help-poster-cell">
-                      {media.posterUrl ? (
-                        <img
-                          className="help-poster"
-                          src={media.posterUrl}
-                          alt={media.title ?? "Poster"}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="help-poster" />
-                      )}
+                      <MediaImage
+                        className="help-poster"
+                        src={media.posterUrl}
+                        alt={media.title ?? "Poster"}
+                        kind="poster"
+                      />
                     </td>
                     <td className="help-title-cell">{media.title}</td>
                     <td>

@@ -22,9 +22,6 @@ import MovieCarousel from "./MovieCarousel/MovieCarousel";
 import { DiscordBanner } from "./DiscordBanner";
 import { SearchSuggest } from "../shared/SearchSuggest";
 
-const featuredFallbackImage =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019";
-
 const buildWatchUrl = (media: Media) => {
   let url = `/watch?id=${media.id}`;
 
@@ -35,12 +32,8 @@ const buildWatchUrl = (media: Media) => {
   return url;
 };
 
-const getPosterImage = (media: Media) => {
-  return media.posterUrl || media.backDropUrl || featuredFallbackImage;
-};
-
 const getBackdropImage = (media: Media) => {
-  return media.backDropUrl || media.posterUrl || featuredFallbackImage;
+  return media.backDropUrl || media.posterUrl || "";
 };
 
 const getMediaTypeLabel = (media: Media) => {
@@ -213,7 +206,11 @@ const MainPage: React.FC = () => {
                 <div
                   key={featuredIndex}
                   className="home-feature-art"
-                  style={{ backgroundImage: `url(${getBackdropImage(featuredMedia)})` }}
+                  style={
+                    getBackdropImage(featuredMedia)
+                      ? { backgroundImage: `url(${getBackdropImage(featuredMedia)})` }
+                      : undefined
+                  }
                 />
                 <div className="home-feature-art-overlay" />
 

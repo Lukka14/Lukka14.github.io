@@ -42,13 +42,25 @@ export const formatMoney = (amount: number): string => {
 }
 
 /**
+ * Known "no image" URLs that upstream data hands us instead of a null: the shared
+ * Wikimedia placeholder, and the (now defunct) via.placeholder.com service.
+ * Treated the same as a missing URL so we can render our own tile.
+ */
+const PLACEHOLDER_URL_MARKERS = ["no-image-placeholder", "via.placeholder.com"];
+
+export function isPlaceholderImageUrl(url?: string | null): boolean {
+  if (!url || !url.trim()) return true;
+  const lower = url.toLowerCase();
+  return PLACEHOLDER_URL_MARKERS.some((marker) => lower.includes(marker));
+}
+
+/**
  * The backend never returns a null `profileUrl`; actors without a photo get a
  * shared Wikimedia placeholder image instead. Detect it so we can render our
  * own initials avatar rather than a generic grey box.
  */
 export function isPlaceholderProfileUrl(url?: string | null): boolean {
-  if (!url) return true;
-  return url.toLowerCase().includes("no-image-placeholder");
+  return isPlaceholderImageUrl(url);
 }
 
 export function getInitials(name?: string | null): string {

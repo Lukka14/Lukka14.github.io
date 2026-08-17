@@ -1,5 +1,6 @@
 import React from "react";
 import { Play } from "lucide-react";
+import { MediaImage } from "../../../shared/MediaImage";
 import './EpisodeCard.css';
 
 interface Episode {
@@ -21,16 +22,14 @@ interface EpisodeCardProps {
     onClick: (seasonNumber: number, episodeNumber: number) => void
 }
 
-const FALLBACK_STILL = "https://via.placeholder.com/300x170?text=No+Image";
-
 export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, isSelected, hideSpoilers, onClick: SelectEpisode }) => {
     const select = () => SelectEpisode(episode.seasonNumber, episode.episodeNumber);
 
     return (
         <div className="episode-card">
-            {isSelected && (
+            {isSelected && episode.stillPath && (
                 <img
-                    src={episode.stillPath || FALLBACK_STILL}
+                    src={episode.stillPath}
                     alt=""
                     aria-hidden="true"
                     className="episode-ambient-glow"
@@ -52,15 +51,11 @@ export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, isSelected, h
                 tabIndex={0}
                 aria-label={`Play episode ${episode.episodeNumber}: ${episode.name}`}
             >
-                <img
-                    src={episode.stillPath || FALLBACK_STILL}
+                <MediaImage
+                    src={episode.stillPath}
                     alt={`Episode ${episode.episodeNumber}`}
+                    kind="still"
                     className={`episode-image${hideSpoilers ? ' is-blurred' : ''}`}
-                    loading="lazy"
-                    onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = FALLBACK_STILL;
-                    }}
                 />
 
                 <span className="episode-number">EP {episode.episodeNumber}</span>

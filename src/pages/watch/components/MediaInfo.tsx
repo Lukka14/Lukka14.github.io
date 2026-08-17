@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { toggleFavorite, toggleWatchlist } from "../../../services/MediaCardService";
 import { CustomToast } from "../../shared/Toast";
 import { getCurrentUser } from "../../../services/UserService";
+import { MediaImage } from "../../shared/MediaImage";
 
 interface MediaInfoProps {
   media: ImdbMedia | TvSeries | null;
@@ -113,14 +114,13 @@ const MediaInfo: React.FC<MediaInfoProps> = ({ media }) => {
       <div className="watch-panel">
         <div className="watch-info-grid">
           <div>
-            {media.posterUrl && (
-              <img
-                src={media.posterUrl}
-                alt={media.title}
-                className="watch-poster"
-                loading="lazy"
-              />
-            )}
+            <MediaImage
+              src={media.posterUrl}
+              alt={media.title ?? "Poster"}
+              kind="poster"
+              label={media.title}
+              className="watch-poster"
+            />
           </div>
 
           <div>

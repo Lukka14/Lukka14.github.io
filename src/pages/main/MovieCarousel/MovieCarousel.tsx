@@ -3,15 +3,13 @@ import { Media, MediaType } from "../../../models/Movie";
 import { useNavigate } from "react-router-dom";
 import { getResumeQuery } from "../../shared/RecentlyWatchService";
 import "./MovieCarousel.css";
+import { MediaImage } from "../../shared/MediaImage";
 
 interface MovieCarouselProps {
   title: string;
   description: string;
   mediaList: Media[];
 }
-
-const fallbackImage =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019";
 
 const DRAG_THRESHOLD = 60;
 
@@ -156,9 +154,11 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({
                   navigate(buildWatchUrl(media));
                 }}
               >
-                <img
-                  src={media.posterUrl || media.backDropUrl || fallbackImage}
+                <MediaImage
+                  src={media.posterUrl || media.backDropUrl}
                   alt={media.title || "Featured title"}
+                  kind="poster"
+                  label={media.title}
                 />
                 <div className="movie-carousel-overlay">
                   <span className="movie-carousel-tag">

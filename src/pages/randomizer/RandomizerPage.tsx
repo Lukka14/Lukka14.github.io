@@ -16,6 +16,7 @@ import {
 } from "../../utils/Utils";
 import { Background } from "../main/Background";
 import PrimarySearchAppBar from "../shared/TopNavBar";
+import { MediaImage } from "../shared/MediaImage";
 import "./randomizer.css";
 
 type RandomType = "ALL" | "MOVIE" | "TV_SERIES";
@@ -29,8 +30,6 @@ const TYPE_OPTIONS: { value: RandomType; label: string; icon: React.ElementType 
 const CURRENT_YEAR = new Date().getFullYear();
 const EARLIEST_YEAR = 1900;
 const MAX_CAST = 8;
-const FALLBACK_POSTER =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019";
 
 const clampNumber = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
@@ -370,13 +369,12 @@ const RandomResultHero: React.FC<{ media: ImdbMedia }> = ({ media }) => {
       <div className="randomizer-hero-scrim" aria-hidden="true" />
 
       <div className="randomizer-hero-content">
-        <img
+        <MediaImage
           className="randomizer-hero-poster"
-          src={posterUrl || FALLBACK_POSTER}
+          src={posterUrl}
           alt={title || "Poster"}
-          onError={(event) => {
-            (event.target as HTMLImageElement).src = FALLBACK_POSTER;
-          }}
+          kind="poster"
+          label={title}
         />
 
         <div className="randomizer-hero-body">
@@ -432,11 +430,12 @@ const RandomResultHero: React.FC<{ media: ImdbMedia }> = ({ media }) => {
                         {getInitials(member.name)}
                       </span>
                     ) : (
-                      <img
+                      <MediaImage
                         className="randomizer-cast-avatar"
                         src={member.profileUrl}
                         alt={member.name}
-                        loading="lazy"
+                        kind="person"
+                        label={member.name}
                       />
                     )}
                     <span className="randomizer-cast-name">{member.name}</span>
