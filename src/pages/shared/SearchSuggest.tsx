@@ -267,7 +267,11 @@ export const SearchSuggest: React.FC<SearchSuggestProps> = ({
                   <span className="search-suggestion-meta">
                     {item.mediaType === MediaType.TV_SERIES ? "Series" : "Movie"}
                     {item.releaseYear ? ` • ${item.releaseYear}` : ""}
-                    {item.rating ? ` • ★ ${Number(item.rating).toFixed(1)}` : ""}
+                    {item.rating ? (
+                      <span className="search-suggestion-rating">
+                        {` • ★ ${Number(item.rating).toFixed(1)}`}
+                      </span>
+                    ) : null}
                   </span>
                 </span>
               </button>

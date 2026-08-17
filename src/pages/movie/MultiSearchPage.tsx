@@ -44,22 +44,39 @@ const dedupeMedia = (items: Media[]): Media[] => {
   });
 };
 
+// The multi endpoint also returns people; only titles are playable here.
+const dropPeople = (items: Media[]): Media[] =>
+  items.filter((item) => item.mediaType !== MediaType.PERSON);
+
+/**
+ * `rawCount` is the page size before client-side filtering, so pagination can tell
+ * "the backend ran out of results" apart from "this page held nothing we display".
+ */
 const fetchPage = (
   searchQuery: string,
   filter: SearchFilter,
   page: number
-): Promise<Media[]> => {
+): Promise<{ items: Media[]; rawCount: number }> => {
+  const withRawCount = (items: Media[]) => ({
+    items: dropPeople(items),
+    rawCount: items.length,
+  });
+
   if (searchQuery) {
-    if (filter === "movie") return fetchOnlyMovies(searchQuery, page);
-    if (filter === "tv") return fetchOnlyTvSeries(searchQuery, page);
-    return fetchMedia(searchQuery, page);
+    if (filter === "movie")
+      return fetchOnlyMovies(searchQuery, page).then(withRawCount);
+    if (filter === "tv")
+      return fetchOnlyTvSeries(searchQuery, page).then(withRawCount);
+    return fetchMedia(searchQuery, page).then(withRawCount);
   }
 
   // Browsing with no query: trending is the only paginated feed, so filter it client-side.
   return fetchTrendingMedia(page).then((items) => {
     const mediaType = FILTER_MEDIA_TYPE[filter];
-    if (!mediaType) return items;
-    return items.filter((item) => item.mediaType === mediaType);
+    const visible = mediaType
+      ? items.filter((item) => item.mediaType === mediaType)
+      : dropPeople(items);
+    return { items: visible, rawCount: items.length };
   });
 };
 
@@ -95,10 +112,10 @@ const MultiSearchPage: React.FC = () => {
       setHasMore(true);
 
       fetchPage(searchQuery, activeFilter, 1)
-        .then((items) => {
+        .then(({ items, rawCount }) => {
           if (requestId !== requestIdRef.current) return;
           setMedias(dedupeMedia(items));
-          setHasMore(searchQuery ? items.length > 0 : true);
+          setHasMore(searchQuery ? rawCount > 0 : true);
         })
         .catch((err) => {
           if (requestId !== requestIdRef.current) return;
@@ -135,20 +152,24 @@ const MultiSearchPage: React.FC = () => {
       setIsLoadingMore(true);
 
       fetchPage(activeQuery, activeFilter, nextPage)
-        .then((items) => {
+        .then(({ items, rawCount }) => {
           if (requestId !== requestIdRef.current) return;
 
           pageRef.current = nextPage;
 
-          // Browsing pages are filtered client-side, so an empty page is not the end.
-          if (!items.length) {
+          // A page can come back empty after client-side filtering without being the
+          // last page, so only an empty raw response ends a search.
+          if (!rawCount) {
             if (activeQuery) setHasMore(false);
             return;
           }
 
+          if (!items.length) return;
+
           setMedias((prev) => {
             const merged = dedupeMedia([...prev, ...items]);
-            if (merged.length === prev.length && activeQuery) setHasMore(false);
+            if (merged.length === prev.length && activeQuery && rawCount)
+              setHasMore(false);
             return merged;
           });
         })

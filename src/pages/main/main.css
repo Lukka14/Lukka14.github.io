@@ -931,7 +931,11 @@
 
 .search-suggestion-meta {
   font-size: 0.78rem;
-  color: rgba(225, 232, 255, 0.6);
+  color: rgba(225, 232, 255, 0.72);
+}
+
+.search-suggestion-rating {
+  color: #fbbf24;
 }
 
 .search-filter-group {
